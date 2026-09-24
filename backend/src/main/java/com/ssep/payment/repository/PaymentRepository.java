@@ -13,6 +13,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpec
 
     List<Payment> findByEmployeeId(Long employeeId);
 
+    List<Payment> findTop5ByOrderByPaymentDateDescIdDesc();
+
     boolean existsByPaymentCode(String paymentCode);
 
     Optional<Payment> findByPaymentCode(String paymentCode);

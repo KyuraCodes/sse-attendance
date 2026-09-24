@@ -20,6 +20,18 @@ public interface WorkRecordRepository extends JpaRepository<WorkRecord, Long>, J
 
     List<WorkRecord> findByEmployeeId(Long employeeId);
 
+    List<WorkRecord> findByStatus(String status);
+
+    List<WorkRecord> findByStatusIn(List<String> statuses);
+
+    List<WorkRecord> findByWorkDateBetweenOrderByWorkDateAsc(LocalDate startDate, LocalDate endDate);
+
+    List<WorkRecord> findByEmployeeIdOrderByWorkDateAsc(Long employeeId);
+
+    List<WorkRecord> findByEmployeeIdAndWorkDateBetweenOrderByWorkDateAsc(Long employeeId, LocalDate startDate, LocalDate endDate);
+
+    List<WorkRecord> findTop5ByOrderByWorkDateDescIdDesc();
+
     List<WorkRecord> findByEmployeeIdAndStatusInOrderByWorkDateAsc(Long employeeId, List<String> statuses);
 
     @Query("SELECT w FROM WorkRecord w WHERE w.employee.id = :employeeId AND w.status IN ('UNPAID', 'STORED', 'PARTIALLY_PAID') ORDER BY w.workDate ASC")
