@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+
+    /* Primary financial accent: Emerald */
+    --primary: #059669;
+    --primary-foreground: #ffffff;
+    --primary-hover: #047857;
+
+    /* Financial status tokens */
+    --status-paid-bg: #ecfdf5;
+    --status-paid-text: #047857;
+    --status-paid-border: #a7f3d0;
+
+    --status-unpaid-bg: #f1f5f9;
+    --status-unpaid-text: #334155;
+    --status-unpaid-border: #cbd5e1;
+
+    --status-stored-bg: #fffbeb;
+    --status-stored-text: #b45309;
+    --status-stored-border: #fde68a;
+
+    --status-partial-bg: #f0f9ff;
+    --status-partial-text: #0369a1;
+    --status-partial-border: #bae6fd;
+
+    --status-void-bg: #fff1f2;
+    --status-void-text: #be123c;
+    --status-void-border: #fecdd3;
+  }
+
+  .dark {
+    --background: #09090b;
+    --foreground: #f8fafc;
+    --card: #0f172a;
+    --card-foreground: #f8fafc;
+    --border: #1e293b;
+    --input: #1e293b;
+
+    --primary: #10b981;
+    --primary-foreground: #ffffff;
+    --primary-hover: #059669;
+
+    --status-paid-bg: rgba(6, 78, 59, 0.4);
+    --status-paid-text: #34d399;
+    --status-paid-border: #065f46;
+
+    --status-unpaid-bg: #1e293b;
+    --status-unpaid-text: #94a3b8;
+    --status-unpaid-border: #334155;
+
+    --status-stored-bg: rgba(120, 53, 15, 0.4);
+    --status-stored-text: #fbbf24;
+    --status-stored-border: #92400e;
+
+    --status-partial-bg: rgba(12, 74, 110, 0.4);
+    --status-partial-text: #38bdf8;
+    --status-partial-border: #075985;
+
+    --status-void-bg: rgba(136, 19, 55, 0.4);
+    --status-void-text: #fb7185;
+    --status-void-border: #9f1239;
+  }
+}
+
+html,
+body {
+  min-height: 100dvh;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Monospace alignment for financial tabular figures */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Status badge utilities */
+.badge-paid {
+  background-color: var(--status-paid-bg);
+  color: var(--status-paid-text);
+  border: 1px solid var(--status-paid-border);
+}
+
+.badge-unpaid {
+  background-color: var(--status-unpaid-bg);
+  color: var(--status-unpaid-text);
+  border: 1px solid var(--status-unpaid-border);
+}
+
+.badge-stored {
+  background-color: var(--status-stored-bg);
+  color: var(--status-stored-text);
+  border: 1px solid var(--status-stored-border);
+}
+
+.badge-partial {
+  background-color: var(--status-partial-bg);
+  color: var(--status-partial-text);
+  border: 1px solid var(--status-partial-border);
+}
+
+.badge-void {
+  background-color: var(--status-void-bg);
+  color: var(--status-void-text);
+  border: 1px solid var(--status-void-border);
+}
