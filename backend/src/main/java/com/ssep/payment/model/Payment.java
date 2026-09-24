@@ -134,6 +134,13 @@ public class Payment {
     }
 
     public void setItems(List<PaymentItem> items) {
-        this.items = items;
+        if (this.items == null) {
+            this.items = new ArrayList<>();
+        } else {
+            this.items.clear();
+        }
+        if (items != null) {
+            this.items.addAll(items);
+        }
     }
 }

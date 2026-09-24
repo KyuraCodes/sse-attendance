@@ -149,7 +149,7 @@ Settings               ✗
 Audit Logs             Terhad
 ```
 
-## Employee — Future
+## Employee - Future
 
 ```text
 View Own Profile       ✓
@@ -1548,7 +1548,7 @@ backend/
 
 AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 
-## PHASE 0 — Project Setup
+## PHASE 0 - Project Setup
 
 ```text
 [ ] Repository setup
@@ -1560,7 +1560,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Git setup
 ```
 
-## PHASE 1 — Database
+## PHASE 1 - Database
 
 ```text
 [ ] Users
@@ -1574,7 +1574,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Seed data
 ```
 
-## PHASE 2 — Authentication
+## PHASE 2 - Authentication
 
 ```text
 [ ] Login
@@ -1584,7 +1584,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Authorization middleware
 ```
 
-## PHASE 3 — Employee Management
+## PHASE 3 - Employee Management
 
 ```text
 [ ] Employee list
@@ -1594,7 +1594,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Activate/deactivate
 ```
 
-## PHASE 4 — Work Records
+## PHASE 4 - Work Records
 
 ```text
 [ ] Daily record
@@ -1604,7 +1604,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Status
 ```
 
-## PHASE 5 — Payroll
+## PHASE 5 - Payroll
 
 ```text
 [ ] Outstanding calculation
@@ -1613,7 +1613,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Monthly payroll
 ```
 
-## PHASE 6 — Payments
+## PHASE 6 - Payments
 
 ```text
 [ ] Create payment
@@ -1624,7 +1624,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Receipt
 ```
 
-## PHASE 7 — Dashboard
+## PHASE 7 - Dashboard
 
 ```text
 [ ] Summary cards
@@ -1634,7 +1634,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Warnings
 ```
 
-## PHASE 8 — Reports
+## PHASE 8 - Reports
 
 ```text
 [ ] Daily
@@ -1645,7 +1645,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Export
 ```
 
-## PHASE 9 — Audit & Security
+## PHASE 9 - Audit & Security
 
 ```text
 [ ] Audit logs
@@ -1654,7 +1654,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] Security review
 ```
 
-## PHASE 10 — Testing
+## PHASE 10 - Testing
 
 ```text
 [ ] Unit tests
@@ -1664,7 +1664,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 [ ] UI tests
 ```
 
-## PHASE 11 — Production
+## PHASE 11 - Production
 
 ```text
 [ ] Docker build
@@ -1682,7 +1682,7 @@ AI Agent hendaklah menjalankan pembangunan secara berperingkat.
 
 AI Agent mesti mengikuti peraturan berikut:
 
-## Rule 1 — Read Before Modify
+## Rule 1 - Read Before Modify
 
 Sebelum mengubah code:
 
@@ -1696,7 +1696,7 @@ Sebelum mengubah code:
 
 Jangan mengubah architecture tanpa sebab.
 
-## Rule 2 — Follow PRD
+## Rule 2 - Follow PRD
 
 PRD ini ialah Single Source of Truth.
 
@@ -1710,7 +1710,7 @@ detect conflict
 
 Agent tidak boleh mencipta feature baru secara senyap.
 
-## Rule 3 — Incremental Development
+## Rule 3 - Incremental Development
 
 Jangan membina keseluruhan sistem dalam satu perubahan besar.
 
@@ -1725,7 +1725,7 @@ Phase
 → Next Feature
 ```
 
-## Rule 4 — Preserve Existing Features
+## Rule 4 - Preserve Existing Features
 
 Semasa feature baru dibina:
 
@@ -1733,15 +1733,15 @@ Semasa feature baru dibina:
 existing functionality must continue working
 ```
 
-## Rule 5 — Test Before Complete
+## Rule 5 - Test Before Complete
 
 Feature tidak boleh dianggap selesai sebelum test berkaitan lulus.
 
-## Rule 6 — No Unnecessary Changes
+## Rule 6 - No Unnecessary Changes
 
 Jangan mengubah fail yang tidak berkaitan dengan task.
 
-## Rule 7 — No Fake Implementation
+## Rule 7 - No Fake Implementation
 
 Jangan menggunakan:
 
@@ -1755,7 +1755,7 @@ hardcoded payroll
 
 sebagai implementation production.
 
-## Rule 8 — Business Logic Backend
+## Rule 8 - Business Logic Backend
 
 Peraturan kewangan mesti authoritative di backend.
 
