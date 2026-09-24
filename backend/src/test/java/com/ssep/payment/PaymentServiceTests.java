@@ -285,7 +285,7 @@ class PaymentServiceTests {
 
         ReceiptDto receipt = paymentService.getReceipt(10L);
         assertNotNull(receipt);
-        assertEquals("Sepakat Sepakat Silaturrahim Enterprise", receipt.getCompanyName());
+        assertEquals("Sepakat Silaturrahim Enterprise", receipt.getCompanyName());
         assertEquals("PAY-005", receipt.getPaymentCode());
         assertEquals("Ali bin Abu", receipt.getEmployeeName());
         assertEquals("EMP-001", receipt.getEmployeeCode());

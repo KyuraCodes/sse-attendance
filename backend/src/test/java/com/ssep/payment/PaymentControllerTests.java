@@ -157,7 +157,7 @@ class PaymentControllerTests {
     @WithMockUser
     void shouldGetReceipt() throws Exception {
         ReceiptDto receipt = new ReceiptDto();
-        receipt.setCompanyName("Sepakat Sepakat Silaturrahim Enterprise");
+        receipt.setCompanyName("Sepakat Silaturrahim Enterprise");
         receipt.setPaymentId(1L);
         receipt.setPaymentCode("PAY-001");
         receipt.setEmployeeId(1L);
@@ -180,7 +180,7 @@ class PaymentControllerTests {
         mockMvc.perform(get("/api/payments/1/receipt"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.companyName").value("Sepakat Sepakat Silaturrahim Enterprise"))
+                .andExpect(jsonPath("$.data.companyName").value("Sepakat Silaturrahim Enterprise"))
                 .andExpect(jsonPath("$.data.paymentCode").value("PAY-001"))
                 .andExpect(jsonPath("$.data.totalAmount").value(80.00))
                 .andExpect(jsonPath("$.data.items[0].amountApplied").value(80.00));

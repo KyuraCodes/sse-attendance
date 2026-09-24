@@ -1,6 +1,6 @@
-export const COMPANY_NAME = "Sepakat Sepakat Silaturrahim Enterprise";
-export const COMPANY_SHORT = "SSEP";
-export const SYSTEM_NAME = "SSEP Payroll Management System";
+export const COMPANY_NAME = "Sepakat Silaturrahim Enterprise";
+export const COMPANY_SHORT = "SSE";
+export const SYSTEM_NAME = "SSE Payroll Management System";
 export const SYSTEM_DESCRIPTION = "Daily-rated employee attendance and payroll management";
 
 export const NEXT_PUBLIC_API_URL =
@@ -20,21 +20,21 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/dashboard",
     iconName: "ChartPieSlice",
     description: "Daily attendance overview and financial summary",
-    roles: ["CEO", "ADMIN"],
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     label: "Employees",
     href: "/employees",
     iconName: "Users",
     description: "Employee directory and daily wage configuration",
-    roles: ["CEO", "ADMIN"],
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     label: "Work Records",
     href: "/work-records",
     iconName: "CalendarCheck",
     description: "Daily attendance entries and stored salary tracking",
-    roles: ["CEO", "ADMIN"],
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     label: "Payments",
@@ -48,7 +48,21 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/reports",
     iconName: "FileText",
     description: "Monthly payroll statements and balance reports",
+    roles: ["CEO", "MANAGER"],
+  },
+  {
+    label: "Accounts",
+    href: "/accounts",
+    iconName: "UserGear",
+    description: "Manage system user accounts and credentials",
     roles: ["CEO"],
+  },
+  {
+    label: "Roles",
+    href: "/roles",
+    iconName: "ShieldStar",
+    description: "System role definitions and access permissions matrix",
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     label: "Audit Logs",
@@ -56,6 +70,13 @@ export const NAV_ITEMS: NavItem[] = [
     iconName: "ClockCounterClockwise",
     description: "Immutable history of system transactions",
     roles: ["CEO"],
+  },
+  {
+    label: "Settings",
+    href: "/settings",
+    iconName: "GearSix",
+    description: "Company details, theme, and system preferences",
+    roles: ["CEO", "ADMIN"],
   },
 ];
 

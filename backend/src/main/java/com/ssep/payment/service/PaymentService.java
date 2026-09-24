@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class PaymentService {
 
-    private static final String COMPANY_NAME = "Sepakat Sepakat Silaturrahim Enterprise";
+    private static final String COMPANY_NAME = "Sepakat Silaturrahim Enterprise";
     private static final Set<String> VALID_PAYMENT_METHODS = Set.of(
             "CASH",
             "BANK_TRANSFER",

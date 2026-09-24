@@ -2,7 +2,7 @@ import React from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 
 export const metadata = {
-  title: "Dashboard - SSEP Payroll",
+  title: "Dashboard - SSE Payroll",
   description: "Executive payroll and attendance management dashboard",
 };
 

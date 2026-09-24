@@ -126,4 +126,57 @@ class AuthServiceTests {
         assertEquals("USER_NOT_FOUND", ex.getCode());
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
     }
+
+    @Test
+    void shouldUpdateProfileSuccessfully() {
+        User user = new User();
+        user.setId(1L);
+        user.setName("Old Name");
+        user.setEmail("user@sse.com");
+        user.setRole("CEO");
+        user.setStatus("ACTIVE");
+
+        when(userRepository.findByEmail("user@sse.com")).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        com.ssep.auth.dto.UpdateProfileRequest request = new com.ssep.auth.dto.UpdateProfileRequest("New Name", "https://avatar.url/pic.png");
+        UserDto result = authService.updateProfile("user@sse.com", request);
+
+        assertEquals("New Name", result.getName());
+        assertEquals("https://avatar.url/pic.png", result.getAvatarUrl());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void shouldChangePasswordSuccessfully() {
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("user@sse.com");
+        user.setPasswordHash("encoded_old");
+
+        when(userRepository.findByEmail("user@sse.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("old_password", "encoded_old")).thenReturn(true);
+        when(passwordEncoder.encode("new_password")).thenReturn("encoded_new");
+
+        com.ssep.auth.dto.ChangePasswordRequest request = new com.ssep.auth.dto.ChangePasswordRequest("old_password", "new_password");
+        authService.changePassword("user@sse.com", request);
+
+        assertEquals("encoded_new", user.getPasswordHash());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void shouldThrowWhenChangePasswordWithWrongCurrentPassword() {
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("user@sse.com");
+        user.setPasswordHash("encoded_old");
+
+        when(userRepository.findByEmail("user@sse.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrong_password", "encoded_old")).thenReturn(false);
+
+        com.ssep.auth.dto.ChangePasswordRequest request = new com.ssep.auth.dto.ChangePasswordRequest("wrong_password", "new_password");
+        AppException ex = assertThrows(AppException.class, () -> authService.changePassword("user@sse.com", request));
+        assertEquals("INVALID_CURRENT_PASSWORD", ex.getCode());
+    }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ReceiptDto {
 
-    private String companyName = "Sepakat Sepakat Silaturrahim Enterprise";
+    private String companyName = "Sepakat Silaturrahim Enterprise";
     private Long paymentId;
     private String paymentCode;
     private Long employeeId;

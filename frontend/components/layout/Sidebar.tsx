@@ -13,6 +13,9 @@ import {
   SignOut,
   X,
   Building,
+  UserGear,
+  ShieldStar,
+  GearSix,
 } from "@phosphor-icons/react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -30,31 +33,55 @@ const NAVIGATION_ITEMS: NavEntry[] = [
     name: "Dashboard",
     href: "/dashboard",
     icon: SquaresFour,
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     name: "Employees",
     href: "/employees",
     icon: Users,
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     name: "Work Records",
     href: "/work-records",
     icon: CalendarCheck,
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     name: "Payments",
     href: "/payments",
     icon: Money,
+    roles: ["CEO", "ADMIN"],
   },
   {
     name: "Reports",
     href: "/reports",
     icon: FileText,
+    roles: ["CEO", "MANAGER"],
+  },
+  {
+    name: "Accounts",
+    href: "/accounts",
+    icon: UserGear,
+    roles: ["CEO"],
+  },
+  {
+    name: "Roles",
+    href: "/roles",
+    icon: ShieldStar,
+    roles: ["CEO", "ADMIN", "MANAGER"],
   },
   {
     name: "Audit Logs",
     href: "/audit-logs",
     icon: ShieldCheck,
+    roles: ["CEO"],
+  },
+  {
+    name: "Settings",
+    href: "/settings",
+    icon: GearSix,
+    roles: ["CEO", "ADMIN"],
   },
 ];
 
@@ -131,7 +158,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
           Main Menu
         </div>
-        {NAVIGATION_ITEMS.map((item) => {
+        {NAVIGATION_ITEMS.filter((item) => {
+          if (!item.roles || !user?.role) return true;
+          return item.roles.includes(user.role);
+        }).map((item) => {
           const Icon = item.icon;
           const isActive =
             pathname === item.href ||
@@ -174,12 +204,28 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* User Profile and Logout Pill */}
       <div className="p-3 border-t border-slate-200 dark:border-slate-800">
         <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-xs flex items-center justify-center shrink-0">
-              {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+          <Link
+            href="/profile"
+            onClick={onClose}
+            title="Manage profile and password"
+            className="flex items-center gap-2.5 min-w-0 flex-1 group hover:opacity-85 transition-opacity"
+          >
+            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-emerald-300 dark:border-emerald-700">
+              {user?.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : user?.name ? (
+                user.name.charAt(0).toUpperCase()
+              ) : (
+                "U"
+              )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate leading-tight">
+              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                 {user?.name || "System User"}
               </p>
               <div className="flex items-center gap-1.5 mt-0.5">
@@ -188,7 +234,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
 
           <button
             type="button"

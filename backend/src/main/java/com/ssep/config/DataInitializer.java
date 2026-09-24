@@ -33,24 +33,55 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        if (!userRepository.existsByEmail("ceo@ssep.com")) {
+        if (!userRepository.existsByEmail("ceo@sse.com")) {
             User ceo = new User();
-            ceo.setName("CEO SSEP");
-            ceo.setEmail("ceo@ssep.com");
+            ceo.setName("CEO SSE");
+            ceo.setEmail("ceo@sse.com");
             ceo.setPasswordHash(passwordEncoder.encode("password123"));
             ceo.setRole("CEO");
             ceo.setStatus("ACTIVE");
             userRepository.save(ceo);
         }
 
-        if (!userRepository.existsByEmail("admin@ssep.com")) {
+        if (!userRepository.existsByEmail("admin@sse.com")) {
             User admin = new User();
-            admin.setName("Admin SSEP");
-            admin.setEmail("admin@ssep.com");
+            admin.setName("Admin SSE");
+            admin.setEmail("admin@sse.com");
             admin.setPasswordHash(passwordEncoder.encode("password123"));
             admin.setRole("ADMIN");
             admin.setStatus("ACTIVE");
             userRepository.save(admin);
+        }
+
+        if (!userRepository.existsByEmail("manager@sse.com")) {
+            User manager = new User();
+            manager.setName("Manager SSE");
+            manager.setEmail("manager@sse.com");
+            manager.setPasswordHash(passwordEncoder.encode("password123"));
+            manager.setRole("MANAGER");
+            manager.setStatus("ACTIVE");
+            userRepository.save(manager);
+        }
+
+        // Backward compatibility for existing ssep.com logins
+        if (!userRepository.existsByEmail("ceo@ssep.com")) {
+            User ceoOld = new User();
+            ceoOld.setName("CEO SSE");
+            ceoOld.setEmail("ceo@ssep.com");
+            ceoOld.setPasswordHash(passwordEncoder.encode("password123"));
+            ceoOld.setRole("CEO");
+            ceoOld.setStatus("ACTIVE");
+            userRepository.save(ceoOld);
+        }
+
+        if (!userRepository.existsByEmail("admin@ssep.com")) {
+            User adminOld = new User();
+            adminOld.setName("Admin SSE");
+            adminOld.setEmail("admin@ssep.com");
+            adminOld.setPasswordHash(passwordEncoder.encode("password123"));
+            adminOld.setRole("ADMIN");
+            adminOld.setStatus("ACTIVE");
+            userRepository.save(adminOld);
         }
     }
 

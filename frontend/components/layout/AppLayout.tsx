@@ -29,7 +29,7 @@ export function AppLayout({ children, title }: AppLayoutProps) {
     return (
       <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-500">
         <CircleNotch size={32} weight="bold" className="animate-spin text-emerald-600 mb-3" />
-        <p className="text-xs font-medium tracking-wide">Loading SSEP Payroll...</p>
+        <p className="text-xs font-medium tracking-wide">Loading SSE Payroll...</p>
       </div>
     );
   }

@@ -3,8 +3,9 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { List, CalendarBlank, CaretRight } from "@phosphor-icons/react";
+import { List, CalendarBlank, CaretRight, Sun, Moon, User } from "@phosphor-icons/react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface HeaderProps {
   title?: string;
@@ -17,12 +18,17 @@ const ROUTE_TITLES: Record<string, string> = {
   "/work-records": "Work Records",
   "/payments": "Payments",
   "/reports": "Reports",
+  "/accounts": "Account Management",
+  "/roles": "Roles & Permissions",
   "/audit-logs": "Audit Logs",
+  "/settings": "Settings",
+  "/profile": "My Profile",
 };
 
 export function Header({ title, onOpenMobileSidebar }: HeaderProps) {
   const pathname = usePathname();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   // Page title derived from prop or pathname
   const currentTitle = useMemo(() => {
@@ -74,9 +80,9 @@ export function Header({ title, onOpenMobileSidebar }: HeaderProps) {
           <nav aria-label="Breadcrumb" className="hidden sm:flex items-center text-xs text-slate-400 dark:text-slate-500">
             <Link
               href="/dashboard"
-              className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+              className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors font-medium"
             >
-              SSEP
+              SSE
             </Link>
             <CaretRight size={12} weight="bold" className="mx-1 text-slate-300 dark:text-slate-600" />
           </nav>
@@ -86,21 +92,57 @@ export function Header({ title, onOpenMobileSidebar }: HeaderProps) {
         </div>
       </div>
 
-      {/* Right side: formatted date and executive badge */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        {/* Malaysian / English formatted date */}
-        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80">
+      {/* Right side: formatted date, theme toggle and user indicator */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Malaysian formatted date */}
+        <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80">
           <CalendarBlank size={15} weight="bold" className="text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span className="font-medium whitespace-nowrap">{formattedDate}</span>
         </div>
 
-        {/* User indicator for quick visual check */}
+        {/* Dark Mode Toggle */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        >
+          {theme === "dark" ? (
+            <Sun size={18} weight="bold" className="text-amber-400" />
+          ) : (
+            <Moon size={18} weight="bold" className="text-slate-700" />
+          )}
+        </button>
+
+        {/* User indicator linked to Profile */}
         {user && (
-          <div className="hidden md:flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
-            <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-              {user.name}
-            </span>
-          </div>
+          <Link
+            href="/profile"
+            className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 dark:border-slate-800 group hover:opacity-85 transition-opacity"
+            title="View and edit profile"
+          >
+            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs flex items-center justify-center border border-emerald-300 dark:border-emerald-700 overflow-hidden">
+              {user.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user.name.charAt(0).toUpperCase()
+              )}
+            </div>
+            <div className="hidden md:flex flex-col text-left">
+              <span className="text-xs text-slate-800 dark:text-slate-200 font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-tight">
+                {user.name}
+              </span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-mono">
+                {user.role}
+              </span>
+            </div>
+          </Link>
         )}
       </div>
     </header>

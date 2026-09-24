@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +17,8 @@ const geistMono = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "SSEP Payroll Management System",
-  description: "Attendance and payroll management system for Sepakat Sepakat Silaturrahim Enterprise",
+  title: "SSE Payroll Management System",
+  description: "Attendance and payroll management system for Sepakat Silaturrahim Enterprise",
 };
 
 export default function RootLayout({
@@ -29,9 +30,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-[100dvh] bg-slate-50 text-slate-900 font-sans">
-        <AuthProvider>{children}</AuthProvider>
+      <body className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors">
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

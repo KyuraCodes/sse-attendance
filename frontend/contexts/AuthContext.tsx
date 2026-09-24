@@ -90,16 +90,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const updateUserProfile = useCallback((updatedFields: Partial<User>) => {
+    setUser((prev) => (prev ? { ...prev, ...updatedFields } : null));
+  }, []);
+
   const value = useMemo<AuthContextType>(
     () => ({
       user,
       token,
       login,
       logout,
+      updateUserProfile,
       isAuthenticated: Boolean(user && token),
       isLoading,
     }),
-    [user, token, login, logout, isLoading]
+    [user, token, login, logout, updateUserProfile, isLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

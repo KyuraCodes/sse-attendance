@@ -45,4 +45,28 @@ public class AuthController {
         UserDto userDto = authService.getCurrentUser(email);
         return ResponseEntity.ok(ApiResponse.ok(userDto));
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<UserDto>> updateProfile(@Valid @RequestBody com.ssep.auth.dto.UpdateProfileRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new AppException("Not authenticated", "UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+        }
+
+        String email = authentication.getName();
+        UserDto updated = authService.updateProfile(email, request);
+        return ResponseEntity.ok(ApiResponse.ok("Profile updated successfully", updated));
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(@Valid @RequestBody com.ssep.auth.dto.ChangePasswordRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new AppException("Not authenticated", "UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+        }
+
+        String email = authentication.getName();
+        authService.changePassword(email, request);
+        return ResponseEntity.ok(ApiResponse.ok("Password changed successfully", null));
+    }
 }
