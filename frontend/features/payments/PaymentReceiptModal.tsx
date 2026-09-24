@@ -18,6 +18,7 @@ import { paymentService } from "@/services/paymentService";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { COMPANY_NAME, SYSTEM_NAME } from "@/lib/constants";
+import { downloadReceiptPdf } from "@/lib/pdfGenerator";
 
 interface PaymentReceiptModalProps {
   isOpen: boolean;
@@ -87,235 +88,7 @@ export function PaymentReceiptModal({
 
   const handleDownloadReceipt = () => {
     if (!receipt) return;
-
-    const htmlContent = `<!DOCTYPE html>
-<html lang="ms">
-<head>
-  <meta charset="utf-8" />
-  <title>Resit Pembayaran - ${receipt.paymentCode}</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      margin: 0;
-      padding: 32px;
-      color: #0f172a;
-      background: #ffffff;
-    }
-    .receipt-container {
-      max-width: 680px;
-      margin: 0 auto;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 32px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #059669;
-      padding-bottom: 20px;
-      margin-bottom: 24px;
-    }
-    .brand-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .logo-badge {
-      width: 56px;
-      height: 56px;
-      background: #059669;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: -0.5px;
-    }
-    .logo-sub {
-      font-size: 8px;
-      letter-spacing: 1px;
-      color: #a7f3d0;
-    }
-    .company-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #0f172a;
-      margin: 0 0 4px 0;
-    }
-    .company-sub {
-      font-size: 12px;
-      color: #64748b;
-      margin: 0;
-    }
-    .meta-box {
-      text-align: right;
-    }
-    .code-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      background: #ecfdf5;
-      color: #047857;
-      border: 1px solid #a7f3d0;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: monospace;
-    }
-    .meta-date {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 6px;
-    }
-    .grid-info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 24px;
-      font-size: 13px;
-    }
-    .table-container {
-      margin-bottom: 24px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    th {
-      background: #f1f5f9;
-      padding: 10px 12px;
-      text-align: left;
-      font-weight: 600;
-      color: #475569;
-      border-bottom: 1px solid #cbd5e1;
-    }
-    th.text-right, td.text-right {
-      text-align: right;
-    }
-    td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .total-box {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-      border-radius: 8px;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .total-amount {
-      font-size: 24px;
-      font-weight: 700;
-      color: #047857;
-      font-family: monospace;
-    }
-    .footer-note {
-      font-size: 11px;
-      color: #94a3b8;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 16px;
-      display: flex;
-      justify-content: space-between;
-    }
-    @media print {
-      body { padding: 0; }
-      .receipt-container { border: none; padding: 0; }
-    }
-  </style>
-</head>
-<body>
-  <div class="receipt-container">
-    <div class="header">
-      <div class="brand-left">
-        <div class="logo-badge">
-          <span>SSE</span>
-          <span class="logo-sub">RESIT</span>
-        </div>
-        <div>
-          <div style="font-size:10px; text-transform:uppercase; font-weight:700; color:#059669; letter-spacing:0.5px;">Resit Rasmi Pembayaran</div>
-          <h1 class="company-title">${receipt.companyName || "Sepakat Silaturrahim Enterprise"}</h1>
-          <p class="company-sub">Sistem Pengurusan Gaji SSE</p>
-        </div>
-      </div>
-      <div class="meta-box">
-        <div class="code-badge">${receipt.paymentCode}</div>
-        <div class="meta-date">Tarikh: <strong>${receipt.paymentDate}</strong></div>
-      </div>
-    </div>
-
-    <div class="grid-info">
-      <div>
-        <div style="color:#64748b; margin-bottom:2px;">Dibayar Kepada:</div>
-        <div style="font-size:14px; font-weight:700; color:#0f172a;">${receipt.employeeName}</div>
-        <div style="font-family:monospace; color:#64748b; font-size:11px;">Kod Pekerja: ${receipt.employeeCode}</div>
-      </div>
-      <div>
-        <div style="color:#64748b; margin-bottom:2px;">Kaedah Bayaran:</div>
-        <div style="font-size:14px; font-weight:600; color:#0f172a;">${receipt.paymentMethod}</div>
-        <div style="color:#64748b; font-size:11px;">Rujukan: ${receipt.reference || "-"}</div>
-      </div>
-      ${receipt.notes ? `<div style="grid-column: span 2; border-top: 1px solid #e2e8f0; padding-top: 8px;"><em>Catatan: ${receipt.notes}</em></div>` : ""}
-    </div>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Tarikh Kerja</th>
-            <th class="text-right">Kadar Harian</th>
-            <th class="text-right">Jumlah Dibayar</th>
-            <th style="text-align:center;">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${(receipt.items || []).map(item => `
-            <tr>
-              <td>${item.workDate}</td>
-              <td class="text-right" style="font-family:monospace;">RM ${Number(item.dailyRate).toFixed(2)}</td>
-              <td class="text-right" style="font-family:monospace; font-weight:700;">RM ${Number(item.amountApplied).toFixed(2)}</td>
-              <td style="text-align:center;">${item.workRecordStatus || "PAID"}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="total-box">
-      <div>
-        <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:#047857;">Jumlah Keseluruhan Dibayar</div>
-        <div style="font-size:12px; color:#059669;">Penyelesaian Gaji Selesai (PAID)</div>
-      </div>
-      <div class="total-amount">RM ${Number(receipt.totalAmount).toFixed(2)}</div>
-    </div>
-
-    <div class="footer-note">
-      <span>Resit janaan komputer - Sepakat Silaturrahim Enterprise.</span>
-      <span>ID Resit: ${receipt.paymentCode}</span>
-    </div>
-  </div>
-</body>
-</html>`;
-
-    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `Resit-${receipt.paymentCode}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    downloadReceiptPdf(receipt);
   };
 
   if (!isOpen) {
@@ -405,7 +178,7 @@ export function PaymentReceiptModal({
                 leftIcon={<DownloadSimple size={16} weight="bold" />}
                 className="whitespace-nowrap"
               >
-                Download
+                Download PDF
               </Button>
               <Button
                 type="button"
@@ -630,7 +403,7 @@ export function PaymentReceiptModal({
               leftIcon={<DownloadSimple size={16} weight="bold" />}
               className="whitespace-nowrap"
             >
-              Download Receipt
+              Download PDF Receipt
             </Button>
             <Button
               type="button"

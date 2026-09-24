@@ -23,17 +23,29 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import com.ssep.payment.model.Payment;
+import com.ssep.payment.repository.PaymentItemRepository;
+import com.ssep.payment.repository.PaymentRepository;
+import com.ssep.workrecord.model.WorkRecord;
+import com.ssep.workrecord.repository.WorkRecordRepository;
+
 class EmployeeServiceTests {
 
     private EmployeeRepository employeeRepository;
     private AuditLogService auditLogService;
+    private WorkRecordRepository workRecordRepository;
+    private PaymentRepository paymentRepository;
+    private PaymentItemRepository paymentItemRepository;
     private EmployeeService employeeService;
 
     @BeforeEach
     void setUp() {
         employeeRepository = mock(EmployeeRepository.class);
         auditLogService = mock(AuditLogService.class);
-        employeeService = new EmployeeService(employeeRepository, auditLogService);
+        workRecordRepository = mock(WorkRecordRepository.class);
+        paymentRepository = mock(PaymentRepository.class);
+        paymentItemRepository = mock(PaymentItemRepository.class);
+        employeeService = new EmployeeService(employeeRepository, auditLogService, workRecordRepository, paymentRepository, paymentItemRepository);
     }
 
     @Test
@@ -347,5 +359,33 @@ class EmployeeServiceTests {
         assertEquals(1, result.size());
         assertEquals("Ali", result.get(0).getName());
         assertEquals("ACTIVE", result.get(0).getStatus());
+    }
+
+    @Test
+    void shouldDeleteEmployeeSuccessfully() {
+        Employee emp = new Employee();
+        emp.setId(1L);
+        emp.setEmployeeCode("EMP-001");
+        emp.setName("Ali");
+        emp.setDailyRate(new BigDecimal("80.00"));
+        emp.setStatus("ACTIVE");
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(emp));
+        when(paymentRepository.findByEmployeeId(1L)).thenReturn(Collections.emptyList());
+        when(workRecordRepository.findByEmployeeId(1L)).thenReturn(Collections.emptyList());
+
+        employeeService.deleteEmployee(1L, 99L);
+
+        verify(employeeRepository, times(1)).delete(emp);
+        verify(auditLogService, times(1)).log(eq(99L), eq("DELETE"), eq("EMPLOYEE"), eq(1L), anyString(), isNull());
+    }
+
+    @Test
+    void shouldThrowWhenDeletingNonExistentEmployee() {
+        when(employeeRepository.findById(999L)).thenReturn(Optional.empty());
+
+        AppException ex = assertThrows(AppException.class, () -> employeeService.deleteEmployee(999L, 99L));
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+        assertEquals("EMPLOYEE_NOT_FOUND", ex.getCode());
     }
 }

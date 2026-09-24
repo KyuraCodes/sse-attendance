@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -205,5 +205,15 @@ class EmployeeControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.name").value("Siti"));
+    }
+
+    @Test
+    void shouldDeleteEmployeeSuccessfully() throws Exception {
+        doNothing().when(employeeService).deleteEmployee(eq(1L), any());
+
+        mockMvc.perform(delete("/api/employees/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.message").value("Employee deleted successfully"));
     }
 }

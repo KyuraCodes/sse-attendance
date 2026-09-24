@@ -7,6 +7,7 @@ import {
   UserMinus,
   Users,
   CircleNotch,
+  Trash,
 } from "@phosphor-icons/react";
 import { Employee } from "@/types/employee";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ interface EmployeeTableProps {
   isLoading?: boolean;
   onEdit: (employee: Employee) => void;
   onToggleStatus: (employee: Employee) => void;
+  onDelete: (employee: Employee) => void;
   togglingId?: number | null;
   onAddClick?: () => void;
   hasFilter?: boolean;
@@ -27,6 +29,7 @@ export function EmployeeTable({
   isLoading = false,
   onEdit,
   onToggleStatus,
+  onDelete,
   togglingId = null,
   onAddClick,
   hasFilter = false,
@@ -248,6 +251,17 @@ export function EmployeeTable({
                           )
                         )}
                         <span>{isActive ? "Deactivate" : "Activate"}</span>
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onDelete(employee)}
+                        aria-label={`Delete ${employee.name}`}
+                        className="h-8 px-2.5 text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800"
+                      >
+                        <Trash size={14} weight="bold" />
+                        <span>Delete</span>
                       </Button>
                     </div>
                   </td>

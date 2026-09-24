@@ -17,6 +17,11 @@ import { OutstandingReportTable } from "@/features/reports/OutstandingReportTabl
 import { DailyReportCard } from "@/features/reports/DailyReportCard";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import {
+  downloadMonthlyReportPdf,
+  downloadOutstandingReportPdf,
+  downloadDailyReportPdf,
+} from "@/lib/pdfGenerator";
 
 type ReportTab = "monthly" | "outstanding" | "daily";
 
@@ -112,6 +117,25 @@ export default function ReportsPage() {
     }
   };
 
+  const handleDownloadCurrentReportPdf = () => {
+    if (activeTab === "monthly" && monthlyReport) {
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      downloadMonthlyReportPdf(monthlyReport, selectedYear, monthNames[selectedMonth - 1] || `Month ${selectedMonth}`);
+    } else if (activeTab === "outstanding" && outstandingReports.length > 0) {
+      downloadOutstandingReportPdf(outstandingReports);
+    } else if (activeTab === "daily" && dailyReport) {
+      downloadDailyReportPdf(dailyReport, selectedDate);
+    }
+  };
+
+  const isCurrentReportDownloadable =
+    (activeTab === "monthly" && Boolean(monthlyReport)) ||
+    (activeTab === "outstanding" && outstandingReports.length > 0) ||
+    (activeTab === "daily" && Boolean(dailyReport));
+
   return (
     <div className="space-y-6">
       {/* Page Header (Hidden in Print) */}
@@ -126,6 +150,17 @@ export default function ReportsPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownloadCurrentReportPdf}
+            disabled={isLoading || !isCurrentReportDownloadable}
+            leftIcon={<DownloadSimple size={16} weight="bold" />}
+            className="whitespace-nowrap"
+          >
+            Download PDF
+          </Button>
+
           <Button
             variant="outline"
             size="sm"

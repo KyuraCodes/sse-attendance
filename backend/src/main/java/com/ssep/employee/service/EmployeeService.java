@@ -7,6 +7,12 @@ import com.ssep.employee.dto.EmployeeDto;
 import com.ssep.employee.dto.UpdateEmployeeRequest;
 import com.ssep.employee.model.Employee;
 import com.ssep.employee.repository.EmployeeRepository;
+import com.ssep.payment.model.Payment;
+import com.ssep.payment.model.PaymentItem;
+import com.ssep.payment.repository.PaymentItemRepository;
+import com.ssep.payment.repository.PaymentRepository;
+import com.ssep.workrecord.model.WorkRecord;
+import com.ssep.workrecord.repository.WorkRecordRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +28,20 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final AuditLogService auditLogService;
+    private final WorkRecordRepository workRecordRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentItemRepository paymentItemRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, AuditLogService auditLogService) {
+    public EmployeeService(EmployeeRepository employeeRepository,
+                           AuditLogService auditLogService,
+                           WorkRecordRepository workRecordRepository,
+                           PaymentRepository paymentRepository,
+                           PaymentItemRepository paymentItemRepository) {
         this.employeeRepository = employeeRepository;
         this.auditLogService = auditLogService;
+        this.workRecordRepository = workRecordRepository;
+        this.paymentRepository = paymentRepository;
+        this.paymentItemRepository = paymentItemRepository;
     }
 
     public EmployeeDto createEmployee(CreateEmployeeRequest request, Long currentUserId) {
@@ -160,5 +176,38 @@ public class EmployeeService {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new AppException("Employee not found with id: " + id, "EMPLOYEE_NOT_FOUND", HttpStatus.NOT_FOUND));
         return EmployeeDto.fromEntity(employee);
+    }
+
+    public void deleteEmployee(Long id, Long currentUserId) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new AppException("Employee not found with id: " + id, "EMPLOYEE_NOT_FOUND", HttpStatus.NOT_FOUND));
+
+        List<Payment> payments = paymentRepository.findByEmployeeId(id);
+        for (Payment payment : payments) {
+            if (payment.getItems() != null && !payment.getItems().isEmpty()) {
+                paymentItemRepository.deleteAll(payment.getItems());
+            }
+        }
+        if (!payments.isEmpty()) {
+            paymentRepository.deleteAll(payments);
+        }
+
+        List<WorkRecord> workRecords = workRecordRepository.findByEmployeeId(id);
+        for (WorkRecord wr : workRecords) {
+            List<PaymentItem> items = paymentItemRepository.findByWorkRecordId(wr.getId());
+            if (items != null && !items.isEmpty()) {
+                paymentItemRepository.deleteAll(items);
+            }
+        }
+        if (!workRecords.isEmpty()) {
+            workRecordRepository.deleteAll(workRecords);
+        }
+
+        String oldValue = String.format("{\"employeeCode\":\"%s\",\"name\":\"%s\",\"dailyRate\":%s,\"status\":\"%s\"}",
+                employee.getEmployeeCode(), employee.getName(), employee.getDailyRate(), employee.getStatus());
+
+        employeeRepository.delete(employee);
+
+        auditLogService.log(currentUserId, "DELETE", "EMPLOYEE", id, oldValue, null);
     }
 }

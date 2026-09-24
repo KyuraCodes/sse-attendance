@@ -11,10 +11,12 @@ import {
   CheckCircle,
   PiggyBank,
   CalendarBlank,
+  DownloadSimple,
 } from "@phosphor-icons/react";
 import { OutstandingEmployeeReport } from "@/types/report";
 import { formatCurrency, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { downloadOutstandingReportPdf } from "@/lib/pdfGenerator";
 
 interface OutstandingReportTableProps {
   reports: OutstandingEmployeeReport[];
@@ -171,17 +173,30 @@ export function OutstandingReportTable({
             </p>
           </div>
 
-          <div className="relative w-full sm:w-72">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-              <MagnifyingGlass size={16} />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            <div className="relative w-full sm:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <MagnifyingGlass size={16} />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by worker name or code..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Search by worker name or code..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-            />
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => downloadOutstandingReportPdf(reports)}
+              disabled={isLoading || reports.length === 0}
+              leftIcon={<DownloadSimple size={16} weight="bold" />}
+              className="whitespace-nowrap"
+            >
+              Download PDF
+            </Button>
           </div>
         </div>
 

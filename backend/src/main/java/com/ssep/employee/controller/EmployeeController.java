@@ -75,6 +75,13 @@ public class EmployeeController {
         return ResponseEntity.ok(ApiResponse.ok("Employee status updated successfully", updated));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteEmployee(@PathVariable Long id) {
+        Long currentUserId = getCurrentUserId();
+        employeeService.deleteEmployee(id, currentUserId);
+        return ResponseEntity.ok(ApiResponse.ok("Employee deleted successfully", null));
+    }
+
     private Long getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {

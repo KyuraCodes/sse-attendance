@@ -11,12 +11,14 @@ import {
   WarningCircle,
   PiggyBank,
   Receipt,
+  DownloadSimple,
 } from "@phosphor-icons/react";
 import { DailyReport } from "@/types/report";
 import { WorkRecord } from "@/types/workRecord";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { STATUS_CONFIG, RecordStatus, COMPANY_NAME, SYSTEM_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
+import { downloadDailyReportPdf } from "@/lib/pdfGenerator";
 
 interface DailyReportCardProps {
   report: DailyReport | null;
@@ -52,6 +54,11 @@ export function DailyReportCard({
 }: DailyReportCardProps) {
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = () => {
+    if (!report) return;
+    downloadDailyReportPdf(report, selectedDate);
   };
 
   // Status breakdown calculations
@@ -146,6 +153,17 @@ export function DailyReportCard({
                 Refresh
               </Button>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadPdf}
+              disabled={isLoading || !report}
+              leftIcon={<DownloadSimple size={16} weight="bold" />}
+              className="whitespace-nowrap"
+            >
+              Download PDF
+            </Button>
 
             <Button
               variant="primary"

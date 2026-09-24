@@ -10,6 +10,7 @@ import {
   CheckCircle,
   X,
   Funnel,
+  Trash,
 } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
 import { Employee, EmployeeFilterStatus } from "@/types/employee";
@@ -17,7 +18,7 @@ import { EmployeeTable } from "@/features/employees/EmployeeTable";
 import { AddEmployeeModal } from "@/features/employees/AddEmployeeModal";
 import { EditEmployeeModal } from "@/features/employees/EditEmployeeModal";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -32,6 +33,8 @@ export default function EmployeesPage() {
   // Modals & Actions
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+  const [deletingEmployee, setDeletingEmployee] = useState<Employee | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [togglingId, setTogglingId] = useState<number | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<{
     type: "success" | "error";
@@ -129,6 +132,32 @@ export default function EmployeesPage() {
       });
     } finally {
       setTogglingId(null);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingEmployee) return;
+
+    setIsDeleting(true);
+    try {
+      await employeeService.deleteEmployee(deletingEmployee.id);
+      setFeedbackMessage({
+        type: "success",
+        text: `Employee ${deletingEmployee.name} (${deletingEmployee.employeeCode}) was successfully deleted.`,
+      });
+      setDeletingEmployee(null);
+      loadEmployees();
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Failed to delete employee. Please try again.";
+      setFeedbackMessage({
+        type: "error",
+        text: message,
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -316,6 +345,7 @@ export default function EmployeesPage() {
         isLoading={isLoading}
         onEdit={(employee) => setEditingEmployee(employee)}
         onToggleStatus={handleToggleStatus}
+        onDelete={(employee) => setDeletingEmployee(employee)}
         togglingId={togglingId}
         onAddClick={() => setIsAddModalOpen(true)}
         hasFilter={Boolean(searchQuery.trim() || statusFilter !== "ALL")}
@@ -335,6 +365,89 @@ export default function EmployeesPage() {
         onClose={() => setEditingEmployee(null)}
         onSuccess={handleEditSuccess}
       />
+
+      {/* Delete Confirmation Modal */}
+      {deletingEmployee && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-employee-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div
+            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <Trash size={24} weight="duotone" />
+              </div>
+              <div className="flex-1">
+                <h3
+                  id="delete-employee-title"
+                  className="text-base font-bold text-slate-900 dark:text-slate-100"
+                >
+                  Padam Pekerja
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Adakah anda pasti ingin memadam pekerja ini dari sistem?
+                </p>
+              </div>
+            </div>
+
+            {/* Target Employee Info */}
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-1.5 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-500 dark:text-slate-400">Nama Pekerja:</span>
+                <span className="font-semibold text-slate-900 dark:text-slate-100">
+                  {deletingEmployee.name}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-500 dark:text-slate-400">Kod Pekerja:</span>
+                <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
+                  {deletingEmployee.employeeCode}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-500 dark:text-slate-400">Kadar Harian:</span>
+                <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
+                  {formatCurrency(deletingEmployee.dailyRate)}
+                </span>
+              </div>
+            </div>
+
+            {/* Warning Message */}
+            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2">
+              <WarningCircle size={16} weight="fill" className="shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
+              <span>
+                Tindakan ini akan memadam rekod pekerja beserta semua rekod kehadiran dan sejarah pembayaran berkaitan secara kekal. Tindakan ini tidak boleh diundur.
+              </span>
+            </div>
+
+            {/* Dialog Actions */}
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => setDeletingEmployee(null)}
+                disabled={isDeleting}
+              >
+                Batal
+              </Button>
+              <Button
+                variant="danger"
+                size="md"
+                onClick={handleDeleteConfirm}
+                isLoading={isDeleting}
+                leftIcon={<Trash size={16} weight="bold" />}
+              >
+                Padam Pekerja
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

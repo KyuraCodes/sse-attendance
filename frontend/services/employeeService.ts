@@ -57,6 +57,13 @@ export const employeeService = {
   ): Promise<Employee> => {
     return api.patch<Employee>(`/api/employees/${id}/status`, { status });
   },
+
+  /**
+   * Delete an employee by ID.
+   */
+  deleteEmployee: async (id: number): Promise<void> => {
+    return api.delete<void>(`/api/employees/${id}`);
+  },
 };
 
 export default employeeService;

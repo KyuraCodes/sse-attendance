@@ -12,12 +12,14 @@ import {
   CaretLeft,
   CaretRight,
   Receipt,
+  DownloadSimple,
 } from "@phosphor-icons/react";
 import { MonthlyReport } from "@/types/report";
 import { WorkRecord } from "@/types/workRecord";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { STATUS_CONFIG, RecordStatus, COMPANY_NAME, SYSTEM_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
+import { downloadMonthlyReportPdf } from "@/lib/pdfGenerator";
 
 interface MonthlyReportCardProps {
   report: MonthlyReport | null;
@@ -77,6 +79,11 @@ export function MonthlyReportCard({
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = () => {
+    if (!report) return;
+    downloadMonthlyReportPdf(report, selectedYear, monthName);
   };
 
   // Calculate percentage paid for visual indicator
@@ -158,6 +165,17 @@ export function MonthlyReportCard({
                 Refresh
               </Button>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadPdf}
+              disabled={isLoading || !report}
+              leftIcon={<DownloadSimple size={16} weight="bold" />}
+              className="whitespace-nowrap"
+            >
+              Download PDF
+            </Button>
 
             <Button
               variant="primary"
