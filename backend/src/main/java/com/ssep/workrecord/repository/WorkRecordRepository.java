@@ -24,4 +24,7 @@ public interface WorkRecordRepository extends JpaRepository<WorkRecord, Long>, J
 
     @Query("SELECT w FROM WorkRecord w WHERE w.employee.id = :employeeId AND w.status IN ('UNPAID', 'STORED', 'PARTIALLY_PAID') ORDER BY w.workDate ASC")
     List<WorkRecord> findUnpaidAndStoredByEmployeeId(@Param("employeeId") Long employeeId);
+
+    @Query("SELECT w FROM WorkRecord w WHERE w.employee.id = :employeeId AND w.status IN ('UNPAID', 'STORED', 'PARTIALLY_PAID') ORDER BY w.workDate ASC, w.id ASC")
+    List<WorkRecord> findUnpaidAndStoredByEmployee(@Param("employeeId") Long employeeId);
 }
