@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Zero em-dash rule: Strictly use standard hyphen `-` only in code, comments, commit messages, and documentation. Never use `—` or `–`.
+- Zero em-dash rule: Strictly use standard hyphen `-` only in code, comments, commit messages, and documentation. Never use em-dash or en-dash.
 - Company name: Sepakat Silaturrahim Enterprise (SSE).
 - Work strictly on branch `testing`. Do NOT push to `main` and do NOT trigger Vercel production redeployment until explicit user confirmation.
 - Backward compatibility: Existing employee data and work records must remain fully valid.
