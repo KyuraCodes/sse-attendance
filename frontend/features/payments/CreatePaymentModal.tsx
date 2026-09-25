@@ -51,6 +51,7 @@ export function CreatePaymentModal({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [reference, setReference] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const [settleInFull, setSettleInFull] = useState<boolean>(true);
 
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [outstandingMap, setOutstandingMap] = useState<Record<number, OutstandingReportDto>>({});
@@ -96,6 +97,7 @@ export function CreatePaymentModal({
       setPaymentMethod("CASH");
       setReference("");
       setNotes("");
+      setSettleInFull(true);
       setErrorMessage(null);
       setCompletedReceipt(null);
       loadInitialData();
@@ -179,6 +181,7 @@ export function CreatePaymentModal({
         paymentMethod,
         reference: reference.trim() ? reference.trim() : undefined,
         notes: notes.trim() ? notes.trim() : undefined,
+        settleInFull,
       };
 
       const createdPayment = await paymentService.createPayment(payload);
@@ -214,6 +217,7 @@ export function CreatePaymentModal({
         receipt={completedReceipt}
         onClose={() => {
           setCompletedReceipt(null);
+          setSettleInFull(true);
           onClose();
         }}
       />
@@ -410,6 +414,29 @@ export function CreatePaymentModal({
                   </span>
                 </div>
               )}
+            </div>
+
+            {/* Settle-in-Full Option */}
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-3 sm:p-3.5 transition-colors">
+              <label className="flex items-start gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  id="settleInFull"
+                  name="settleInFull"
+                  checked={settleInFull}
+                  onChange={(e) => setSettleInFull(e.target.checked)}
+                  disabled={isSubmitting}
+                  className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-700 text-emerald-600 focus:ring-emerald-500 focus:ring-offset-0 dark:bg-slate-900 cursor-pointer accent-emerald-600 shrink-0"
+                />
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                    Anggap Lunas (Lupuskan baki tertunggak / Tiada baki hutang)
+                  </span>
+                  <span className="text-2xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Jika ditandakan, sebarang perbezaan bayaran separa dianggap lunas dan tidak meninggalkan baki hutang.
+                  </span>
+                </div>
+              </label>
             </div>
 
             {/* Payment Date & Method Grid */}
