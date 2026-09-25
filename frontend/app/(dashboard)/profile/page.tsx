@@ -112,12 +112,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-150 max-w-4xl">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150 max-w-4xl w-full min-w-0">
       {/* Header Profile Hero Card */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-6">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
         {/* Avatar Display */}
         <div className="relative group shrink-0">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-extrabold text-3xl flex items-center justify-center border-2 border-emerald-300 dark:border-emerald-700 shadow-md overflow-hidden">
+          <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-extrabold text-2xl sm:text-3xl flex items-center justify-center border-2 border-emerald-300 dark:border-emerald-700 shadow-md overflow-hidden">
             {avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -129,8 +129,8 @@ export default function ProfilePage() {
               (name || "U").charAt(0).toUpperCase()
             )}
           </div>
-          <div className="absolute -bottom-2 -right-2 p-1.5 rounded-lg bg-emerald-600 text-white shadow-xs">
-            <Camera size={16} weight="bold" />
+          <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 p-1.5 rounded-lg bg-emerald-600 text-white shadow-xs">
+            <Camera size={14} className="sm:w-4 sm:h-4" weight="bold" />
           </div>
         </div>
 
@@ -149,24 +149,24 @@ export default function ProfilePage() {
             {user?.email}
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-500 dark:text-slate-400">
+          <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 text-xs text-slate-500 dark:text-slate-400">
             <div className="flex items-center gap-1.5">
-              <ShieldCheck size={16} weight="bold" className="text-emerald-600 dark:text-emerald-400" />
+              <ShieldCheck size={16} weight="bold" className="text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>Status: <strong className="text-slate-700 dark:text-slate-300">Active Account</strong></span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Sparkle size={16} weight="fill" className="text-emerald-600 dark:text-emerald-400" />
+              <Sparkle size={16} weight="fill" className="text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>Enterprise: <strong className="text-slate-700 dark:text-slate-300">Sepakat Silaturrahim</strong></span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Form 1: Edit Profile */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <UserIcon size={20} weight="bold" />
             </div>
             <div>
@@ -246,7 +246,7 @@ export default function ProfilePage() {
               <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block mb-2">
                 Quick Avatar Selection:
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {AVATAR_PRESETS.map((preset, index) => (
                   <button
                     key={index}
@@ -285,9 +285,9 @@ export default function ProfilePage() {
         </div>
 
         {/* Form 2: Change Password */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <Key size={20} weight="bold" />
             </div>
             <div>

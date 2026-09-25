@@ -244,11 +244,11 @@ export default function PaymentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <CreditCard size={22} weight="duotone" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                 Payments
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -259,13 +259,13 @@ export default function PaymentsPage() {
         </div>
 
         {/* Action Button */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
           <Button
             variant="primary"
             size="md"
             onClick={() => setIsCreateModalOpen(true)}
             leftIcon={<Plus size={16} weight="bold" />}
-            className="whitespace-nowrap shadow-sm"
+            className="w-full sm:w-auto justify-center shadow-sm"
           >
             Make Payment
           </Button>
@@ -273,67 +273,67 @@ export default function PaymentsPage() {
       </div>
 
       {/* KPI / Metrics Overview Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Payments Count</span>
             <Receipt size={18} weight="duotone" className="text-slate-400" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
             {metrics.totalCount}
           </div>
-          <div className="text-2xs text-slate-400 mt-1 font-mono">
+          <div className="text-2xs text-slate-400 mt-1 font-mono truncate">
             Disbursement transactions
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Total Disbursed</span>
             <Coins size={18} weight="duotone" className="text-emerald-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
             {formatCurrency(metrics.totalDisbursed)}
           </div>
-          <div className="text-2xs text-emerald-700/80 dark:text-emerald-400/80 mt-1 font-mono">
+          <div className="text-2xs text-emerald-700/80 dark:text-emerald-400/80 mt-1 font-mono truncate">
             In filtered range
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>This Month</span>
             <CalendarBlank size={18} weight="duotone" className="text-sky-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums">
             {formatCurrency(metrics.thisMonthDisbursed)}
           </div>
-          <div className="text-2xs text-sky-700/80 dark:text-sky-400/80 mt-1 font-mono">
+          <div className="text-2xs text-sky-700/80 dark:text-sky-400/80 mt-1 font-mono truncate">
             Month-to-date disbursements
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Remaining Outstanding</span>
             <ClockCounterClockwise size={18} weight="duotone" className="text-amber-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
             {formatCurrency(metrics.totalOutstanding)}
           </div>
-          <div className="text-2xs text-amber-700/80 dark:text-amber-400/80 mt-1 font-mono">
+          <div className="text-2xs text-amber-700/80 dark:text-amber-400/80 mt-1 font-mono truncate">
             Unpaid wages & stored salary
           </div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           {/* Employee & Date Range Controls */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full lg:w-auto">
             {/* Employee Selector Filter */}
-            <div className="relative min-w-[180px]">
+            <div className="relative w-full sm:w-auto min-w-0 sm:min-w-[180px]">
               <select
                 value={selectedEmployeeId}
                 onChange={(e) => setSelectedEmployeeId(e.target.value)}
@@ -353,73 +353,76 @@ export default function PaymentsPage() {
               />
             </div>
 
-            {/* Start Date */}
-            <div className="relative">
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                placeholder="From date"
-                aria-label="Filter from start date"
-                className="h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <CalendarBlank
-                size={15}
-                weight="duotone"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-              />
-            </div>
+            {/* Date Range Inputs */}
+            <div className="flex items-center gap-1.5 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-none">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  placeholder="From date"
+                  aria-label="Filter from start date"
+                  className="w-full sm:w-auto h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <CalendarBlank
+                  size={15}
+                  weight="duotone"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
+              </div>
 
-            <span className="text-xs text-slate-400">to</span>
+              <span className="text-xs text-slate-400 shrink-0">to</span>
 
-            {/* End Date */}
-            <div className="relative">
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                placeholder="To date"
-                aria-label="Filter to end date"
-                className="h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <CalendarBlank
-                size={15}
-                weight="duotone"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-              />
+              <div className="relative flex-1 sm:flex-none">
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  placeholder="To date"
+                  aria-label="Filter to end date"
+                  className="w-full sm:w-auto h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <CalendarBlank
+                  size={15}
+                  weight="duotone"
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
+              </div>
             </div>
 
             {/* Quick Presets */}
-            <button
-              type="button"
-              onClick={handleFilterThisMonth}
-              className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
-            >
-              This Month
-            </button>
-
-            <button
-              type="button"
-              onClick={handleFilterToday}
-              className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
-            >
-              Today
-            </button>
-
-            {(startDate || endDate) && (
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={handleClearDateFilters}
-                className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
-                title="Clear date range filters"
+                onClick={handleFilterThisMonth}
+                className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
               >
-                Clear Dates
+                This Month
               </button>
-            )}
+
+              <button
+                type="button"
+                onClick={handleFilterToday}
+                className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
+              >
+                Today
+              </button>
+
+              {(startDate || endDate) && (
+                <button
+                  type="button"
+                  onClick={handleClearDateFilters}
+                  className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
+                  title="Clear date range filters"
+                >
+                  Clear Dates
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Search bar & Refresh */}
-          <div className="flex items-center gap-2 flex-1 lg:max-w-xs">
+          <div className="flex items-center gap-2 w-full lg:w-auto lg:max-w-xs">
             <div className="relative w-full">
               <Input
                 type="text"

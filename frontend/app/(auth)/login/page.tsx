@@ -80,23 +80,23 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-[100dvh] flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-slate-950">
+    <main className="min-h-[100dvh] flex flex-col items-center justify-center p-3.5 sm:p-6 bg-slate-50 dark:bg-slate-950 w-full min-w-0">
       <div className="w-full max-w-md">
         {/* Brand identity header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 text-white shadow-sm mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 text-white shadow-sm mb-3 sm:mb-4">
             <ShieldCheck size={28} weight="duotone" aria-hidden="true" />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             {COMPANY_NAME}
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
             {SYSTEM_NAME}
           </p>
         </div>
 
         {/* Login form card */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-8">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               Sign In

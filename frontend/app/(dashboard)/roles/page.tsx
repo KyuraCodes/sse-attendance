@@ -175,7 +175,7 @@ export default function RolesPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-150">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150 w-full min-w-0">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -183,16 +183,16 @@ export default function RolesPage() {
             <ShieldStar size={16} weight="bold" />
             <span>Access Control Matrix</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             System Roles & Permissions
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Role definitions and authorization scopes across Sepakat Silaturrahim Enterprise
           </p>
         </div>
 
         {/* Total stats pill */}
-        <div className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 shadow-xs">
+        <div className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 sm:px-4 py-2 sm:py-2.5 shadow-xs w-fit">
           <Sparkle size={18} weight="fill" className="text-emerald-600 dark:text-emerald-400 shrink-0" />
           <div className="text-xs">
             <span className="text-slate-500 dark:text-slate-400">Total System Roles: </span>
@@ -202,14 +202,14 @@ export default function RolesPage() {
       </div>
 
       {/* Role Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         {SYSTEM_ROLES.map((card) => {
           const userCount = getRoleUserCount(card.role);
 
           return (
             <div
               key={card.role}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
             >
               <div>
                 {/* Role Header */}
@@ -267,8 +267,8 @@ export default function RolesPage() {
       </div>
 
       {/* Comprehensive Permissions Matrix Table */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden min-w-0">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 flex items-center justify-between">
           <div>
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
               Module Permissions Matrix
@@ -282,8 +282,8 @@ export default function RolesPage() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+        <div className="overflow-x-auto min-w-0">
+          <table className="w-full min-w-[620px] text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
                 <th className="py-3 px-4 sm:px-6">System Module</th>

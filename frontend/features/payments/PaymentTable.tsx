@@ -143,66 +143,131 @@ export function PaymentTable({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Code</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Date</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Method</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {payments.map((payment) => (
-              <tr
-                key={payment.id}
-                className="hover:bg-slate-50/75 dark:hover:bg-slate-800/50 transition-colors"
-              >
-                <td className="py-3.5 px-4 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
+    <div className="space-y-3">
+      {/* Mobile Card Layout (< md) */}
+      <div className="block md:hidden space-y-3">
+        {payments.map((payment) => (
+          <div
+            key={payment.id}
+            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-2xs space-y-3"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
                   {payment.paymentCode}
-                </td>
-                <td className="py-3.5 px-4">
-                  <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {payment.employeeName}
+                </span>
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-0.5">
+                  {payment.employeeName}
+                </div>
+                {payment.employeeCode && (
+                  <div className="text-xs font-mono text-slate-400 dark:text-slate-500">
+                    {payment.employeeCode}
                   </div>
-                  {payment.employeeCode && (
-                    <div className="text-xs font-mono text-slate-400 dark:text-slate-500">
-                      {payment.employeeCode}
-                    </div>
-                  )}
-                </td>
-                <td className="py-3.5 px-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                )}
+              </div>
+
+              <div className="shrink-0 text-right">
+                {renderMethodBadge(payment.paymentMethod)}
+                <div className="text-2xs text-slate-500 dark:text-slate-400 mt-1">
                   {formatDate(payment.paymentDate)}
-                </td>
-                <td className="py-3.5 px-4 text-sm font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
+                </div>
+              </div>
+            </div>
+
+            {/* Financial & Reference Strip */}
+            <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
+              <div>
+                <span className="text-slate-500 dark:text-slate-400 block text-2xs">Disbursed Amount</span>
+                <span className="font-mono font-bold text-base text-slate-900 dark:text-slate-100">
                   {formatCurrency(payment.amount)}
-                </td>
-                <td className="py-3.5 px-4 whitespace-nowrap">
-                  {renderMethodBadge(payment.paymentMethod)}
-                </td>
-                <td className="py-3.5 px-4 text-xs font-mono text-slate-500 dark:text-slate-400 max-w-xs truncate">
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 dark:text-slate-400 block text-2xs">Reference</span>
+                <span className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate block">
                   {payment.reference ? payment.reference : "-"}
-                </td>
-                <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onViewReceipt(payment)}
-                    leftIcon={<Receipt size={14} weight="bold" />}
-                    className="whitespace-nowrap text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400"
-                  >
-                    Receipt
-                  </Button>
-                </td>
+                </span>
+              </div>
+            </div>
+
+            {/* Action */}
+            <div className="flex items-center justify-end pt-1 border-t border-slate-100 dark:border-slate-800">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onViewReceipt(payment)}
+                leftIcon={<Receipt size={14} weight="bold" />}
+                className="w-full sm:w-auto justify-center text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400 text-xs"
+              >
+                View Receipt
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table View (>= md) */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="overflow-x-auto min-w-0">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Code</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Date</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Method</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              {payments.map((payment) => (
+                <tr
+                  key={payment.id}
+                  className="hover:bg-slate-50/75 dark:hover:bg-slate-800/50 transition-colors"
+                >
+                  <td className="py-3.5 px-4 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
+                    {payment.paymentCode}
+                  </td>
+                  <td className="py-3.5 px-4">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      {payment.employeeName}
+                    </div>
+                    {payment.employeeCode && (
+                      <div className="text-xs font-mono text-slate-400 dark:text-slate-500">
+                        {payment.employeeCode}
+                      </div>
+                    )}
+                  </td>
+                  <td className="py-3.5 px-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                    {formatDate(payment.paymentDate)}
+                  </td>
+                  <td className="py-3.5 px-4 text-sm font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
+                    {formatCurrency(payment.amount)}
+                  </td>
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    {renderMethodBadge(payment.paymentMethod)}
+                  </td>
+                  <td className="py-3.5 px-4 text-xs font-mono text-slate-500 dark:text-slate-400 max-w-xs truncate">
+                    {payment.reference ? payment.reference : "-"}
+                  </td>
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onViewReceipt(payment)}
+                      leftIcon={<Receipt size={14} weight="bold" />}
+                      className="whitespace-nowrap text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400"
+                    >
+                      Receipt
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

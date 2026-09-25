@@ -119,11 +119,11 @@ export function AuditLogTable({
   return (
     <div className="space-y-6">
       {/* Controls Bar: Filters & Search */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-4 shadow-xs">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
             {/* Search */}
-            <div className="relative flex-1 min-w-[200px]">
+            <div className="relative flex-1 min-w-0">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                 <MagnifyingGlass size={16} />
               </div>
@@ -136,42 +136,45 @@ export function AuditLogTable({
               />
             </div>
 
-            {/* Action Filter */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-slate-500 font-medium whitespace-nowrap">
-                Action:
-              </span>
-              <select
-                aria-label="Filter by Action"
-                value={selectedAction}
-                onChange={(e) => onActionChange(e.target.value)}
-                className="text-xs font-semibold py-2 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-              >
-                {ACTION_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Filter Group on mobile: 2 cols */}
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3">
+              {/* Action Filter */}
+              <div className="flex flex-col xs:flex-row xs:items-center gap-1 sm:gap-1.5">
+                <span className="text-2xs sm:text-xs text-slate-500 font-medium whitespace-nowrap">
+                  Action:
+                </span>
+                <select
+                  aria-label="Filter by Action"
+                  value={selectedAction}
+                  onChange={(e) => onActionChange(e.target.value)}
+                  className="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                >
+                  {ACTION_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Entity Filter */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-slate-500 font-medium whitespace-nowrap">
-                Entity:
-              </span>
-              <select
-                aria-label="Filter by Entity"
-                value={selectedEntity}
-                onChange={(e) => onEntityChange(e.target.value)}
-                className="text-xs font-semibold py-2 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-              >
-                {ENTITY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              {/* Entity Filter */}
+              <div className="flex flex-col xs:flex-row xs:items-center gap-1 sm:gap-1.5">
+                <span className="text-2xs sm:text-xs text-slate-500 font-medium whitespace-nowrap">
+                  Entity:
+                </span>
+                <select
+                  aria-label="Filter by Entity"
+                  value={selectedEntity}
+                  onChange={(e) => onEntityChange(e.target.value)}
+                  className="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                >
+                  {ENTITY_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -188,7 +191,7 @@ export function AuditLogTable({
                     className={cn(isLoading && "animate-spin")}
                   />
                 }
-                className="whitespace-nowrap"
+                className="w-full sm:w-auto justify-center whitespace-nowrap"
               >
                 Refresh Logs
               </Button>
@@ -198,10 +201,10 @@ export function AuditLogTable({
       </div>
 
       {/* Main Table Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs min-w-0">
+        <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={20} className="text-blue-600 dark:text-blue-400" />
+            <ShieldCheck size={20} className="text-blue-600 dark:text-blue-400 shrink-0" />
             <div>
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                 CEO System Audit Trail
@@ -211,21 +214,21 @@ export function AuditLogTable({
               </p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 py-1 px-2.5 rounded-full">
+          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 py-1 px-2.5 rounded-full w-fit">
             {logs.length} logged events
           </span>
         </div>
 
         {isLoading ? (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <div className="space-y-3">
               {[1, 2, 3, 4, 5, 6].map((idx) => (
-                <div key={idx} className="h-12 bg-slate-100 dark:bg-slate-800 animate-pulse rounded" />
+                <div key={idx} className="h-12 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-lg" />
               ))}
             </div>
           </div>
         ) : logs.length === 0 ? (
-          <div className="p-12 text-center">
+          <div className="p-8 sm:p-12 text-center">
             <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center mb-3">
               <ShieldCheck size={26} weight="duotone" />
             </div>
@@ -239,93 +242,149 @@ export function AuditLogTable({
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                    When
-                  </th>
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider">
-                    Who
-                  </th>
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider">
-                    What (Action)
-                  </th>
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider">
-                    Entity
-                  </th>
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider max-w-xs">
-                    Old Value
-                  </th>
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider max-w-xs">
-                    New Value
-                  </th>
-                  <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider text-right">
-                    Details
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {logs.map((log) => {
-                  const hasOldValue = Boolean(log.oldValue && log.oldValue.trim());
-                  const hasNewValue = Boolean(log.newValue && log.newValue.trim());
+          <>
+            {/* Mobile Card View (block md:hidden) */}
+            <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+              {logs.map((log) => (
+                <div key={log.id} className="p-4 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500 dark:text-slate-400">
+                      <Clock size={13} className="text-slate-400 shrink-0" />
+                      <span>{formatAuditTimestamp(log.createdAt)}</span>
+                    </div>
+                    <div>
+                      {renderActionBadge(log.action)}
+                    </div>
+                  </div>
 
-                  return (
-                    <tr
-                      key={log.id}
-                      className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                      <User size={13} className="text-slate-400 shrink-0" />
+                      <span className="truncate">{log.userEmail || log.userName || (log.userId ? `User #${log.userId}` : "System")}</span>
+                    </div>
+                    <div>
+                      {renderEntityBadge(log.entityType, log.entityId)}
+                    </div>
+                  </div>
+
+                  {(log.oldValue || log.newValue) && (
+                    <div className="text-[11px] font-mono bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-lg border border-slate-200/60 dark:border-slate-700/60 space-y-1">
+                      {log.oldValue && (
+                        <div className="text-slate-500 dark:text-slate-400 truncate">
+                          <span className="font-semibold text-slate-400">Old: </span>{log.oldValue}
+                        </div>
+                      )}
+                      {log.newValue && (
+                        <div className="text-slate-700 dark:text-slate-300 font-medium truncate">
+                          <span className="font-semibold text-emerald-600 dark:text-emerald-400">New: </span>{log.newValue}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex justify-end pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setDetailModalLog(log)}
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer w-full"
                     >
-                      <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5">
-                          <Clock size={14} className="text-slate-400" />
-                          <span>{formatAuditTimestamp(log.createdAt)}</span>
-                        </div>
-                      </td>
+                      <Eye size={14} />
+                      <span>View Transaction Details</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                          <User size={14} className="text-slate-400" />
-                          <span>
-                            {log.userEmail ||
-                              log.userName ||
-                              (log.userId ? `User #${log.userId}` : "System")}
-                          </span>
-                        </div>
-                      </td>
+            {/* Desktop Table View (hidden md:block) */}
+            <div className="hidden md:block overflow-x-auto min-w-0">
+              <table className="w-full min-w-[700px] text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                      When
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider">
+                      Who
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider">
+                      What (Action)
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider">
+                      Entity
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider max-w-xs">
+                      Old Value
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider max-w-xs">
+                      New Value
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider text-right">
+                      Details
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                  {logs.map((log) => {
+                    const hasOldValue = Boolean(log.oldValue && log.oldValue.trim());
+                    const hasNewValue = Boolean(log.newValue && log.newValue.trim());
 
-                      <td className="py-3 px-4 whitespace-nowrap">
-                        {renderActionBadge(log.action)}
-                      </td>
+                    return (
+                      <tr
+                        key={log.id}
+                        className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                      >
+                        <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                          <div className="flex items-center gap-1.5">
+                            <Clock size={14} className="text-slate-400" />
+                            <span>{formatAuditTimestamp(log.createdAt)}</span>
+                          </div>
+                        </td>
 
-                      <td className="py-3 px-4 whitespace-nowrap">
-                        {renderEntityBadge(log.entityType, log.entityId)}
-                      </td>
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                            <User size={14} className="text-slate-400" />
+                            <span>
+                              {log.userEmail ||
+                                log.userName ||
+                                (log.userId ? `User #${log.userId}` : "System")}
+                            </span>
+                          </div>
+                        </td>
 
-                      <td className="py-3 px-4 font-mono text-slate-500 dark:text-slate-400 max-w-[180px] truncate">
-                        {hasOldValue ? log.oldValue : "-"}
-                      </td>
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          {renderActionBadge(log.action)}
+                        </td>
 
-                      <td className="py-3 px-4 font-mono text-slate-700 dark:text-slate-300 font-medium max-w-[200px] truncate">
-                        {hasNewValue ? log.newValue : "-"}
-                      </td>
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          {renderEntityBadge(log.entityType, log.entityId)}
+                        </td>
 
-                      <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <button
-                          type="button"
-                          onClick={() => setDetailModalLog(log)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-                        >
-                          <Eye size={13} />
-                          <span>View</span>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <td className="py-3 px-4 font-mono text-slate-500 dark:text-slate-400 max-w-[180px] truncate">
+                          {hasOldValue ? log.oldValue : "-"}
+                        </td>
+
+                        <td className="py-3 px-4 font-mono text-slate-700 dark:text-slate-300 font-medium max-w-[200px] truncate">
+                          {hasNewValue ? log.newValue : "-"}
+                        </td>
+
+                        <td className="py-3 px-4 text-right whitespace-nowrap">
+                          <button
+                            type="button"
+                            onClick={() => setDetailModalLog(log)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                          >
+                            <Eye size={13} />
+                            <span>View</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
@@ -334,13 +393,13 @@ export function AuditLogTable({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs"
         >
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col max-h-[92dvh]">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileCode size={20} className="text-blue-600" />
+                <FileCode size={20} className="text-blue-600 shrink-0" />
                 <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">
                   Audit Transaction #{detailModalLog.id}
                 </h4>
@@ -348,15 +407,15 @@ export function AuditLogTable({
               <button
                 type="button"
                 onClick={() => setDetailModalLog(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4 overflow-y-auto">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs">
+            <div className="p-4 sm:p-6 space-y-4 overflow-y-auto">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 sm:p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs">
                 <div>
                   <span className="text-slate-400 font-medium block">Timestamp</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block font-mono">
@@ -365,7 +424,7 @@ export function AuditLogTable({
                 </div>
                 <div>
                   <span className="text-slate-400 font-medium block">User</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block">
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block truncate">
                     {detailModalLog.userEmail || `User #${detailModalLog.userId || "System"}`}
                   </span>
                 </div>
@@ -384,7 +443,7 @@ export function AuditLogTable({
               </div>
 
               {/* Old Value vs New Value Diff View */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Old Value */}
                 <div className="space-y-1.5">
                   <div className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
@@ -410,12 +469,12 @@ export function AuditLogTable({
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 flex justify-end bg-slate-50/50 dark:bg-slate-800/30">
+            <div className="px-4 sm:px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 flex justify-end bg-slate-50/50 dark:bg-slate-800/30">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setDetailModalLog(null)}
-                className="whitespace-nowrap"
+                className="w-full sm:w-auto justify-center whitespace-nowrap"
               >
                 Close
               </Button>

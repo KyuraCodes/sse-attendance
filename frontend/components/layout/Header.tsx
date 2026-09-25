@@ -63,21 +63,21 @@ export function Header({ title, onOpenMobileSidebar }: HeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-colors">
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-20 h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-slate-200 dark:border-slate-800 px-3.5 sm:px-6 lg:px-8 flex items-center justify-between transition-colors">
+      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
         {/* Mobile menu hamburger toggle */}
         <button
           type="button"
           onClick={onOpenMobileSidebar}
           aria-label="Open sidebar menu"
-          className="lg:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+          className="lg:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shrink-0"
         >
           <List size={22} weight="bold" />
         </button>
 
         {/* Breadcrumb & Title */}
-        <div className="flex items-center gap-2">
-          <nav aria-label="Breadcrumb" className="hidden sm:flex items-center text-xs text-slate-400 dark:text-slate-500">
+        <div className="flex items-center gap-2 min-w-0">
+          <nav aria-label="Breadcrumb" className="hidden sm:flex items-center text-xs text-slate-400 dark:text-slate-500 shrink-0">
             <Link
               href="/dashboard"
               className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors font-medium"
@@ -86,14 +86,14 @@ export function Header({ title, onOpenMobileSidebar }: HeaderProps) {
             </Link>
             <CaretRight size={12} weight="bold" className="mx-1 text-slate-300 dark:text-slate-600" />
           </nav>
-          <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+          <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate max-w-[130px] xs:max-w-[200px] sm:max-w-none">
             {currentTitle}
           </h1>
         </div>
       </div>
 
       {/* Right side: formatted date, theme toggle and user indicator */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* Malaysian formatted date */}
         <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80">
           <CalendarBlank size={15} weight="bold" className="text-emerald-600 dark:text-emerald-400 shrink-0" />

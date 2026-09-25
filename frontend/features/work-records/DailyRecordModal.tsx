@@ -131,22 +131,22 @@ export function DailyRecordModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="daily-record-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
-        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col"
+        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <CalendarBlank size={24} weight="duotone" />
             </div>
             <div>
               <h2
                 id="daily-record-modal-title"
-                className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
               >
                 Record Daily Work
               </h2>
@@ -160,15 +160,15 @@ export function DailyRecordModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Close dialog"
-            className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit}>
-          <div className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
             {errorMessage && (
               <div
                 role="alert"
@@ -286,14 +286,14 @@ export function DailyRecordModal({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 shrink-0">
             <Button
               type="button"
               variant="outline"
               size="md"
               onClick={onClose}
               disabled={isSubmitting}
-              className="whitespace-nowrap"
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
@@ -303,7 +303,7 @@ export function DailyRecordModal({
               size="md"
               isLoading={isSubmitting}
               disabled={!employeeId || isSubmitting}
-              className="whitespace-nowrap"
+              className="w-full sm:w-auto"
             >
               Record Work
             </Button>

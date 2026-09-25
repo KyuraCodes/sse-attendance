@@ -237,11 +237,11 @@ export default function WorkRecordsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <CalendarCheck size={22} weight="duotone" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                 Work Records
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -252,13 +252,13 @@ export default function WorkRecordsPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto shrink-0">
           <Button
             variant="outline"
             size="md"
             onClick={() => setIsDailyModalOpen(true)}
             leftIcon={<Plus size={16} weight="bold" />}
-            className="whitespace-nowrap"
+            className="justify-center whitespace-nowrap"
           >
             Single Record
           </Button>
@@ -268,7 +268,7 @@ export default function WorkRecordsPage() {
             size="md"
             onClick={() => setIsBulkModalOpen(true)}
             leftIcon={<UsersThree size={18} weight="bold" />}
-            className="whitespace-nowrap shadow-sm"
+            className="justify-center whitespace-nowrap shadow-sm"
           >
             Record Work (Bulk)
           </Button>
@@ -276,47 +276,47 @@ export default function WorkRecordsPage() {
       </div>
 
       {/* KPI / Operational Metrics Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Total Records</span>
             <CalendarBlank size={18} weight="duotone" className="text-slate-400" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
             {metrics.totalCount}
           </div>
-          <div className="text-2xs text-slate-400 mt-1 font-mono">
+          <div className="text-2xs text-slate-400 mt-1 font-mono truncate">
             {formatCurrency(metrics.totalAmount)} gross
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Unpaid Records</span>
             <Clock size={18} weight="duotone" className="text-amber-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
             {metrics.unpaidCount}
           </div>
-          <div className="text-2xs text-amber-700/80 dark:text-amber-400/80 mt-1 font-mono">
+          <div className="text-2xs text-amber-700/80 dark:text-amber-400/80 mt-1 font-mono truncate">
             {formatCurrency(metrics.unpaidAmount)} payable
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Stored Salary</span>
             <Archive size={18} weight="duotone" className="text-indigo-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-indigo-600 dark:text-indigo-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-indigo-600 dark:text-indigo-400 tabular-nums">
             {metrics.storedCount}
           </div>
-          <div className="text-2xs text-indigo-700/80 dark:text-indigo-400/80 mt-1 font-mono">
+          <div className="text-2xs text-indigo-700/80 dark:text-indigo-400/80 mt-1 font-mono truncate">
             {formatCurrency(metrics.storedAmount)} stored
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Fully Paid</span>
             <CheckCircle size={18} weight="duotone" className="text-emerald-500" />
@@ -331,17 +331,17 @@ export default function WorkRecordsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Date Selector with Quick Actions */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full md:w-auto">
+            <div className="relative flex-1 sm:flex-none">
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className={cn(
-                  "h-9 pl-9 pr-3 rounded-lg border text-xs font-medium transition-colors cursor-pointer",
+                  "w-full sm:w-auto h-9 pl-9 pr-2.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer",
                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                   "border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 )}
@@ -357,7 +357,7 @@ export default function WorkRecordsPage() {
               type="button"
               onClick={() => setSelectedDate(getTodayDateString())}
               className={cn(
-                "h-9 px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
+                "h-9 px-2.5 sm:px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
                 selectedDate === getTodayDateString()
                   ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 font-semibold"
                   : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
@@ -370,7 +370,7 @@ export default function WorkRecordsPage() {
               type="button"
               onClick={() => setSelectedDate(getYesterdayDateString())}
               className={cn(
-                "h-9 px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
+                "h-9 px-2.5 sm:px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
                 selectedDate === getYesterdayDateString()
                   ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 font-semibold"
                   : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
@@ -392,7 +392,7 @@ export default function WorkRecordsPage() {
           </div>
 
           {/* Search worker */}
-          <div className="flex items-center gap-2 flex-1 md:max-w-xs">
+          <div className="flex items-center gap-2 w-full md:w-auto md:max-w-xs">
             <div className="relative w-full">
               <Input
                 type="text"
@@ -421,7 +421,7 @@ export default function WorkRecordsPage() {
               size="sm"
               onClick={loadRecords}
               isLoading={isLoading}
-              className="h-9 whitespace-nowrap"
+              className="h-9 whitespace-nowrap shrink-0"
               title="Refresh records"
             >
               <ArrowClockwise size={16} />

@@ -63,7 +63,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Top Welcome and Actions Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Executive Overview
@@ -74,13 +74,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center flex-wrap gap-2 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => loadDashboardData(true)}
             disabled={isLoading || isRefreshing}
             aria-label="Refresh dashboard data"
-            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
             title="Refresh metrics"
           >
             <ArrowClockwise
@@ -90,17 +90,19 @@ export default function DashboardPage() {
             />
           </button>
 
-          <Link href="/work-records">
-            <Button variant="outline" size="sm" className="shadow-2xs">
+          <Link href="/work-records" className="flex-1 sm:flex-initial">
+            <Button variant="outline" size="sm" className="w-full shadow-2xs whitespace-nowrap">
               <Plus size={15} weight="bold" />
-              <span>Record Attendance</span>
+              <span className="hidden xs:inline">Record Attendance</span>
+              <span className="xs:hidden">Attendance</span>
             </Button>
           </Link>
 
-          <Link href="/payments">
-            <Button variant="primary" size="sm" className="shadow-2xs">
+          <Link href="/payments" className="flex-1 sm:flex-initial">
+            <Button variant="primary" size="sm" className="w-full shadow-2xs whitespace-nowrap">
               <CreditCard size={15} weight="bold" />
-              <span>Disburse Salary</span>
+              <span className="hidden xs:inline">Disburse Salary</span>
+              <span className="xs:hidden">Disburse</span>
             </Button>
           </Link>
         </div>
@@ -131,7 +133,7 @@ export default function DashboardPage() {
       )}
 
       {/* 4 Executive Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Metric 1: Active Employees */}
         <MetricCard
           title="Active Employees"

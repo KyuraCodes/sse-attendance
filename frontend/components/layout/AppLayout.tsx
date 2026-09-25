@@ -40,7 +40,7 @@ export function AppLayout({ children, title }: AppLayoutProps) {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 flex flex-col">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-slate-950 flex flex-col w-full min-w-0 overflow-x-hidden">
       {/* Sidebar Navigation */}
       <Sidebar
         isOpen={isMobileSidebarOpen}
@@ -48,7 +48,7 @@ export function AppLayout({ children, title }: AppLayoutProps) {
       />
 
       {/* Main Content Area (Offset by 260px on desktop) */}
-      <div className="lg:pl-[260px] flex flex-col flex-1 min-h-[100dvh] transition-all">
+      <div className="lg:pl-[260px] flex flex-col flex-1 min-h-[100dvh] w-full min-w-0 overflow-x-hidden transition-all">
         {/* Top Header */}
         <Header
           title={title}
@@ -56,7 +56,7 @@ export function AppLayout({ children, title }: AppLayoutProps) {
         />
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full min-w-0 mx-auto overflow-x-hidden">
           {children}
         </main>
       </div>

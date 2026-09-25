@@ -62,98 +62,98 @@ export function OutstandingReportTable({
   return (
     <div className="space-y-6">
       {/* 4 Summary Aggregate Tiles */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Workers Pending Payment */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Workers With Balance
             </span>
-            <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <Users size={20} weight="duotone" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <Users size={18} weight="duotone" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2 sm:mt-3">
             {isLoading ? (
-              <div className="h-8 w-20 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
+              <div className="h-7 sm:h-8 w-16 sm:w-20 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                 {reports.length}
               </div>
             )}
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
               Active accounts requiring settlement
             </p>
           </div>
         </div>
 
         {/* Total Unpaid Days */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Total Unpaid Days
             </span>
-            <div className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <CalendarBlank size={20} weight="duotone" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+              <CalendarBlank size={18} weight="duotone" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2 sm:mt-3">
             {isLoading ? (
-              <div className="h-8 w-24 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
+              <div className="h-7 sm:h-8 w-20 sm:w-24 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-2xl font-bold text-amber-700 dark:text-amber-400">
+              <div className="text-lg sm:text-2xl font-bold text-amber-700 dark:text-amber-400">
                 {totals.totalUnpaidDays} days
               </div>
             )}
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
               Accumulated unbilled attendance shifts
             </p>
           </div>
         </div>
 
         {/* Stored Wages */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider">
+            <span className="text-2xs sm:text-xs font-semibold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider">
               Stored Wages (Tabung)
             </span>
-            <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-              <PiggyBank size={20} weight="duotone" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <PiggyBank size={18} weight="duotone" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2 sm:mt-3">
             {isLoading ? (
-              <div className="h-8 w-32 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
+              <div className="h-7 sm:h-8 w-24 sm:w-32 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-2xl font-bold text-indigo-700 dark:text-indigo-400">
+              <div className="text-lg sm:text-2xl font-bold text-indigo-700 dark:text-indigo-400 truncate">
                 {formatCurrency(totals.totalStoredAmount)}
               </div>
             )}
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
               {totals.totalStoredDays} days saved at worker request
             </p>
           </div>
         </div>
 
         {/* Total Outstanding Balance */}
-        <div className="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/50 bg-rose-50/20 dark:bg-rose-950/20 rounded-xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/50 bg-rose-50/20 dark:bg-rose-950/20 rounded-xl p-3.5 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-700 dark:text-rose-400 uppercase tracking-wider">
+            <span className="text-2xs sm:text-xs font-semibold text-rose-700 dark:text-rose-400 uppercase tracking-wider">
               Total Outstanding Balance
             </span>
-            <div className="w-9 h-9 rounded-lg bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 flex items-center justify-center">
-              <WarningCircle size={20} weight="duotone" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 flex items-center justify-center">
+              <WarningCircle size={18} weight="duotone" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2 sm:mt-3">
             {isLoading ? (
-              <div className="h-8 w-36 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
+              <div className="h-7 sm:h-8 w-24 sm:w-36 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-2xl font-bold text-rose-700 dark:text-rose-400 font-mono">
+              <div className="text-lg sm:text-2xl font-bold text-rose-700 dark:text-rose-400 font-mono truncate">
                 {formatCurrency(totals.totalOutstanding)}
               </div>
             )}
-            <p className="text-xs text-rose-600 dark:text-rose-400/80 mt-1">
+            <p className="text-2xs sm:text-xs text-rose-600 dark:text-rose-400/80 mt-1">
               Total pending company payroll liability
             </p>
           </div>
@@ -163,17 +163,17 @@ export function OutstandingReportTable({
       {/* Main Table Card */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
         {/* Table Search Header */}
-        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
               Outstanding Balances by Employee
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Live breakdown of unpaid days, stored wages, and total amounts due
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5">
             <div className="relative w-full sm:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                 <MagnifyingGlass size={16} />
@@ -193,7 +193,7 @@ export function OutstandingReportTable({
               onClick={() => downloadOutstandingReportPdf(reports)}
               disabled={isLoading || reports.length === 0}
               leftIcon={<DownloadSimple size={16} weight="bold" />}
-              className="whitespace-nowrap"
+              className="w-full sm:w-auto justify-center whitespace-nowrap"
             >
               Download PDF
             </Button>

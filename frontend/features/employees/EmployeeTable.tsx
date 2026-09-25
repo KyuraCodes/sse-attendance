@@ -109,167 +109,306 @@ export function EmployeeTable({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Code
-              </th>
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Name
-              </th>
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Phone
-              </th>
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Daily Rate
-              </th>
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Start Date
-              </th>
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Status
-              </th>
-              <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {employees.map((employee) => {
-              const isActive = employee.status?.toUpperCase() === "ACTIVE";
-              const isUpdatingStatus = togglingId === employee.id;
+    <div className="space-y-3">
+      {/* Mobile Card View (< md) */}
+      <div className="md:hidden space-y-3">
+        {employees.map((employee) => {
+          const isActive = employee.status?.toUpperCase() === "ACTIVE";
+          const isUpdatingStatus = togglingId === employee.id;
 
-              return (
-                <tr
-                  key={employee.id}
-                  className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
-                >
-                  {/* Code */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+          return (
+            <div
+              key={employee.id}
+              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-3"
+            >
+              {/* Header: Avatar, Name, Code, and Status */}
+              <div className="flex items-start justify-between gap-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-sm shrink-0 select-none">
+                    {employee.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight truncate">
+                      {employee.name}
+                    </p>
+                    <span className="inline-block mt-0.5 font-mono text-2xs font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
                       {employee.employeeCode}
                     </span>
-                  </td>
+                  </div>
+                </div>
 
-                  {/* Name */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-xs shrink-0 select-none">
-                        {employee.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 leading-tight">
-                          {employee.name}
-                        </p>
-                        {employee.notes && (
-                          <p className="text-xs text-slate-400 dark:text-slate-500 truncate max-w-xs mt-0.5">
-                            {employee.notes}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Phone */}
-                  <td className="py-3.5 px-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">
-                    {employee.phone ? (
-                      <span className="font-mono text-xs">{employee.phone}</span>
-                    ) : (
-                      <span className="text-slate-400 dark:text-slate-600">-</span>
+                {/* Status Badge */}
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-2xs font-semibold border shrink-0",
+                    isActive
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
+                      : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full",
+                      isActive ? "bg-emerald-500" : "bg-slate-400"
                     )}
-                  </td>
+                    aria-hidden="true"
+                  />
+                  <span>{isActive ? "ACTIVE" : "INACTIVE"}</span>
+                </span>
+              </div>
 
-                  {/* Daily Rate */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      {formatCurrency(employee.dailyRate)}
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800/80">
+                <div>
+                  <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
+                    Daily Rate
+                  </span>
+                  <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                    {formatCurrency(employee.dailyRate)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
+                    Start Date
+                  </span>
+                  <span className="font-mono text-slate-700 dark:text-slate-300">
+                    {formatDate(employee.startDate)}
+                  </span>
+                </div>
+                {employee.phone && (
+                  <div className="col-span-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between">
+                    <span className="text-slate-400 dark:text-slate-500 text-2xs">Phone:</span>
+                    <span className="font-mono text-slate-700 dark:text-slate-300 font-medium">
+                      {employee.phone}
                     </span>
-                  </td>
+                  </div>
+                )}
+                {employee.notes && (
+                  <div className="col-span-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
+                    <span className="text-slate-400 dark:text-slate-500 text-2xs block">Notes:</span>
+                    <p className="text-slate-600 dark:text-slate-400 italic text-2xs mt-0.5">
+                      {employee.notes}
+                    </p>
+                  </div>
+                )}
+              </div>
 
-                  {/* Start Date */}
-                  <td className="py-3.5 px-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">
-                    <span className="font-mono text-xs">{formatDate(employee.startDate)}</span>
-                  </td>
+              {/* Actions Grid */}
+              <div className="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(employee)}
+                  aria-label={`Edit ${employee.name}`}
+                  className="w-full text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white justify-center px-1"
+                >
+                  <PencilSimple size={13} weight="bold" />
+                  <span>Edit</span>
+                </Button>
 
-                  {/* Status Badge */}
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border",
-                        isActive
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
-                          : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                <Button
+                  variant={isActive ? "secondary" : "outline"}
+                  size="sm"
+                  onClick={() => onToggleStatus(employee)}
+                  disabled={isUpdatingStatus}
+                  isLoading={isUpdatingStatus}
+                  aria-label={isActive ? `Deactivate ${employee.name}` : `Activate ${employee.name}`}
+                  className={cn(
+                    "w-full text-xs justify-center px-1",
+                    isActive
+                      ? "text-slate-600 hover:text-rose-600 hover:border-rose-300 dark:text-slate-400 dark:hover:text-rose-400"
+                      : "text-emerald-700 border-emerald-300 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-950/50"
+                  )}
+                >
+                  {!isUpdatingStatus && (
+                    isActive ? (
+                      <UserMinus size={13} weight="bold" />
+                    ) : (
+                      <UserCheck size={13} weight="bold" />
+                    )
+                  )}
+                  <span>{isActive ? "Deactivate" : "Activate"}</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onDelete(employee)}
+                  aria-label={`Delete ${employee.name}`}
+                  className="w-full text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 justify-center px-1"
+                >
+                  <Trash size={13} weight="bold" />
+                  <span>Delete</span>
+                </Button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop Table View (>= md) */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="overflow-x-auto min-w-0 w-full">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Code
+                </th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Name
+                </th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Phone
+                </th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Daily Rate
+                </th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Start Date
+                </th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Status
+                </th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              {employees.map((employee) => {
+                const isActive = employee.status?.toUpperCase() === "ACTIVE";
+                const isUpdatingStatus = togglingId === employee.id;
+
+                return (
+                  <tr
+                    key={employee.id}
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                  >
+                    {/* Code */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+                        {employee.employeeCode}
+                      </span>
+                    </td>
+
+                    {/* Name */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-xs shrink-0 select-none">
+                          {employee.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100 leading-tight">
+                            {employee.name}
+                          </p>
+                          {employee.notes && (
+                            <p className="text-xs text-slate-400 dark:text-slate-500 truncate max-w-xs mt-0.5">
+                              {employee.notes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Phone */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">
+                      {employee.phone ? (
+                        <span className="font-mono text-xs">{employee.phone}</span>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-600">-</span>
                       )}
-                    >
+                    </td>
+
+                    {/* Daily Rate */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        {formatCurrency(employee.dailyRate)}
+                      </span>
+                    </td>
+
+                    {/* Start Date */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">
+                      <span className="font-mono text-xs">{formatDate(employee.startDate)}</span>
+                    </td>
+
+                    {/* Status Badge */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
                       <span
                         className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          isActive ? "bg-emerald-500" : "bg-slate-400"
-                        )}
-                        aria-hidden="true"
-                      />
-                      <span>{isActive ? "ACTIVE" : "INACTIVE"}</span>
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="py-3.5 px-4 whitespace-nowrap text-right">
-                    <div className="inline-flex items-center justify-end gap-1.5">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onEdit(employee)}
-                        aria-label={`Edit ${employee.name}`}
-                        className="h-8 px-2.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
-                      >
-                        <PencilSimple size={14} weight="bold" />
-                        <span>Edit</span>
-                      </Button>
-
-                      <Button
-                        variant={isActive ? "secondary" : "outline"}
-                        size="sm"
-                        onClick={() => onToggleStatus(employee)}
-                        disabled={isUpdatingStatus}
-                        isLoading={isUpdatingStatus}
-                        aria-label={isActive ? `Deactivate ${employee.name}` : `Activate ${employee.name}`}
-                        className={cn(
-                          "h-8 px-2.5 text-xs",
+                          "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border",
                           isActive
-                            ? "text-slate-600 hover:text-rose-600 hover:border-rose-300 dark:text-slate-400 dark:hover:text-rose-400"
-                            : "text-emerald-700 border-emerald-300 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-950/50"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
+                            : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
                         )}
                       >
-                        {!isUpdatingStatus && (
-                          isActive ? (
-                            <UserMinus size={14} weight="bold" />
-                          ) : (
-                            <UserCheck size={14} weight="bold" />
-                          )
-                        )}
-                        <span>{isActive ? "Deactivate" : "Activate"}</span>
-                      </Button>
+                        <span
+                          className={cn(
+                            "w-1.5 h-1.5 rounded-full",
+                            isActive ? "bg-emerald-500" : "bg-slate-400"
+                          )}
+                          aria-hidden="true"
+                        />
+                        <span>{isActive ? "ACTIVE" : "INACTIVE"}</span>
+                      </span>
+                    </td>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onDelete(employee)}
-                        aria-label={`Delete ${employee.name}`}
-                        className="h-8 px-2.5 text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800"
-                      >
-                        <Trash size={14} weight="bold" />
-                        <span>Delete</span>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    {/* Actions */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-right">
+                      <div className="inline-flex items-center justify-end gap-1.5">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onEdit(employee)}
+                          aria-label={`Edit ${employee.name}`}
+                          className="h-8 px-2.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                        >
+                          <PencilSimple size={14} weight="bold" />
+                          <span>Edit</span>
+                        </Button>
+
+                        <Button
+                          variant={isActive ? "secondary" : "outline"}
+                          size="sm"
+                          onClick={() => onToggleStatus(employee)}
+                          disabled={isUpdatingStatus}
+                          isLoading={isUpdatingStatus}
+                          aria-label={isActive ? `Deactivate ${employee.name}` : `Activate ${employee.name}`}
+                          className={cn(
+                            "h-8 px-2.5 text-xs",
+                            isActive
+                              ? "text-slate-600 hover:text-rose-600 hover:border-rose-300 dark:text-slate-400 dark:hover:text-rose-400"
+                              : "text-emerald-700 border-emerald-300 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-950/50"
+                          )}
+                        >
+                          {!isUpdatingStatus && (
+                            isActive ? (
+                              <UserMinus size={14} weight="bold" />
+                            ) : (
+                              <UserCheck size={14} weight="bold" />
+                            )
+                          )}
+                          <span>{isActive ? "Deactivate" : "Activate"}</span>
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onDelete(employee)}
+                          aria-label={`Delete ${employee.name}`}
+                          className="h-8 px-2.5 text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800"
+                        >
+                          <Trash size={14} weight="bold" />
+                          <span>Delete</span>
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

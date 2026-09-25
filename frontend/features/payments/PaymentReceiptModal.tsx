@@ -143,32 +143,32 @@ export function PaymentReceiptModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="payment-receipt-title"
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto"
       >
         <div
-          className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 my-8 overflow-hidden flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 my-2 sm:my-8 overflow-hidden flex flex-col max-h-[92dvh]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header Controls (Hidden on Print) */}
-          <div className="receipt-no-print flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
-                <Receipt size={24} weight="duotone" />
+          <div className="receipt-no-print flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 shrink-0">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <Receipt size={22} weight="duotone" />
               </div>
               <div>
                 <h2
                   id="payment-receipt-title"
-                  className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                  className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
                 >
                   Payment Receipt
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400">
                   Official settlement receipt for disbursed wages
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -176,7 +176,7 @@ export function PaymentReceiptModal({
                 onClick={handleDownloadReceipt}
                 disabled={isLoading || !receipt}
                 leftIcon={<DownloadSimple size={16} weight="bold" />}
-                className="whitespace-nowrap"
+                className="hidden sm:inline-flex whitespace-nowrap"
               >
                 Download PDF
               </Button>
@@ -187,7 +187,7 @@ export function PaymentReceiptModal({
                 onClick={handlePrint}
                 disabled={isLoading || !receipt}
                 leftIcon={<Printer size={16} weight="bold" />}
-                className="whitespace-nowrap"
+                className="hidden sm:inline-flex whitespace-nowrap"
               >
                 Print Receipt
               </Button>
@@ -195,7 +195,7 @@ export function PaymentReceiptModal({
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
               >
                 <X size={20} weight="bold" />
               </button>
@@ -203,7 +203,7 @@ export function PaymentReceiptModal({
           </div>
 
           {/* Modal Content Scroll Area */}
-          <div className="overflow-y-auto p-6 flex-1">
+          <div className="overflow-y-auto p-4 sm:p-6 flex-1 min-w-0">
             {isLoading && (
               <div className="py-16 flex flex-col items-center justify-center text-slate-500">
                 <CircleNotch size={32} className="animate-spin text-emerald-600 mb-3" />
@@ -384,13 +384,13 @@ export function PaymentReceiptModal({
           </div>
 
           {/* Footer Actions (Hidden on Print) */}
-          <div className="receipt-no-print px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
+          <div className="receipt-no-print px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 shrink-0">
             <Button
               type="button"
               variant="outline"
               size="md"
               onClick={onClose}
-              className="whitespace-nowrap"
+              className="w-full sm:w-auto"
             >
               Close
             </Button>
@@ -401,7 +401,7 @@ export function PaymentReceiptModal({
               onClick={handleDownloadReceipt}
               disabled={isLoading || !receipt}
               leftIcon={<DownloadSimple size={16} weight="bold" />}
-              className="whitespace-nowrap"
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
               Download PDF Receipt
             </Button>
@@ -412,7 +412,7 @@ export function PaymentReceiptModal({
               onClick={handlePrint}
               disabled={isLoading || !receipt}
               leftIcon={<Printer size={16} weight="bold" />}
-              className="whitespace-nowrap"
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
               Print Receipt
             </Button>

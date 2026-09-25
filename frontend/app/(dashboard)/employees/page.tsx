@@ -185,14 +185,14 @@ export default function EmployeesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => loadEmployees()}
             disabled={isLoading}
             aria-label="Refresh employee list"
             title="Refresh employee directory"
-            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
           >
             <ArrowClockwise
               size={18}
@@ -205,7 +205,7 @@ export default function EmployeesPage() {
             variant="primary"
             size="md"
             onClick={() => setIsAddModalOpen(true)}
-            className="shadow-xs"
+            className="shadow-xs flex-1 sm:flex-initial justify-center"
           >
             <Plus size={16} weight="bold" />
             <span>Add Employee</span>
@@ -270,7 +270,7 @@ export default function EmployeesPage() {
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         {/* Search Input */}
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1 w-full md:max-w-md">
           <span
             className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500"
             aria-hidden="true"
@@ -297,12 +297,12 @@ export default function EmployeesPage() {
         </div>
 
         {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700 self-start md:self-auto">
+        <div className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700">
           <button
             type="button"
             onClick={() => setStatusFilter("ALL")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap cursor-pointer",
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-center whitespace-nowrap cursor-pointer",
               statusFilter === "ALL"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -314,26 +314,26 @@ export default function EmployeesPage() {
             type="button"
             onClick={() => setStatusFilter("ACTIVE")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer",
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
               statusFilter === "ACTIVE"
                 ? "bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
             <span>Active</span>
           </button>
           <button
             type="button"
             onClick={() => setStatusFilter("INACTIVE")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer",
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
               statusFilter === "INACTIVE"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true" />
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true" />
             <span>Inactive</span>
           </button>
         </div>
@@ -372,15 +372,16 @@ export default function EmployeesPage() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-employee-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
         >
           <div
-            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5"
+            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 space-y-4 sm:space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-                <Trash size={24} weight="duotone" />
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <Trash size={22} weight="duotone" className="sm:hidden" />
+                <Trash size={24} weight="duotone" className="hidden sm:block" />
               </div>
               <div className="flex-1">
                 <h3
@@ -426,12 +427,13 @@ export default function EmployeesPage() {
             </div>
 
             {/* Dialog Actions */}
-            <div className="flex items-center justify-end gap-2.5 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-2">
               <Button
                 variant="outline"
                 size="md"
                 onClick={() => setDeletingEmployee(null)}
                 disabled={isDeleting}
+                className="w-full sm:w-auto"
               >
                 Batal
               </Button>
@@ -441,6 +443,7 @@ export default function EmployeesPage() {
                 onClick={handleDeleteConfirm}
                 isLoading={isDeleting}
                 leftIcon={<Trash size={16} weight="bold" />}
+                className="w-full sm:w-auto"
               >
                 Padam Pekerja
               </Button>

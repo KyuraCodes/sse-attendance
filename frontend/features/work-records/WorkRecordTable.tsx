@@ -173,90 +173,181 @@ export function WorkRecordTable({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Daily Rate</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
-              <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {records.map((record) => {
-              const isUnpaid = record.status === "UNPAID";
-              const canVoid = record.status !== "PAID" && record.status !== "VOID";
+    <div className="space-y-3">
+      {/* Mobile Card Layout (< md) */}
+      <div className="block md:hidden space-y-3">
+        {records.map((record) => {
+          const isUnpaid = record.status === "UNPAID";
+          const canVoid = record.status !== "PAID" && record.status !== "VOID";
 
-              return (
-                <tr
-                  key={record.id}
-                  className="hover:bg-slate-50/75 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <td className="py-3 px-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
-                    {formatDate(record.workDate)}
-                  </td>
-                  <td className="py-3 px-4 text-xs font-mono font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                    {record.employeeCode}
-                  </td>
-                  <td className="py-3 px-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {record.employeeName}
-                  </td>
-                  <td className="py-3 px-4 text-sm font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap tabular-nums">
+          return (
+            <div
+              key={record.id}
+              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-2xs space-y-3"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
+                      {record.employeeName}
+                    </span>
+                    <span className="font-mono text-2xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">
+                      {record.employeeCode}
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
+                    <CalendarBlank size={13} className="text-slate-400" />
+                    <span>{formatDate(record.workDate)}</span>
+                  </div>
+                </div>
+
+                <div className="shrink-0">
+                  {renderStatusBadge(record.status)}
+                </div>
+              </div>
+
+              {/* Financial detail strip */}
+              <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
+                <div>
+                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Daily Rate</span>
+                  <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
                     {formatCurrency(record.dailyRate)}
-                  </td>
-                  <td className="py-3 px-4 text-sm font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Calculated Amount</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
                     {formatCurrency(record.amount)}
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    {renderStatusBadge(record.status)}
-                  </td>
-                  <td className="py-3 px-4 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate">
-                    {record.notes ? record.notes : "-"}
-                  </td>
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1.5">
-                      {isUnpaid && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onStoreSalary(record)}
-                          className="whitespace-nowrap text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40"
-                          leftIcon={<Archive size={14} />}
-                        >
-                          Store Salary
-                        </Button>
-                      )}
+                  </span>
+                </div>
+              </div>
 
-                      {canVoid && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onVoidRecord(record)}
-                          className="whitespace-nowrap text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
-                          title="Void this work record"
-                        >
-                          Void
-                        </Button>
-                      )}
+              {record.notes && (
+                <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50/70 dark:bg-slate-800/30 px-2.5 py-1.5 rounded-md border border-slate-100 dark:border-slate-800/60">
+                  <span className="font-medium text-slate-500 dark:text-slate-400 mr-1">Notes:</span>
+                  {record.notes}
+                </div>
+              )}
 
-                      {!isUnpaid && !canVoid && (
-                        <span className="text-xs text-slate-400 dark:text-slate-600 px-2">
-                          -
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              {/* Action Buttons */}
+              {(isUnpaid || canVoid) && (
+                <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                  {isUnpaid && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onStoreSalary(record)}
+                      className="flex-1 sm:flex-initial text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40 text-xs justify-center"
+                      leftIcon={<Archive size={14} />}
+                    >
+                      Store Salary
+                    </Button>
+                  )}
+
+                  {canVoid && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onVoidRecord(record)}
+                      className="text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs"
+                      title="Void this work record"
+                    >
+                      Void
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop Table View (>= md) */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="overflow-x-auto min-w-0">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Daily Rate</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              {records.map((record) => {
+                const isUnpaid = record.status === "UNPAID";
+                const canVoid = record.status !== "PAID" && record.status !== "VOID";
+
+                return (
+                  <tr
+                    key={record.id}
+                    className="hover:bg-slate-50/75 dark:hover:bg-slate-800/50 transition-colors"
+                  >
+                    <td className="py-3 px-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                      {formatDate(record.workDate)}
+                    </td>
+                    <td className="py-3 px-4 text-xs font-mono font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      {record.employeeCode}
+                    </td>
+                    <td className="py-3 px-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      {record.employeeName}
+                    </td>
+                    <td className="py-3 px-4 text-sm font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap tabular-nums">
+                      {formatCurrency(record.dailyRate)}
+                    </td>
+                    <td className="py-3 px-4 text-sm font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
+                      {formatCurrency(record.amount)}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {renderStatusBadge(record.status)}
+                    </td>
+                    <td className="py-3 px-4 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate">
+                      {record.notes ? record.notes : "-"}
+                    </td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {isUnpaid && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onStoreSalary(record)}
+                            className="whitespace-nowrap text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40"
+                            leftIcon={<Archive size={14} />}
+                          >
+                            Store Salary
+                          </Button>
+                        )}
+
+                        {canVoid && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onVoidRecord(record)}
+                            className="whitespace-nowrap text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
+                            title="Void this work record"
+                          >
+                            Void
+                          </Button>
+                        )}
+
+                        {!isUnpaid && !canVoid && (
+                          <span className="text-xs text-slate-400 dark:text-slate-600 px-2">
+                            -
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

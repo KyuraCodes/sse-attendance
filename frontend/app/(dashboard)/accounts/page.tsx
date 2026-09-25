@@ -231,7 +231,7 @@ export default function AccountsPage() {
             setIsCreateOpen(true);
           }}
           leftIcon={<Plus size={16} weight="bold" />}
-          className="whitespace-nowrap shadow-xs"
+          className="whitespace-nowrap shadow-xs w-full sm:w-auto justify-center"
         >
           Create New Account
         </Button>
@@ -260,7 +260,7 @@ export default function AccountsPage() {
       )}
 
       {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         {/* Search */}
         <div className="relative flex-1">
           <MagnifyingGlass
@@ -278,7 +278,7 @@ export default function AccountsPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full md:w-auto">
           <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 shrink-0">
             <Funnel size={14} weight="bold" />
             <span className="hidden sm:inline">Filter:</span>
@@ -287,7 +287,7 @@ export default function AccountsPage() {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="flex-1 sm:flex-initial px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="ALL">All Roles</option>
             <option value="CEO">CEO</option>
@@ -298,7 +298,7 @@ export default function AccountsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="flex-1 sm:flex-initial px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="ALL">All Status</option>
             <option value="ACTIVE">Active</option>
@@ -319,7 +319,7 @@ export default function AccountsPage() {
             No accounts matching the search criteria were found.
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-w-0">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
@@ -443,10 +443,10 @@ export default function AccountsPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
         >
           <div
-            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6 space-y-5"
+            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[92dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -565,12 +565,13 @@ export default function AccountsPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <Button
                   type="button"
                   variant="outline"
                   size="md"
                   onClick={() => setIsCreateOpen(false)}
+                  className="w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
@@ -579,6 +580,7 @@ export default function AccountsPage() {
                   variant="primary"
                   size="md"
                   disabled={isCreating}
+                  className="w-full sm:w-auto"
                 >
                   {isCreating ? "Creating..." : "Save Account"}
                 </Button>
@@ -593,10 +595,10 @@ export default function AccountsPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
         >
           <div
-            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6 space-y-5"
+            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 space-y-4 sm:space-y-5 max-h-[92dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -711,12 +713,13 @@ export default function AccountsPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <Button
                   type="button"
                   variant="outline"
                   size="md"
                   onClick={() => setEditingUser(null)}
+                  className="w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
@@ -725,6 +728,7 @@ export default function AccountsPage() {
                   variant="primary"
                   size="md"
                   disabled={isUpdating}
+                  className="w-full sm:w-auto"
                 >
                   {isUpdating ? "Saving..." : "Update Account"}
                 </Button>
@@ -739,14 +743,14 @@ export default function AccountsPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
         >
           <div
-            className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4"
+            className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 text-rose-600">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center shrink-0">
                 <Trash size={22} weight="duotone" />
               </div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
@@ -770,12 +774,13 @@ export default function AccountsPage() {
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-2.5 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 size="md"
                 onClick={() => setDeletingUser(null)}
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
@@ -785,6 +790,7 @@ export default function AccountsPage() {
                 size="md"
                 disabled={isDeleting}
                 onClick={handleDeleteSubmit}
+                className="w-full sm:w-auto"
               >
                 {isDeleting ? "Deleting..." : "Delete Account"}
               </Button>

@@ -42,7 +42,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-150 max-w-5xl">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150 max-w-5xl w-full min-w-0">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -50,10 +50,10 @@ export default function SettingsPage() {
             <GearSix size={16} weight="bold" />
             <span>System Configuration</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Settings & Preferences
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Configure enterprise details, visual theme, and daily wage parameters
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function SettingsPage() {
             role="status"
             className="flex items-center gap-2 px-3.5 py-2 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs font-semibold shadow-xs animate-in fade-in"
           >
-            <CheckCircle size={16} weight="fill" className="text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle size={16} weight="fill" className="text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>Settings saved successfully</span>
           </div>
         )}
@@ -71,9 +71,9 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Section 1: Appearance & Theme */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <Palette size={22} weight="duotone" />
             </div>
             <div>
@@ -86,12 +86,12 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
             {/* Light Mode Option */}
             <button
               type="button"
               onClick={() => setTheme("light")}
-              className={`p-4 rounded-xl border text-left flex items-start gap-3 transition-all cursor-pointer ${
+              className={`p-3.5 sm:p-4 rounded-xl border text-left flex items-start gap-3 transition-all cursor-pointer ${
                 theme === "light"
                   ? "border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/20 ring-2 ring-emerald-500/20"
                   : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
@@ -146,9 +146,9 @@ export default function SettingsPage() {
         </div>
 
         {/* Section 2: Enterprise Details */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <Buildings size={22} weight="duotone" />
             </div>
             <div>
@@ -161,7 +161,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
             <div>
               <label htmlFor="company-name" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Official Company Name
@@ -235,9 +235,9 @@ export default function SettingsPage() {
         </div>
 
         {/* Section 3: Payroll & Attendance Rules */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <CurrencyCircleDollar size={22} weight="duotone" />
             </div>
             <div>
@@ -251,7 +251,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="space-y-4 pt-2">
-            <div className="max-w-xs">
+            <div className="w-full max-w-full sm:max-w-xs">
               <label htmlFor="default-daily-rate" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Default Daily Wage Rate (RM)
               </label>
@@ -272,12 +272,12 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
+            <div className="flex items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
                   Automatic FIFO Payment Allocation
                 </span>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight block mt-0.5">
                   Disburses payments chronologically against the oldest unpaid or stored work records first
                 </span>
               </div>
@@ -285,16 +285,16 @@ export default function SettingsPage() {
                 type="checkbox"
                 checked={autoFifo}
                 onChange={(e) => setAutoFifo(e.target.checked)}
-                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer"
+                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer shrink-0 mt-0.5 sm:mt-0"
               />
             </div>
 
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
+            <div className="flex items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
                   Stored Wages (Simpan Gaji) Feature
                 </span>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight block mt-0.5">
                   Enables workers to store daily earnings as company savings until requested
                 </span>
               </div>
@@ -302,16 +302,16 @@ export default function SettingsPage() {
                 type="checkbox"
                 checked={allowStoredWage}
                 onChange={(e) => setAllowStoredWage(e.target.checked)}
-                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer"
+                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer shrink-0 mt-0.5 sm:mt-0"
               />
             </div>
           </div>
         </div>
 
         {/* Section 4: Security & System Audit Information */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-3">
           <div className="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <ShieldCheck size={22} weight="duotone" />
             </div>
             <div>
@@ -324,17 +324,17 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs pt-1">
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
-              <span className="text-slate-400 dark:text-slate-500 block mb-0.5">Software Version:</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-0.5 text-2xs">Software Version:</span>
               <span className="font-mono font-bold text-slate-800 dark:text-slate-200">v1.0.0 (SSE Enterprise)</span>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
-              <span className="text-slate-400 dark:text-slate-500 block mb-0.5">Security Token:</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-0.5 text-2xs">Security Token:</span>
               <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">JWT Stateless (HS256)</span>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
-              <span className="text-slate-400 dark:text-slate-500 block mb-0.5">Audit Log Compliance:</span>
+              <span className="text-slate-400 dark:text-slate-500 block mb-0.5 text-2xs">Audit Log Compliance:</span>
               <span className="font-mono font-bold text-slate-800 dark:text-slate-200">100% Immutable Append-Only</span>
             </div>
           </div>
@@ -347,7 +347,7 @@ export default function SettingsPage() {
             variant="primary"
             size="md"
             leftIcon={<FloppyDisk size={16} weight="bold" />}
-            className="whitespace-nowrap shadow-xs"
+            className="w-full sm:w-auto justify-center whitespace-nowrap shadow-xs"
           >
             Save All Preferences
           </Button>

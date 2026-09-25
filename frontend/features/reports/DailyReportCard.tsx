@@ -94,17 +94,17 @@ export function DailyReportCard({
   return (
     <div className="space-y-6">
       {/* Date Picker Bar (Hidden in Print) */}
-      <div className="print:hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            <div className="flex items-center gap-2">
-              <CalendarBlank size={20} className="text-slate-500" />
+      <div className="print:hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-4 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-2 flex-1 sm:flex-none">
+              <CalendarBlank size={18} className="text-slate-500 shrink-0" />
               <input
                 type="date"
                 aria-label="Select Date"
                 value={selectedDate}
                 onChange={(e) => onDateChange(e.target.value)}
-                className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-semibold py-2 px-3 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                className="w-full sm:w-auto rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs sm:text-sm font-semibold py-2 px-2.5 sm:px-3 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -112,7 +112,7 @@ export function DailyReportCard({
               type="button"
               onClick={() => onDateChange(getTodayString())}
               className={cn(
-                "px-3 py-2 text-xs font-semibold rounded-lg border transition-colors whitespace-nowrap",
+                "px-2.5 sm:px-3 py-2 text-xs font-semibold rounded-lg border transition-colors whitespace-nowrap cursor-pointer",
                 selectedDate === getTodayString()
                   ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-950/50 dark:border-blue-800 dark:text-blue-300"
                   : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -125,7 +125,7 @@ export function DailyReportCard({
               type="button"
               onClick={() => onDateChange(getYesterdayString())}
               className={cn(
-                "px-3 py-2 text-xs font-semibold rounded-lg border transition-colors whitespace-nowrap",
+                "px-2.5 sm:px-3 py-2 text-xs font-semibold rounded-lg border transition-colors whitespace-nowrap cursor-pointer",
                 selectedDate === getYesterdayString()
                   ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-950/50 dark:border-blue-800 dark:text-blue-300"
                   : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -135,7 +135,7 @@ export function DailyReportCard({
             </button>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
             {onRefresh && (
               <Button
                 variant="outline"
@@ -148,7 +148,7 @@ export function DailyReportCard({
                     className={cn(isLoading && "animate-spin")}
                   />
                 }
-                className="whitespace-nowrap"
+                className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
               >
                 Refresh
               </Button>
@@ -160,7 +160,7 @@ export function DailyReportCard({
               onClick={handleDownloadPdf}
               disabled={isLoading || !report}
               leftIcon={<DownloadSimple size={16} weight="bold" />}
-              className="whitespace-nowrap"
+              className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
             >
               Download PDF
             </Button>
@@ -170,7 +170,7 @@ export function DailyReportCard({
               size="sm"
               onClick={handlePrint}
               leftIcon={<Printer size={16} weight="bold" />}
-              className="whitespace-nowrap"
+              className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
             >
               Print / Export
             </Button>
@@ -200,50 +200,50 @@ export function DailyReportCard({
       </div>
 
       {/* Summary KPI Cards for Selected Date */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
         {/* Total Attendance Records */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Total Attendance Records
             </span>
-            <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <Users size={20} weight="duotone" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <Users size={18} weight="duotone" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2 sm:mt-3">
             {isLoading ? (
-              <div className="h-8 w-20 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
+              <div className="h-7 sm:h-8 w-16 sm:w-20 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
                 {report?.totalRecords ?? 0}
               </div>
             )}
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
               Workers present on {formatDate(selectedDate)}
             </p>
           </div>
         </div>
 
         {/* Total Daily Wage Incurred */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Total Daily Payroll
             </span>
-            <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-              <Money size={20} weight="duotone" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <Money size={18} weight="duotone" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2 sm:mt-3">
             {isLoading ? (
-              <div className="h-8 w-32 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
+              <div className="h-7 sm:h-8 w-24 sm:w-32 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">
+              <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono truncate">
                 {formatCurrency(report?.totalAmount ?? 0)}
               </div>
             )}
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
               Gross wages earned for this day
             </p>
           </div>

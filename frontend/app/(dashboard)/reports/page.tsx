@@ -139,24 +139,24 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header (Hidden in Print) */}
-      <div className="print:hidden flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="print:hidden flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Financial Reports
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             Executive monthly statements, worker liability tracking, and daily register
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             size="sm"
             onClick={handleDownloadCurrentReportPdf}
             disabled={isLoading || !isCurrentReportDownloadable}
             leftIcon={<DownloadSimple size={16} weight="bold" />}
-            className="whitespace-nowrap"
+            className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
           >
             Download PDF
           </Button>
@@ -172,7 +172,7 @@ export default function ReportsPage() {
                 className={cn(isLoading && "animate-spin")}
               />
             }
-            className="whitespace-nowrap"
+            className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
           >
             Refresh
           </Button>
@@ -180,13 +180,13 @@ export default function ReportsPage() {
       </div>
 
       {/* Tabs Switcher (Hidden in Print) */}
-      <div className="print:hidden border-b border-slate-200 dark:border-slate-800">
-        <nav className="flex space-x-2 sm:space-x-4 overflow-x-auto pb-px">
+      <div className="print:hidden border-b border-slate-200 dark:border-slate-800 -mx-3 sm:mx-0 px-3 sm:px-0">
+        <nav className="flex space-x-1 sm:space-x-4 overflow-x-auto no-scrollbar pb-px">
           <button
             type="button"
             onClick={() => setActiveTab("monthly")}
             className={cn(
-              "flex items-center gap-2 py-3 px-4 border-b-2 font-medium text-sm transition-colors whitespace-nowrap cursor-pointer",
+              "flex items-center gap-1.5 sm:gap-2 py-2.5 px-3 sm:py-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap cursor-pointer",
               activeTab === "monthly"
                 ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-300"
@@ -200,7 +200,7 @@ export default function ReportsPage() {
             type="button"
             onClick={() => setActiveTab("outstanding")}
             className={cn(
-              "flex items-center gap-2 py-3 px-4 border-b-2 font-medium text-sm transition-colors whitespace-nowrap cursor-pointer",
+              "flex items-center gap-1.5 sm:gap-2 py-2.5 px-3 sm:py-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap cursor-pointer",
               activeTab === "outstanding"
                 ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-300"
@@ -214,7 +214,7 @@ export default function ReportsPage() {
             type="button"
             onClick={() => setActiveTab("daily")}
             className={cn(
-              "flex items-center gap-2 py-3 px-4 border-b-2 font-medium text-sm transition-colors whitespace-nowrap cursor-pointer",
+              "flex items-center gap-1.5 sm:gap-2 py-2.5 px-3 sm:py-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap cursor-pointer",
               activeTab === "daily"
                 ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-300"
