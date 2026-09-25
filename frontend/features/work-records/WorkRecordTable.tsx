@@ -11,6 +11,7 @@ import {
   Money,
 } from "@phosphor-icons/react";
 import { WorkRecord, WorkRecordStatus } from "@/types/workRecord";
+import { RateType, RATE_TYPE_LABELS, RATE_UNIT_LABELS } from "@/types/employee";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -43,7 +44,7 @@ export function WorkRecordTable({
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Daily Rate</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rate</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
@@ -187,13 +188,19 @@ export function WorkRecordTable({
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
                       {record.employeeName}
                     </span>
                     <span className="font-mono text-2xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">
                       {record.employeeCode}
                     </span>
+                    {record.hoursWorked !== undefined && record.hoursWorked !== null && (
+                      <span className="inline-flex items-center gap-1 font-mono text-2xs px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60 font-semibold">
+                        <Clock size={11} weight="bold" />
+                        {record.hoursWorked} jam
+                      </span>
+                    )}
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
                     <CalendarBlank size={13} className="text-slate-400" />
@@ -209,10 +216,20 @@ export function WorkRecordTable({
               {/* Financial detail strip */}
               <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
                 <div>
-                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Daily Rate</span>
-                  <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
-                    {formatCurrency(record.dailyRate)}
-                  </span>
+                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Rate</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
+                      {formatCurrency(record.dailyRate)}
+                    </span>
+                    <span className="text-2xs text-slate-400">
+                      / {record.rateType ? RATE_UNIT_LABELS[record.rateType] : (record.hoursWorked ? "jam" : "hari")}
+                    </span>
+                  </div>
+                  {record.hoursWorked !== undefined && record.hoursWorked !== null && (
+                    <span className="text-2xs text-amber-700 dark:text-amber-400 font-medium block mt-0.5">
+                      {record.hoursWorked} jam bekerja
+                    </span>
+                  )}
                 </div>
                 <div>
                   <span className="text-slate-500 dark:text-slate-400 block text-2xs">Calculated Amount</span>
@@ -271,7 +288,7 @@ export function WorkRecordTable({
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Daily Rate</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rate</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
@@ -295,10 +312,32 @@ export function WorkRecordTable({
                       {record.employeeCode}
                     </td>
                     <td className="py-3 px-4 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      {record.employeeName}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span>{record.employeeName}</span>
+                        {record.hoursWorked !== undefined && record.hoursWorked !== null && (
+                          <span className="inline-flex items-center gap-1 font-mono text-2xs px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60 font-semibold">
+                            <Clock size={11} weight="bold" />
+                            {record.hoursWorked} jam
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td className="py-3 px-4 text-sm font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap tabular-nums">
-                      {formatCurrency(record.dailyRate)}
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-1">
+                          <span className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
+                            {formatCurrency(record.dailyRate)}
+                          </span>
+                          <span className="text-xs text-slate-400 font-normal">
+                            / {record.rateType ? RATE_UNIT_LABELS[record.rateType] : (record.hoursWorked ? "jam" : "hari")}
+                          </span>
+                        </div>
+                        {record.hoursWorked !== undefined && record.hoursWorked !== null && (
+                          <span className="text-2xs text-amber-700 dark:text-amber-400 font-medium">
+                            {record.hoursWorked} jam
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="py-3 px-4 text-sm font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
                       {formatCurrency(record.amount)}

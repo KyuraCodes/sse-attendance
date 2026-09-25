@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       payment_method,
       reference,
       notes,
+      settle_in_full,
       created_by,
       created_at,
       employees (
@@ -68,6 +69,7 @@ export async function GET(req: NextRequest) {
       paymentMethod: p.payment_method,
       reference: p.reference,
       notes: p.notes,
+      settleInFull: Boolean(p.settle_in_full),
       createdBy: p.created_by,
       createdAt: p.created_at,
     };
@@ -85,6 +87,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { employeeId, amount, paymentDate, paymentMethod, reference, notes } = body;
+    const settleInFull =
+      body.settleInFull !== undefined ? Boolean(body.settleInFull) : true;
 
     if (!employeeId) {
       return errorResponse("Employee ID is required", "INVALID_EMPLOYEE_ID", 400);
@@ -112,7 +116,7 @@ export async function POST(req: NextRequest) {
     // Fetch payable work records for employee
     const { data: payableRecords, error: wrErr } = await supabase
       .from("work_records")
-      .select("id, work_date, amount, status")
+      .select("id, work_date, amount, status, waived_amount")
       .eq("employee_id", employee.id)
       .in("status", ["UNPAID", "STORED", "PARTIALLY_PAID"])
       .order("work_date", { ascending: true })
@@ -145,7 +149,8 @@ export async function POST(req: NextRequest) {
 
     for (const r of payableRecords || []) {
       const applied = appliedMap[r.id] || 0;
-      const unpaid = Number(r.amount) - applied;
+      const waived = Number(r.waived_amount || 0);
+      const unpaid = Math.max(0, Number(r.amount) - applied - waived);
       if (unpaid > 0.001) {
         totalOutstanding += unpaid;
         recordsWithUnpaid.push({
@@ -192,9 +197,10 @@ export async function POST(req: NextRequest) {
         payment_method: normMethod,
         reference: reference ? reference.trim() : null,
         notes: notes ? notes.trim() : null,
+        settle_in_full: settleInFull,
         created_by: currentUser.id,
       })
-      .select("id, payment_code, employee_id, payment_date, amount, payment_method, reference, notes, created_by, created_at")
+      .select("id, payment_code, employee_id, payment_date, amount, payment_method, reference, notes, settle_in_full, created_by, created_at")
       .single();
 
     if (payErr || !newPayment) {
@@ -205,23 +211,36 @@ export async function POST(req: NextRequest) {
     // FIFO Allocation
     let remainingPayment = payAmount;
     const paymentItemsToInsert = [];
-    const workRecordUpdates: { id: number; newStatus: string }[] = [];
+    const workRecordUpdates: { id: number; newStatus: string; waivedAmount: number }[] = [];
 
     for (const rec of recordsWithUnpaid) {
-      if (remainingPayment <= 0.001) break;
-
       const allocation = Math.min(remainingPayment, rec.unpaid);
-      remainingPayment -= allocation;
+      remainingPayment = Math.max(0, remainingPayment - allocation);
 
-      paymentItemsToInsert.push({
-        payment_id: newPayment.id,
-        work_record_id: rec.id,
-        amount_applied: allocation,
-      });
+      if (allocation > 0) {
+        paymentItemsToInsert.push({
+          payment_id: newPayment.id,
+          work_record_id: rec.id,
+          amount_applied: allocation,
+        });
+      }
 
-      const newRemaining = rec.unpaid - allocation;
-      const newStatus = newRemaining <= 0.001 ? "PAID" : "PARTIALLY_PAID";
-      workRecordUpdates.push({ id: rec.id, newStatus });
+      if (settleInFull) {
+        const waived = Number((rec.unpaid - allocation).toFixed(2));
+        workRecordUpdates.push({
+          id: rec.id,
+          newStatus: "PAID",
+          waivedAmount: waived,
+        });
+      } else {
+        const newRemaining = rec.unpaid - allocation;
+        const newStatus = newRemaining <= 0.001 ? "PAID" : "PARTIALLY_PAID";
+        workRecordUpdates.push({
+          id: rec.id,
+          newStatus,
+          waivedAmount: 0,
+        });
+      }
     }
 
     if (paymentItemsToInsert.length > 0) {
@@ -233,6 +252,7 @@ export async function POST(req: NextRequest) {
         .from("work_records")
         .update({
           status: update.newStatus,
+          waived_amount: update.waivedAmount,
           updated_at: new Date().toISOString(),
         })
         .eq("id", update.id);
@@ -249,6 +269,7 @@ export async function POST(req: NextRequest) {
         employeeId: employee.id,
         amount: newPayment.amount,
         paymentMethod: newPayment.payment_method,
+        settleInFull: newPayment.settle_in_full,
       })
     );
 
@@ -264,6 +285,7 @@ export async function POST(req: NextRequest) {
         paymentMethod: newPayment.payment_method,
         reference: newPayment.reference,
         notes: newPayment.notes,
+        settleInFull: Boolean(newPayment.settle_in_full),
         createdBy: newPayment.created_by,
         createdAt: newPayment.created_at,
       },

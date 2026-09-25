@@ -23,6 +23,8 @@ export async function GET(req: NextRequest) {
       work_date,
       daily_rate,
       amount,
+      hours_worked,
+      waived_amount,
       status,
       notes,
       created_by,
@@ -31,7 +33,8 @@ export async function GET(req: NextRequest) {
       employees (
         id,
         employee_code,
-        name
+        name,
+        rate_type
       )
     `)
     .order("work_date", { ascending: false })
@@ -78,6 +81,9 @@ export async function GET(req: NextRequest) {
       workDate: r.work_date,
       dailyRate: Number(r.daily_rate),
       amount: Number(r.amount),
+      hoursWorked: r.hours_worked !== null && r.hours_worked !== undefined ? Number(r.hours_worked) : undefined,
+      waivedAmount: Number(r.waived_amount || 0),
+      rateType: emp?.rate_type || "DAILY",
       status: r.status,
       notes: r.notes,
       createdBy: r.created_by,
@@ -97,7 +103,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { employeeId, workDate, notes } = body;
+    const { employeeId, workDate, hoursWorked, amount, notes } = body;
 
     if (!employeeId) {
       return errorResponse("Employee ID is required", "INVALID_EMPLOYEE_ID", 400);
@@ -108,7 +114,7 @@ export async function POST(req: NextRequest) {
 
     const { data: employee, error: empErr } = await supabase
       .from("employees")
-      .select("id, employee_code, name, daily_rate, status")
+      .select("id, employee_code, name, daily_rate, status, rate_type")
       .eq("id", Number(employeeId))
       .maybeSingle();
 
@@ -132,20 +138,40 @@ export async function POST(req: NextRequest) {
       return errorResponse("Work record already exists for this employee on this date", "DUPLICATE_WORK_RECORD", 400);
     }
 
-    const dailyRate = Number(employee.daily_rate);
+    const rateType = employee.rate_type || "DAILY";
+    let finalAmount: number;
+
+    if (rateType === "HOURLY") {
+      if (hoursWorked === undefined || hoursWorked === null || isNaN(Number(hoursWorked)) || Number(hoursWorked) <= 0) {
+        return errorResponse("Hours worked must be greater than 0 for hourly employees", "INVALID_HOURS_WORKED", 400);
+      }
+      const calculatedAmount = Number((Number(hoursWorked) * Number(employee.daily_rate)).toFixed(2));
+      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : calculatedAmount;
+    } else if (rateType === "WEEKLY") {
+      const calculatedAmount = Number((Number(employee.daily_rate) / 6).toFixed(2));
+      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : calculatedAmount;
+    } else if (rateType === "MONTHLY") {
+      const calculatedAmount = Number((Number(employee.daily_rate) / 26).toFixed(2));
+      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : calculatedAmount;
+    } else {
+      // DAILY (default)
+      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : Number(employee.daily_rate);
+    }
 
     const { data: newRecord, error: insertErr } = await supabase
       .from("work_records")
       .insert({
         employee_id: employee.id,
         work_date: workDate,
-        daily_rate: dailyRate,
-        amount: dailyRate,
+        daily_rate: Number(employee.daily_rate),
+        amount: finalAmount,
+        hours_worked: hoursWorked ? Number(hoursWorked) : null,
         status: "UNPAID",
+        waived_amount: 0.0,
         notes: notes ? notes.trim() : null,
         created_by: currentUser.id,
       })
-      .select("id, employee_id, work_date, daily_rate, amount, status, notes, created_by, created_at, updated_at")
+      .select("id, employee_id, work_date, daily_rate, amount, hours_worked, waived_amount, status, notes, created_by, created_at, updated_at")
       .single();
 
     if (insertErr || !newRecord) {
@@ -164,6 +190,7 @@ export async function POST(req: NextRequest) {
         workDate: newRecord.work_date,
         dailyRate: newRecord.daily_rate,
         amount: newRecord.amount,
+        hoursWorked: newRecord.hours_worked,
         status: newRecord.status,
       })
     );
@@ -177,6 +204,9 @@ export async function POST(req: NextRequest) {
         workDate: newRecord.work_date,
         dailyRate: Number(newRecord.daily_rate),
         amount: Number(newRecord.amount),
+        hoursWorked: newRecord.hours_worked !== null && newRecord.hours_worked !== undefined ? Number(newRecord.hours_worked) : undefined,
+        waivedAmount: Number(newRecord.waived_amount || 0),
+        rateType: employee.rate_type || "DAILY",
         status: newRecord.status,
         notes: newRecord.notes,
         createdBy: newRecord.created_by,

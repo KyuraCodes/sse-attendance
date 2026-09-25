@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   X,
   User,
@@ -12,11 +12,17 @@ import {
 } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
 import { workRecordService } from "@/services/workRecordService";
-import { Employee } from "@/types/employee";
-import { WorkRecord } from "@/types/workRecord";
+import {
+  Employee,
+  RateType,
+  RATE_TYPE_LABELS,
+  RATE_UNIT_LABELS,
+} from "@/types/employee";
+import { WorkRecord, CreateWorkRecordRequest } from "@/types/workRecord";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { formatCurrency, cn } from "@/lib/utils";
+import { getRateBadgeClass } from "@/features/employees/EmployeeTable";
 
 interface DailyRecordModalProps {
   isOpen: boolean;
@@ -41,6 +47,8 @@ export function DailyRecordModal({
 }: DailyRecordModalProps) {
   const [workDate, setWorkDate] = useState<string>(initialDate || getTodayDateString());
   const [employeeId, setEmployeeId] = useState<string>("");
+  const [hoursWorked, setHoursWorked] = useState<string>("8");
+  const [customAmount, setCustomAmount] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoadingEmployees, setIsLoadingEmployees] = useState<boolean>(false);
@@ -68,6 +76,8 @@ export function DailyRecordModal({
     if (isOpen) {
       setWorkDate(initialDate || getTodayDateString());
       setEmployeeId("");
+      setHoursWorked("8");
+      setCustomAmount("");
       setNotes("");
       setErrorMessage(null);
       fetchActiveEmployees();
@@ -87,6 +97,54 @@ export function DailyRecordModal({
   }, [isOpen, isSubmitting, onClose]);
 
   const selectedEmployee = employees.find((emp) => String(emp.id) === employeeId);
+  const rateType: RateType = selectedEmployee?.rateType || "DAILY";
+  const dailyRate = selectedEmployee ? Number(selectedEmployee.dailyRate) || 0 : 0;
+
+  const handleEmployeeChange = (newEmpId: string) => {
+    setEmployeeId(newEmpId);
+    setErrorMessage(null);
+    const emp = employees.find((e) => String(e.id) === newEmpId);
+    if (emp) {
+      const rType = emp.rateType || "DAILY";
+      const rateNum = Number(emp.dailyRate) || 0;
+      if (rType === "HOURLY") {
+        setHoursWorked("8");
+        setCustomAmount(Number((8 * rateNum).toFixed(2)).toString());
+      } else if (rType === "WEEKLY") {
+        setHoursWorked("");
+        setCustomAmount(Number((rateNum / 6).toFixed(2)).toString());
+      } else if (rType === "MONTHLY") {
+        setHoursWorked("");
+        setCustomAmount(Number((rateNum / 26).toFixed(2)).toString());
+      } else {
+        setHoursWorked("");
+        setCustomAmount(Number(rateNum.toFixed(2)).toString());
+      }
+    } else {
+      setHoursWorked("8");
+      setCustomAmount("");
+    }
+  };
+
+  const hourlyHours = parseFloat(hoursWorked) || 0;
+  const hourlyCalculatedAmount = Number((hourlyHours * dailyRate).toFixed(2));
+
+  const finalCalculatedAmount = useMemo(() => {
+    if (!selectedEmployee) return 0;
+    if (rateType === "HOURLY") {
+      return hourlyCalculatedAmount;
+    }
+    if (rateType === "WEEKLY" || rateType === "MONTHLY") {
+      const parsed = parseFloat(customAmount);
+      return !isNaN(parsed) && parsed >= 0
+        ? parsed
+        : rateType === "WEEKLY"
+        ? Number((dailyRate / 6).toFixed(2))
+        : Number((dailyRate / 26).toFixed(2));
+    }
+    const parsed = parseFloat(customAmount);
+    return !isNaN(parsed) && parsed >= 0 ? parsed : dailyRate;
+  }, [selectedEmployee, rateType, hourlyCalculatedAmount, customAmount, dailyRate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,16 +156,48 @@ export function DailyRecordModal({
       setErrorMessage("Please select a work date.");
       return;
     }
+    if (!selectedEmployee) {
+      setErrorMessage("Selected employee was not found.");
+      return;
+    }
+
+    let hoursToSend: number | undefined = undefined;
+    let amountToSend: number;
+
+    if (rateType === "HOURLY") {
+      const h = parseFloat(hoursWorked);
+      if (isNaN(h) || h <= 0) {
+        setErrorMessage("Sila masukkan jam bekerja yang sah (sekurang-kurangnya 0.5 jam).");
+        return;
+      }
+      hoursToSend = h;
+      amountToSend = Number((h * dailyRate).toFixed(2));
+    } else if (rateType === "WEEKLY" || rateType === "MONTHLY") {
+      const a = parseFloat(customAmount);
+      if (isNaN(a) || a <= 0) {
+        setErrorMessage("Sila masukkan amaun gaji yang sah.");
+        return;
+      }
+      amountToSend = Number(a.toFixed(2));
+    } else {
+      // DAILY
+      const a = parseFloat(customAmount);
+      amountToSend = !isNaN(a) && a > 0 ? Number(a.toFixed(2)) : dailyRate;
+    }
 
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
-      const created = await workRecordService.createWorkRecord({
+      const payload: CreateWorkRecordRequest = {
         employeeId: Number(employeeId),
         workDate,
+        hoursWorked: hoursToSend,
+        amount: amountToSend,
         notes: notes.trim() ? notes.trim() : undefined,
-      });
+      };
+
+      const created = await workRecordService.createWorkRecord(payload);
 
       onSuccess(created);
       onClose();
@@ -216,7 +306,7 @@ export function DailyRecordModal({
                 <div className="relative">
                   <select
                     value={employeeId}
-                    onChange={(e) => setEmployeeId(e.target.value)}
+                    onChange={(e) => handleEmployeeChange(e.target.value)}
                     disabled={isSubmitting}
                     required
                     className={cn(
@@ -231,7 +321,7 @@ export function DailyRecordModal({
                     </option>
                     {employees.map((emp) => (
                       <option key={emp.id} value={emp.id}>
-                        {emp.employeeCode} - {emp.name} ({formatCurrency(emp.dailyRate)}/day)
+                        {emp.employeeCode} - {emp.name} ({formatCurrency(emp.dailyRate)} / {RATE_UNIT_LABELS[emp.rateType] || "hari"})
                       </option>
                     ))}
                   </select>
@@ -242,17 +332,95 @@ export function DailyRecordModal({
               )}
             </div>
 
+            {/* Dynamic Rate / Hourly Inputs */}
+            {selectedEmployee && rateType === "HOURLY" && (
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Jam Bekerja <span className="text-rose-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    step="0.5"
+                    min="0.5"
+                    value={hoursWorked}
+                    onChange={(e) => setHoursWorked(e.target.value)}
+                    disabled={isSubmitting}
+                    required
+                    placeholder="8"
+                  />
+                </div>
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-medium text-emerald-900 dark:text-emerald-200">
+                  Pengiraan: {hoursWorked || 0} jam x RM {dailyRate.toFixed(2)} = RM {hourlyCalculatedAmount.toFixed(2)}
+                </div>
+              </div>
+            )}
+
+            {selectedEmployee && rateType === "WEEKLY" && (
+              <div className="space-y-2">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Amaun Gaji Harian (RM) <span className="text-rose-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value)}
+                    disabled={isSubmitting}
+                    required
+                    placeholder={(dailyRate / 6).toFixed(2)}
+                  />
+                </div>
+                <div className="p-2.5 bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 rounded-xl text-xs text-sky-900 dark:text-sky-200">
+                  Kadar cadangan prorata (6 hari seminggu): <strong className="font-mono">{formatCurrency(dailyRate / 6)}</strong> (Gaji mingguan: {formatCurrency(dailyRate)})
+                </div>
+              </div>
+            )}
+
+            {selectedEmployee && rateType === "MONTHLY" && (
+              <div className="space-y-2">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Amaun Gaji Harian (RM) <span className="text-rose-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value)}
+                    disabled={isSubmitting}
+                    required
+                    placeholder={(dailyRate / 26).toFixed(2)}
+                  />
+                </div>
+                <div className="p-2.5 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 rounded-xl text-xs text-purple-900 dark:text-purple-200">
+                  Kadar cadangan prorata (26 hari sebulan): <strong className="font-mono">{formatCurrency(dailyRate / 26)}</strong> (Gaji bulanan: {formatCurrency(dailyRate)})
+                </div>
+              </div>
+            )}
+
             {/* Rate Preview Card */}
             {selectedEmployee && (
               <div className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl p-3.5 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <CurrencyCircleDollar size={24} weight="duotone" className="text-emerald-600 dark:text-emerald-400" />
                   <div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">
-                      Standard Daily Rate
+                    <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                      <span>Standard Rate</span>
+                      <span
+                        className={cn(
+                          "inline-flex items-center px-1.5 py-0.2 rounded text-2xs font-semibold border",
+                          getRateBadgeClass(rateType)
+                        )}
+                      >
+                        {RATE_TYPE_LABELS[rateType] || "Harian"}
+                      </span>
                     </div>
                     <div className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
-                      {formatCurrency(selectedEmployee.dailyRate)}
+                      {formatCurrency(selectedEmployee.dailyRate)} / {RATE_UNIT_LABELS[rateType] || "hari"}
                     </div>
                   </div>
                 </div>
@@ -261,7 +429,7 @@ export function DailyRecordModal({
                     Calculated Amount
                   </div>
                   <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
-                    {formatCurrency(selectedEmployee.dailyRate)}
+                    {formatCurrency(finalCalculatedAmount)}
                   </div>
                 </div>
               </div>

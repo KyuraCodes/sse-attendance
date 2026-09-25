@@ -132,9 +132,19 @@ export function PaymentReceiptModal({
             color: #0f172a !important;
             border: none !important;
             box-shadow: none !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           .receipt-no-print {
             display: none !important;
+          }
+          .receipt-badge-settled {
+            display: inline-flex !important;
+            background-color: #ecfdf5 !important;
+            color: #065f46 !important;
+            border: 1px solid #10b981 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
         }
       `}</style>
@@ -252,9 +262,16 @@ export function PaymentReceiptModal({
                     </div>
 
                     <div className="text-left sm:text-right">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                        <CheckCircle size={14} weight="fill" />
-                        {receipt.paymentCode}
+                      <div className="flex items-center sm:justify-end gap-1.5 flex-wrap">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+                          <CheckCircle size={14} weight="fill" />
+                          {receipt.paymentCode}
+                        </div>
+                        {receipt.settleInFull && (
+                          <div className="receipt-badge-settled inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 shrink-0">
+                            LUNAS PENUH
+                          </div>
+                        )}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                         Date: <span className="font-semibold text-slate-700 dark:text-slate-300">{formatDate(receipt.paymentDate)}</span>
@@ -286,6 +303,15 @@ export function PaymentReceiptModal({
                       Reference: <span className="font-mono text-slate-700 dark:text-slate-300">{receipt.reference ? receipt.reference : "-"}</span>
                     </div>
                   </div>
+
+                  {receipt.settleInFull && (
+                    <div className="sm:col-span-2 pt-2 border-t border-slate-200/80 dark:border-slate-700/60 flex flex-wrap items-center gap-1.5 text-xs">
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">Penyelesaian:</span>
+                      <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                        Lunas Penuh (Baki Tertunggak Dilupuskan)
+                      </span>
+                    </div>
+                  )}
 
                   {receipt.notes && (
                     <div className="sm:col-span-2 pt-2 border-t border-slate-200/80 dark:border-slate-700/60">

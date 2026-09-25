@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
   const { data: payableRecords, error: wrErr } = await supabase
     .from("work_records")
-    .select("id, employee_id, amount, status")
+    .select("id, employee_id, amount, status, waived_amount")
     .in("status", ["UNPAID", "STORED", "PARTIALLY_PAID"]);
 
   if (wrErr) {
@@ -51,8 +51,10 @@ export async function GET(req: NextRequest) {
   > = {};
 
   for (const r of payableRecords || []) {
+    if (r.status === "PAID") continue;
     const applied = appliedMap[r.id] || 0;
-    const remaining = Number(r.amount) - applied;
+    const waived = Number(r.waived_amount || 0);
+    const remaining = Math.max(0, Number(r.amount) - applied - waived);
     if (remaining > 0.001) {
       if (!employeeRecords[r.employee_id]) {
         employeeRecords[r.employee_id] = [];

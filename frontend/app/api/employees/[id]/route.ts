@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { RateType } from "@/types/employee";
 
 export async function GET(
   req: NextRequest,
@@ -17,7 +18,7 @@ export async function GET(
 
   const { data: employee, error } = await supabase
     .from("employees")
-    .select("id, employee_code, name, phone, address, daily_rate, start_date, status, notes, created_at, updated_at")
+    .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
     .eq("id", employeeId)
     .maybeSingle();
 
@@ -32,6 +33,7 @@ export async function GET(
     phone: employee.phone,
     address: employee.address,
     dailyRate: Number(employee.daily_rate),
+    rateType: (employee.rate_type as RateType) || "DAILY",
     startDate: employee.start_date,
     status: employee.status,
     notes: employee.notes,
@@ -58,7 +60,7 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const { name, phone, address, dailyRate, startDate, status, notes } = body;
+    const { name, phone, address, dailyRate, rateType, startDate, status, notes } = body;
 
     const { data: existing } = await supabase
       .from("employees")
@@ -87,6 +89,18 @@ export async function PUT(
       }
       updates.daily_rate = rate;
     }
+    if (rateType !== undefined) {
+      const normalizedRateType = String(rateType).toUpperCase();
+      const validRateTypes: RateType[] = ["HOURLY", "DAILY", "WEEKLY", "MONTHLY"];
+      if (!validRateTypes.includes(normalizedRateType as RateType)) {
+        return errorResponse(
+          "Invalid rate type. Allowed: HOURLY, DAILY, WEEKLY, MONTHLY",
+          "INVALID_RATE_TYPE",
+          400
+        );
+      }
+      updates.rate_type = normalizedRateType;
+    }
     if (startDate !== undefined) updates.start_date = startDate;
     if (status !== undefined) updates.status = status.trim().toUpperCase();
     if (notes !== undefined) updates.notes = notes ? notes.trim() : null;
@@ -95,7 +109,7 @@ export async function PUT(
       .from("employees")
       .update(updates)
       .eq("id", employeeId)
-      .select("id, employee_code, name, phone, address, daily_rate, start_date, status, notes, created_at, updated_at")
+      .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
       .single();
 
     if (error || !updated) {
@@ -119,6 +133,7 @@ export async function PUT(
       phone: updated.phone,
       address: updated.address,
       dailyRate: Number(updated.daily_rate),
+      rateType: (updated.rate_type as RateType) || "DAILY",
       startDate: updated.start_date,
       status: updated.status,
       notes: updated.notes,

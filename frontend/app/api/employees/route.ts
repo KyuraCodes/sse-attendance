@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { RateType } from "@/types/employee";
 
 export async function GET(req: NextRequest) {
   const currentUser = await getAuthenticatedUser(req);
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
 
   let query = supabase
     .from("employees")
-    .select("id, employee_code, name, phone, address, daily_rate, start_date, status, notes, created_at, updated_at")
+    .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
     .order("id", { ascending: true });
 
   if (status && status !== "ALL") {
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest) {
     phone: e.phone,
     address: e.address,
     dailyRate: Number(e.daily_rate),
+    rateType: (e.rate_type as RateType) || "DAILY",
     startDate: e.start_date,
     status: e.status,
     notes: e.notes,
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, phone, address, dailyRate, startDate, status, notes } = body;
+    const { name, phone, address, dailyRate, rateType: rawRateType, startDate, status, notes } = body;
 
     if (!name || !name.trim()) {
       return errorResponse("Name is required", "INVALID_NAME", 400);
@@ -74,6 +76,18 @@ export async function POST(req: NextRequest) {
     if (isNaN(rate) || rate <= 0) {
       return errorResponse("Daily rate must be greater than 0", "INVALID_DAILY_RATE", 400);
     }
+
+    const inputRateType = rawRateType || "DAILY";
+    const normalizedRateType = String(inputRateType).toUpperCase();
+    const validRateTypes: RateType[] = ["HOURLY", "DAILY", "WEEKLY", "MONTHLY"];
+    if (!validRateTypes.includes(normalizedRateType as RateType)) {
+      return errorResponse(
+        "Invalid rate type. Allowed: HOURLY, DAILY, WEEKLY, MONTHLY",
+        "INVALID_RATE_TYPE",
+        400
+      );
+    }
+    const rateType = normalizedRateType as RateType;
 
     // Generate unique employee code
     const { count } = await supabase.from("employees").select("*", { count: "exact", head: true });
@@ -100,11 +114,12 @@ export async function POST(req: NextRequest) {
         phone: phone ? phone.trim() : null,
         address: address ? address.trim() : null,
         daily_rate: rate,
+        rate_type: rateType,
         start_date: startDate,
         status: status ? status.trim().toUpperCase() : "ACTIVE",
         notes: notes ? notes.trim() : null,
       })
-      .select("id, employee_code, name, phone, address, daily_rate, start_date, status, notes, created_at, updated_at")
+      .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
       .single();
 
     if (error || !newEmployee) {
@@ -122,6 +137,7 @@ export async function POST(req: NextRequest) {
         employeeCode: newEmployee.employee_code,
         name: newEmployee.name,
         dailyRate: newEmployee.daily_rate,
+        rateType: newEmployee.rate_type,
         status: newEmployee.status,
       })
     );
@@ -134,6 +150,7 @@ export async function POST(req: NextRequest) {
         phone: newEmployee.phone,
         address: newEmployee.address,
         dailyRate: Number(newEmployee.daily_rate),
+        rateType: (newEmployee.rate_type as RateType) || "DAILY",
         startDate: newEmployee.start_date,
         status: newEmployee.status,
         notes: newEmployee.notes,

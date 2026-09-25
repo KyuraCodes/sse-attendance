@@ -1,3 +1,5 @@
+import { RateType } from "./employee";
+
 export type WorkRecordStatus =
   | "UNPAID"
   | "STORED"
@@ -16,21 +18,39 @@ export interface WorkRecord {
   dailyRate: number;
   amount: number;
   status: WorkRecordStatus | string;
+  hoursWorked?: number;
+  waivedAmount?: number;
+  rateType?: RateType;
   notes?: string | null;
   createdBy?: number | null;
   createdAt?: string | null;
   updatedAt?: string | null;
 }
 
+export interface WorkRecordDto extends WorkRecord {
+  hoursWorked?: number;
+  waivedAmount?: number;
+  rateType?: RateType;
+}
+
 export interface CreateWorkRecordRequest {
   employeeId: number;
   workDate: string; // ISO format: YYYY-MM-DD
+  hoursWorked?: number;
+  amount?: number;
   notes?: string;
+}
+
+export interface BulkWorkRecordEntry {
+  employeeId: number;
+  hoursWorked?: number;
+  amount?: number;
 }
 
 export interface BulkWorkRecordRequest {
   workDate: string; // ISO format: YYYY-MM-DD
-  employeeIds: number[];
+  employeeIds?: number[];
+  entries?: BulkWorkRecordEntry[];
   notes?: string;
 }
 
