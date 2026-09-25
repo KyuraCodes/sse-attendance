@@ -1,0 +1,8 @@
+backend
+target
+.git
+.agents
+.superpowers
+docs
+node_modules
+.next
