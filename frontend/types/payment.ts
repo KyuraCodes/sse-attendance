@@ -22,9 +22,14 @@ export interface Payment {
   paymentMethod: PaymentMethod | string;
   reference?: string | null;
   notes?: string | null;
+  settleInFull?: boolean;
   createdBy?: number;
   createdAt?: string;
   items?: PaymentItem[];
+}
+
+export interface PaymentDto extends Payment {
+  settleInFull?: boolean;
 }
 
 export interface CreatePaymentRequest {
@@ -34,6 +39,7 @@ export interface CreatePaymentRequest {
   paymentMethod?: PaymentMethod | string;
   reference?: string;
   notes?: string;
+  settleInFull?: boolean;
 }
 
 export interface ReceiptDto {
@@ -49,6 +55,7 @@ export interface ReceiptDto {
   notes?: string | null;
   totalAmount: number;
   status?: string;
+  settleInFull?: boolean;
   items: PaymentItem[];
 }
 

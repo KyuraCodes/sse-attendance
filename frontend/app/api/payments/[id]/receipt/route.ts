@@ -28,6 +28,7 @@ export async function GET(
       payment_method,
       reference,
       notes,
+      settle_in_full,
       created_by,
       created_at,
       employees (
@@ -92,6 +93,7 @@ export async function GET(
     notes: payment.notes,
     totalAmount: Number(payment.amount),
     status: "PAID",
+    settleInFull: Boolean(payment.settle_in_full),
     items: receiptItems,
   });
 }
