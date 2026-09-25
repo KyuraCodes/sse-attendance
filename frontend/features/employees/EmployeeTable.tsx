@@ -9,9 +9,28 @@ import {
   CircleNotch,
   Trash,
 } from "@phosphor-icons/react";
-import { Employee } from "@/types/employee";
+import {
+  Employee,
+  RateType,
+  RATE_TYPE_LABELS,
+  RATE_UNIT_LABELS,
+} from "@/types/employee";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+
+export const getRateBadgeClass = (rateType?: RateType): string => {
+  switch (rateType) {
+    case "HOURLY":
+      return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800";
+    case "WEEKLY":
+      return "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800";
+    case "MONTHLY":
+      return "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-800";
+    case "DAILY":
+    default:
+      return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800";
+  }
+};
 
 interface EmployeeTableProps {
   employees: Employee[];
@@ -44,7 +63,7 @@ export function EmployeeTable({
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Phone</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Daily Rate</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rate</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Start Date</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
@@ -161,11 +180,24 @@ export function EmployeeTable({
               <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800/80">
                 <div>
                   <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
-                    Daily Rate
+                    Rate
                   </span>
-                  <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-sm">
-                    {formatCurrency(employee.dailyRate)}
-                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                    <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                      {formatCurrency(employee.dailyRate)}
+                    </span>
+                    <span className="text-slate-500 dark:text-slate-400 font-medium text-xs">
+                      / {RATE_UNIT_LABELS[employee.rateType] || "hari"}
+                    </span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-semibold border",
+                        getRateBadgeClass(employee.rateType)
+                      )}
+                    >
+                      {RATE_TYPE_LABELS[employee.rateType] || "Harian"}
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
@@ -262,7 +294,7 @@ export function EmployeeTable({
                   Phone
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Daily Rate
+                  Rate
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Start Date
@@ -320,11 +352,24 @@ export function EmployeeTable({
                       )}
                     </td>
 
-                    {/* Daily Rate */}
+                    {/* Rate */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
-                        {formatCurrency(employee.dailyRate)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          {formatCurrency(employee.dailyRate)}
+                          <span className="text-xs font-normal text-slate-500 dark:text-slate-400 ml-1">
+                            / {RATE_UNIT_LABELS[employee.rateType] || "hari"}
+                          </span>
+                        </span>
+                        <span
+                          className={cn(
+                            "inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-semibold border",
+                            getRateBadgeClass(employee.rateType)
+                          )}
+                        >
+                          {RATE_TYPE_LABELS[employee.rateType] || "Harian"}
+                        </span>
+                      </div>
                     </td>
 
                     {/* Start Date */}

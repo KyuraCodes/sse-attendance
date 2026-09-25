@@ -3,7 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { X, PencilSimple, WarningCircle } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
-import { Employee, UpdateEmployeeRequest } from "@/types/employee";
+import {
+  Employee,
+  UpdateEmployeeRequest,
+  RateType,
+  RATE_TYPE_LABELS,
+  RATE_UNIT_LABELS,
+} from "@/types/employee";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -31,6 +37,20 @@ interface FormErrors {
   general?: string;
 }
 
+export const RATE_INPUT_LABELS: Record<RateType, string> = {
+  HOURLY: "Kadar Sejam (RM)",
+  DAILY: "Kadar Harian (RM)",
+  WEEKLY: "Kadar Mingguan (RM)",
+  MONTHLY: "Kadar Bulanan (RM)",
+};
+
+export const RATE_INPUT_HELPERS: Record<RateType, string> = {
+  HOURLY: "Agreed wage per worked hour",
+  DAILY: "Agreed wage per worked day",
+  WEEKLY: "Agreed wage per worked week",
+  MONTHLY: "Agreed wage per worked month",
+};
+
 export function EditEmployeeModal({
   employee,
   isOpen,
@@ -45,6 +65,7 @@ export function EditEmployeeModal({
     address: "",
     notes: "",
   });
+  const [rateType, setRateType] = useState<RateType>("DAILY");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -58,6 +79,7 @@ export function EditEmployeeModal({
         address: employee.address || "",
         notes: employee.notes || "",
       });
+      setRateType(employee.rateType || "DAILY");
       setErrors({});
       setIsSubmitting(false);
     }
@@ -91,9 +113,9 @@ export function EditEmployeeModal({
 
     const rateNum = parseFloat(formData.dailyRate);
     if (!formData.dailyRate.trim()) {
-      newErrors.dailyRate = "Daily rate is required";
+      newErrors.dailyRate = `${RATE_INPUT_LABELS[rateType]} is required`;
     } else if (isNaN(rateNum) || rateNum <= 0) {
-      newErrors.dailyRate = "Daily rate must be greater than 0";
+      newErrors.dailyRate = "Rate must be greater than 0";
     }
 
     if (!formData.startDate) {
@@ -121,6 +143,7 @@ export function EditEmployeeModal({
       const payload: UpdateEmployeeRequest = {
         name: formData.name.trim(),
         dailyRate: parseFloat(formData.dailyRate),
+        rateType: rateType,
         startDate: formData.startDate,
         phone: formData.phone.trim() || undefined,
         address: formData.address.trim() || undefined,
@@ -181,7 +204,7 @@ export function EditEmployeeModal({
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Update daily rate, contact details, or background information
+                Update pay rate, contact details, or background information
               </p>
             </div>
           </div>
@@ -222,12 +245,43 @@ export function EditEmployeeModal({
             disabled={isSubmitting}
           />
 
-          {/* Daily Rate & Start Date Grid */}
+          {/* Rate Type Selector */}
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="edit-emp-rate-type"
+              className="text-sm font-medium text-slate-800 dark:text-slate-200 select-none"
+            >
+              Rate Type <span className="text-rose-600 ml-0.5">*</span>
+            </label>
+            <select
+              id="edit-emp-rate-type"
+              name="rateType"
+              value={rateType}
+              onChange={(e) => setRateType(e.target.value as RateType)}
+              disabled={isSubmitting}
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 shadow-2xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 disabled:bg-slate-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <option value="HOURLY">Per Jam (Hourly)</option>
+              <option value="DAILY">Harian (Daily - default)</option>
+              <option value="WEEKLY">Mingguan (Weekly)</option>
+              <option value="MONTHLY">Bulanan (Monthly)</option>
+            </select>
+          </div>
+
+          {/* Pay Rate & Start Date Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               id="edit-emp-daily-rate"
-              label="Daily Rate (RM)"
-              placeholder="e.g. 80.00"
+              label={RATE_INPUT_LABELS[rateType]}
+              placeholder={
+                rateType === "HOURLY"
+                  ? "e.g. 10.00"
+                  : rateType === "DAILY"
+                  ? "e.g. 80.00"
+                  : rateType === "WEEKLY"
+                  ? "e.g. 500.00"
+                  : "e.g. 2000.00"
+              }
               type="number"
               step="0.01"
               min="0.01"
@@ -236,7 +290,7 @@ export function EditEmployeeModal({
               error={errors.dailyRate}
               required
               disabled={isSubmitting}
-              helperText="Agreed wage per worked day"
+              helperText={RATE_INPUT_HELPERS[rateType]}
             />
 
             <Input
