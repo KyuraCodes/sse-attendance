@@ -127,7 +127,7 @@ export default function LoginPage() {
               id="login-email"
               type="email"
               label="Email Address"
-              placeholder="ceo@ssep.com.my"
+              placeholder="ceo@sse.com"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -186,17 +186,6 @@ export default function LoginPage() {
               >
                 Sign In
               </Button>
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail("ceo@ssep.com");
-                  setPassword("password123");
-                  setErrors({});
-                }}
-                className="text-xs text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-medium py-1 transition-colors cursor-pointer text-center"
-              >
-                Auto-fill CEO credentials (ceo@ssep.com / password123)
-              </button>
             </div>
           </form>
 
