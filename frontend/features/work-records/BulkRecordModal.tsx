@@ -14,10 +14,17 @@ import {
 } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
 import { workRecordService } from "@/services/workRecordService";
-import { Employee } from "@/types/employee";
+import {
+  Employee,
+  RateType,
+  RATE_TYPE_LABELS,
+  RATE_UNIT_LABELS,
+} from "@/types/employee";
+import { BulkWorkRecordEntry } from "@/types/workRecord";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { formatCurrency, cn } from "@/lib/utils";
+import { getRateBadgeClass } from "@/features/employees/EmployeeTable";
 
 interface BulkRecordModalProps {
   isOpen: boolean;
@@ -25,6 +32,35 @@ interface BulkRecordModalProps {
   onSuccess: (count: number, totalAmount: number) => void;
   initialDate?: string;
 }
+
+export const computeBulkWorkerWage = (
+  emp: Employee,
+  hoursWorked?: number
+): { amount: number; hours?: number } => {
+  const rateType = emp.rateType || "DAILY";
+  const rate = Number(emp.dailyRate) || 0;
+
+  if (rateType === "HOURLY") {
+    const hours = hoursWorked !== undefined && hoursWorked > 0 ? hoursWorked : 8;
+    return {
+      amount: Number((hours * rate).toFixed(2)),
+      hours,
+    };
+  } else if (rateType === "WEEKLY") {
+    return {
+      amount: Number((rate / 6).toFixed(2)),
+    };
+  } else if (rateType === "MONTHLY") {
+    return {
+      amount: Number((rate / 26).toFixed(2)),
+    };
+  } else {
+    // DAILY
+    return {
+      amount: rate,
+    };
+  }
+};
 
 const getTodayDateString = (): string => {
   const today = new Date();
@@ -44,10 +80,18 @@ export function BulkRecordModal({
   const [notes, setNotes] = useState<string>("");
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [hourlyHours, setHourlyHours] = useState<Record<number, string>>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isLoadingEmployees, setIsLoadingEmployees] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const getHoursForEmployee = (empId: number): number => {
+    const val = hourlyHours[empId];
+    if (val === undefined || val === null || val === "") return 8;
+    const parsed = parseFloat(val);
+    return isNaN(parsed) || parsed <= 0 ? 8 : parsed;
+  };
 
   // Load active employees when modal opens
   const fetchActiveEmployees = useCallback(async () => {
@@ -58,6 +102,13 @@ export function BulkRecordModal({
       setEmployees(activeEmps);
       // By default, select all active workers for quick CEO one-click flow
       setSelectedIds(new Set(activeEmps.map((emp) => emp.id)));
+      const initialHours: Record<number, string> = {};
+      activeEmps.forEach((emp) => {
+        if (emp.rateType === "HOURLY") {
+          initialHours[emp.id] = "8";
+        }
+      });
+      setHourlyHours(initialHours);
     } catch (err) {
       const msg =
         err instanceof Error
@@ -75,6 +126,7 @@ export function BulkRecordModal({
       setNotes("");
       setSearchTerm("");
       setErrorMessage(null);
+      setHourlyHours({});
       fetchActiveEmployees();
     }
   }, [isOpen, initialDate, fetchActiveEmployees]);
@@ -143,11 +195,13 @@ export function BulkRecordModal({
     employees.forEach((emp) => {
       if (selectedIds.has(emp.id)) {
         count += 1;
-        sum += Number(emp.dailyRate) || 0;
+        const hours = emp.rateType === "HOURLY" ? getHoursForEmployee(emp.id) : undefined;
+        const { amount } = computeBulkWorkerWage(emp, hours);
+        sum += amount;
       }
     });
     return { selectedCount: count, totalAmount: sum };
-  }, [employees, selectedIds]);
+  }, [employees, selectedIds, hourlyHours]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,9 +218,24 @@ export function BulkRecordModal({
     setErrorMessage(null);
 
     try {
+      const entries: BulkWorkRecordEntry[] = Array.from(selectedIds).map((id) => {
+        const emp = employees.find((e) => e.id === id);
+        if (!emp) {
+          return { employeeId: id };
+        }
+        const hours = emp.rateType === "HOURLY" ? getHoursForEmployee(id) : undefined;
+        const { amount } = computeBulkWorkerWage(emp, hours);
+        return {
+          employeeId: id,
+          hoursWorked: hours,
+          amount,
+        };
+      });
+
       await workRecordService.bulkCreateWorkRecords({
         workDate,
         employeeIds: Array.from(selectedIds),
+        entries,
         notes: notes.trim() ? notes.trim() : undefined,
       });
 
@@ -348,6 +417,10 @@ export function BulkRecordModal({
                 <div className="max-h-64 overflow-y-auto divide-y divide-slate-200/70 dark:divide-slate-800/70">
                   {filteredEmployees.map((emp) => {
                     const isSelected = selectedIds.has(emp.id);
+                    const isHourly = emp.rateType === "HOURLY";
+                    const hours = isHourly ? getHoursForEmployee(emp.id) : undefined;
+                    const { amount } = computeBulkWorkerWage(emp, hours);
+
                     return (
                       <div
                         key={emp.id}
@@ -368,13 +441,23 @@ export function BulkRecordModal({
                             className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                           />
                           <div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
                                 {emp.name}
                               </span>
                               <span className="text-2xs font-mono font-medium px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded">
                                 {emp.employeeCode}
                               </span>
+                              {emp.rateType && emp.rateType !== "DAILY" && (
+                                <span
+                                  className={cn(
+                                    "inline-flex items-center px-1.5 py-0.2 rounded text-2xs font-semibold border",
+                                    getRateBadgeClass(emp.rateType)
+                                  )}
+                                >
+                                  {RATE_TYPE_LABELS[emp.rateType]}
+                                </span>
+                              )}
                             </div>
                             {emp.phone && (
                               <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -384,11 +467,57 @@ export function BulkRecordModal({
                           </div>
                         </div>
 
-                        <div className="text-right">
-                          <span className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
-                            {formatCurrency(emp.dailyRate)}
-                          </span>
-                          <div className="text-2xs text-slate-400">Daily Rate</div>
+                        <div className="flex items-center gap-3">
+                          {isHourly && (
+                            <div
+                              className="flex items-center gap-1.5"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <label
+                                htmlFor={`hours-${emp.id}`}
+                                className="text-2xs font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap"
+                              >
+                                Jam:
+                              </label>
+                              <input
+                                id={`hours-${emp.id}`}
+                                type="number"
+                                step="0.5"
+                                min="0.5"
+                                value={hourlyHours[emp.id] !== undefined ? hourlyHours[emp.id] : "8"}
+                                onChange={(e) => {
+                                  e.stopPropagation();
+                                  const val = e.target.value;
+                                  setHourlyHours((prev) => ({
+                                    ...prev,
+                                    [emp.id]: val,
+                                  }));
+                                }}
+                                disabled={isSubmitting || !isSelected}
+                                className={cn(
+                                  "w-16 h-8 px-2 text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
+                                  "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
+                                  "border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500",
+                                  (!isSelected || isSubmitting) && "opacity-50 cursor-not-allowed"
+                                )}
+                              />
+                            </div>
+                          )}
+
+                          <div className="text-right shrink-0 min-w-[70px]">
+                            <span className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
+                              {formatCurrency(amount)}
+                            </span>
+                            <div className="text-2xs text-slate-400">
+                              {isHourly
+                                ? `${formatCurrency(emp.dailyRate)}/j`
+                                : emp.rateType === "WEEKLY"
+                                ? "Prorata (1/6)"
+                                : emp.rateType === "MONTHLY"
+                                ? "Prorata (1/26)"
+                                : "Daily Rate"}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     );
