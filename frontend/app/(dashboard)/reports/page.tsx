@@ -9,6 +9,8 @@ import {
   ArrowClockwise,
   Receipt,
   DownloadSimple,
+  FileXls,
+  FileCsv,
 } from "@phosphor-icons/react";
 import { reportService } from "@/services/reportService";
 import { MonthlyReport, OutstandingEmployeeReport, DailyReport } from "@/types/report";
@@ -22,6 +24,7 @@ import {
   downloadOutstandingReportPdf,
   downloadDailyReportPdf,
 } from "@/lib/pdfGenerator";
+import { exportToCsv, exportToExcel } from "@/lib/exportUtils";
 
 type ReportTab = "monthly" | "outstanding" | "daily";
 
@@ -131,6 +134,134 @@ export default function ReportsPage() {
     }
   };
 
+  const getExportData = () => {
+    if (activeTab === "monthly" && monthlyReport) {
+      const filename = `Penyata_Bulanan_${selectedMonth}_${selectedYear}`;
+      const sheetName = "Penyata Bulanan";
+      const headers = [
+        "Tarikh",
+        "Kod Pekerja",
+        "Nama Pekerja",
+        "Kadar (RM)",
+        "Jumlah (RM)",
+        "Status",
+        "Catatan",
+      ];
+      const rows: (string | number)[][] = monthlyReport.records.map((r) => [
+        r.workDate,
+        r.employeeCode,
+        r.employeeName,
+        Number(r.dailyRate || 0).toFixed(2),
+        Number(r.amount || 0).toFixed(2),
+        r.status,
+        r.notes || "",
+      ]);
+      const totalGross = (monthlyReport as any).totalGross ?? monthlyReport.grossPayroll ?? 0;
+      const totalPaid = (monthlyReport as any).totalPaid ?? monthlyReport.paidAmount ?? 0;
+      const totalOutstanding = (monthlyReport as any).totalOutstanding ?? monthlyReport.outstandingAmount ?? 0;
+      const summaryRow: (string | number)[] = [
+        "JUMLAH",
+        "",
+        "",
+        "",
+        Number(totalGross).toFixed(2),
+        `Dibayar: RM ${Number(totalPaid).toFixed(2)} | Tertunggak: RM ${Number(totalOutstanding).toFixed(2)}`,
+        "",
+      ];
+      return { filename, sheetName, headers, rows: [...rows, summaryRow] };
+    }
+
+    if (activeTab === "outstanding" && outstandingReports.length > 0) {
+      const filename = `Laporan_Baki_Tertunggak_${new Date().toISOString().slice(0, 10)}`;
+      const sheetName = "Baki Tertunggak";
+      const headers = [
+        "Kod Pekerja",
+        "Nama Pekerja",
+        "No. Telefon",
+        "Hari Belum Bayar",
+        "Jumlah Disimpan (RM)",
+        "Baki Tertunggak (RM)",
+      ];
+      const rows: (string | number)[][] = outstandingReports.map((r) => [
+        r.employeeCode,
+        r.employeeName,
+        r.phone || "-",
+        (r as any).unpaidWorkDays ?? r.unpaidDays ?? r.totalWorkDaysUnpaid ?? 0,
+        Number((r as any).storedWagesAmount ?? r.storedAmount ?? 0).toFixed(2),
+        Number(r.outstandingBalance ?? r.totalOutstanding ?? 0).toFixed(2),
+      ]);
+      const totalStored = outstandingReports.reduce(
+        (sum, r) => sum + Number((r as any).storedWagesAmount ?? r.storedAmount ?? 0),
+        0
+      );
+      const totalOutstanding = outstandingReports.reduce(
+        (sum, r) => sum + Number(r.outstandingBalance ?? r.totalOutstanding ?? 0),
+        0
+      );
+      const summaryRow: (string | number)[] = [
+        "JUMLAH",
+        "",
+        "",
+        "",
+        totalStored.toFixed(2),
+        totalOutstanding.toFixed(2),
+      ];
+      return { filename, sheetName, headers, rows: [...rows, summaryRow] };
+    }
+
+    if (activeTab === "daily" && dailyReport) {
+      const filename = `Daftar_Harian_${selectedDate}`;
+      const sheetName = "Daftar Harian";
+      const headers = [
+        "Tarikh",
+        "Kod Pekerja",
+        "Nama Pekerja",
+        "Kadar (RM)",
+        "Jam Bekerja",
+        "Jumlah (RM)",
+        "Status",
+        "Catatan",
+      ];
+      const rows: (string | number)[][] = dailyReport.records.map((r) => [
+        r.workDate,
+        r.employeeCode,
+        r.employeeName,
+        Number(r.dailyRate || 0).toFixed(2),
+        r.hoursWorked != null ? r.hoursWorked.toString() : "-",
+        Number(r.amount || 0).toFixed(2),
+        r.status,
+        r.notes || "",
+      ]);
+      const totalPayroll = (dailyReport as any).totalPayroll ?? dailyReport.totalAmount ?? 0;
+      const totalWorkers = (dailyReport as any).totalWorkers ?? dailyReport.totalRecords ?? dailyReport.records.length;
+      const summaryRow: (string | number)[] = [
+        "JUMLAH",
+        "",
+        "",
+        "",
+        "",
+        Number(totalPayroll).toFixed(2),
+        `Pekerja: ${totalWorkers}`,
+        "",
+      ];
+      return { filename, sheetName, headers, rows: [...rows, summaryRow] };
+    }
+
+    return null;
+  };
+
+  const handleExportExcel = () => {
+    const data = getExportData();
+    if (!data) return;
+    exportToExcel(data.filename, data.sheetName, data.headers, data.rows);
+  };
+
+  const handleExportCsv = () => {
+    const data = getExportData();
+    if (!data) return;
+    exportToCsv(data.filename, data.headers, data.rows);
+  };
+
   const isCurrentReportDownloadable =
     (activeTab === "monthly" && Boolean(monthlyReport)) ||
     (activeTab === "outstanding" && outstandingReports.length > 0) ||
@@ -149,7 +280,29 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportExcel}
+            disabled={isLoading || !isCurrentReportDownloadable}
+            leftIcon={<FileXls size={16} weight="bold" className="text-emerald-600 dark:text-emerald-400" />}
+            className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
+          >
+            Export Excel
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCsv}
+            disabled={isLoading || !isCurrentReportDownloadable}
+            leftIcon={<FileCsv size={16} weight="bold" className="text-blue-600 dark:text-blue-400" />}
+            className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
+          >
+            Export CSV
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -251,6 +404,8 @@ export default function ReportsPage() {
             onYearChange={setSelectedYear}
             onMonthChange={setSelectedMonth}
             onRefresh={loadMonthlyData}
+            onExportExcel={handleExportExcel}
+            onExportCsv={handleExportCsv}
           />
         )}
 
@@ -258,6 +413,8 @@ export default function ReportsPage() {
           <OutstandingReportTable
             reports={outstandingReports}
             isLoading={isLoading}
+            onExportExcel={handleExportExcel}
+            onExportCsv={handleExportCsv}
           />
         )}
 
@@ -268,6 +425,8 @@ export default function ReportsPage() {
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
             onRefresh={loadDailyData}
+            onExportExcel={handleExportExcel}
+            onExportCsv={handleExportCsv}
           />
         )}
       </div>

@@ -12,6 +12,8 @@ import {
   PiggyBank,
   CalendarBlank,
   DownloadSimple,
+  FileXls,
+  FileCsv,
 } from "@phosphor-icons/react";
 import { OutstandingEmployeeReport } from "@/types/report";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -21,11 +23,15 @@ import { downloadOutstandingReportPdf } from "@/lib/pdfGenerator";
 interface OutstandingReportTableProps {
   reports: OutstandingEmployeeReport[];
   isLoading?: boolean;
+  onExportExcel?: () => void;
+  onExportCsv?: () => void;
 }
 
 export function OutstandingReportTable({
   reports,
   isLoading = false,
+  onExportExcel,
+  onExportCsv,
 }: OutstandingReportTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -186,6 +192,32 @@ export function OutstandingReportTable({
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               />
             </div>
+
+            {onExportExcel && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportExcel}
+                disabled={isLoading || reports.length === 0}
+                leftIcon={<FileXls size={16} weight="bold" className="text-emerald-600 dark:text-emerald-400" />}
+                className="w-full sm:w-auto justify-center whitespace-nowrap"
+              >
+                Excel
+              </Button>
+            )}
+
+            {onExportCsv && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportCsv}
+                disabled={isLoading || reports.length === 0}
+                leftIcon={<FileCsv size={16} weight="bold" className="text-blue-600 dark:text-blue-400" />}
+                className="w-full sm:w-auto justify-center whitespace-nowrap"
+              >
+                CSV
+              </Button>
+            )}
 
             <Button
               variant="outline"

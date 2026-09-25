@@ -12,6 +12,8 @@ import {
   PiggyBank,
   Receipt,
   DownloadSimple,
+  FileXls,
+  FileCsv,
 } from "@phosphor-icons/react";
 import { DailyReport } from "@/types/report";
 import { WorkRecord } from "@/types/workRecord";
@@ -26,6 +28,8 @@ interface DailyReportCardProps {
   selectedDate: string;
   onDateChange: (date: string) => void;
   onRefresh?: () => void;
+  onExportExcel?: () => void;
+  onExportCsv?: () => void;
 }
 
 const getTodayString = (): string => {
@@ -51,6 +55,8 @@ export function DailyReportCard({
   selectedDate,
   onDateChange,
   onRefresh,
+  onExportExcel,
+  onExportCsv,
 }: DailyReportCardProps) {
   const handlePrint = () => {
     window.print();
@@ -151,6 +157,32 @@ export function DailyReportCard({
                 className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
               >
                 Refresh
+              </Button>
+            )}
+
+            {onExportExcel && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportExcel}
+                disabled={isLoading || !report}
+                leftIcon={<FileXls size={16} weight="bold" className="text-emerald-600 dark:text-emerald-400" />}
+                className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
+              >
+                Excel
+              </Button>
+            )}
+
+            {onExportCsv && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportCsv}
+                disabled={isLoading || !report}
+                leftIcon={<FileCsv size={16} weight="bold" className="text-blue-600 dark:text-blue-400" />}
+                className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
+              >
+                CSV
               </Button>
             )}
 

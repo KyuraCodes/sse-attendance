@@ -13,6 +13,8 @@ import {
   CaretRight,
   Receipt,
   DownloadSimple,
+  FileXls,
+  FileCsv,
 } from "@phosphor-icons/react";
 import { MonthlyReport } from "@/types/report";
 import { WorkRecord } from "@/types/workRecord";
@@ -29,6 +31,8 @@ interface MonthlyReportCardProps {
   onYearChange: (year: number) => void;
   onMonthChange: (month: number) => void;
   onRefresh?: () => void;
+  onExportExcel?: () => void;
+  onExportCsv?: () => void;
 }
 
 const MONTH_NAMES = [
@@ -56,6 +60,8 @@ export function MonthlyReportCard({
   onYearChange,
   onMonthChange,
   onRefresh,
+  onExportExcel,
+  onExportCsv,
 }: MonthlyReportCardProps) {
   const monthName = MONTH_NAMES[selectedMonth - 1] || `Month ${selectedMonth}`;
 
@@ -163,6 +169,32 @@ export function MonthlyReportCard({
                 className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
               >
                 Refresh
+              </Button>
+            )}
+
+            {onExportExcel && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportExcel}
+                disabled={isLoading || !report}
+                leftIcon={<FileXls size={16} weight="bold" className="text-emerald-600 dark:text-emerald-400" />}
+                className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
+              >
+                Excel
+              </Button>
+            )}
+
+            {onExportCsv && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onExportCsv}
+                disabled={isLoading || !report}
+                leftIcon={<FileCsv size={16} weight="bold" className="text-blue-600 dark:text-blue-400" />}
+                className="flex-1 sm:flex-initial justify-center whitespace-nowrap"
+              >
+                CSV
               </Button>
             )}
 
