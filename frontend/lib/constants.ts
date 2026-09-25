@@ -4,7 +4,7 @@ export const SYSTEM_NAME = "SSE Payroll Management System";
 export const SYSTEM_DESCRIPTION = "Daily-rated employee attendance and payroll management";
 
 export const NEXT_PUBLIC_API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+  process.env.NEXT_PUBLIC_API_URL || "";
 
 export interface NavItem {
   label: string;

@@ -40,15 +40,21 @@ function buildUrl(endpoint: string): string {
   if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
     return endpoint;
   }
-  const cleanBase = (NEXT_PUBLIC_API_URL || "http://localhost:8080/api").replace(/\/+$/, "");
+  const cleanBase = (NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
   let cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
-  // Prevent double /api prefix if both base URL and endpoint contain it
-  if (cleanBase.endsWith("/api") && cleanEndpoint.startsWith("/api/")) {
-    cleanEndpoint = cleanEndpoint.substring(4);
+  if (!cleanEndpoint.startsWith("/api")) {
+    cleanEndpoint = `/api${cleanEndpoint}`;
   }
 
-  return `${cleanBase}${cleanEndpoint}`;
+  if (cleanBase) {
+    if (cleanBase.endsWith("/api") && cleanEndpoint.startsWith("/api/")) {
+      cleanEndpoint = cleanEndpoint.substring(4);
+    }
+    return `${cleanBase}${cleanEndpoint}`;
+  }
+
+  return cleanEndpoint;
 }
 
 interface RequestOptions extends RequestInit {
