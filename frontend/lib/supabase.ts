@@ -1,13 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import ws from "ws";
 
-const SUPABASE_URL =
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  "https://giwgjtbxrhbyamxnqpfx.supabase.co";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-const SUPABASE_ANON_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdpd2dqdGJ4cmhieWFteG5xcGZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzMTE0OTAsImV4cCI6MjA5ODg4NzQ5MH0.nELEP7nqcWN_MjDCbo1mI-i51b_ELY5nhUr3ySx5XLc";
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error(
+    "Missing Supabase environment variables. Please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are defined in your .env file."
+  );
+}
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {

@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
 import { supabase } from "./supabase";
 
-const JWT_SECRET =
-  process.env.JWT_SECRET ||
-  "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+const JWT_SECRET: string = process.env.JWT_SECRET || "";
 
 export interface AuthJwtPayload {
   userId: number;
@@ -37,7 +35,7 @@ export function signToken(payload: {
 
 export function verifyToken(token: string): AuthJwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as AuthJwtPayload;
+    return jwt.verify(token, JWT_SECRET) as unknown as AuthJwtPayload;
   } catch {
     return null;
   }
