@@ -3,6 +3,10 @@ import { supabase } from "./supabase";
 
 const JWT_SECRET: string = process.env.JWT_SECRET || "";
 
+if (process.env.NODE_ENV === "production" && (!JWT_SECRET || JWT_SECRET.length < 32)) {
+  console.error("[CRITICAL SECURITY]: JWT_SECRET is missing or has insufficient entropy (must be at least 32 characters).");
+}
+
 export interface AuthJwtPayload {
   userId: number;
   sub: string;
@@ -29,13 +33,22 @@ export function signToken(payload: {
   name: string;
 }): string {
   return jwt.sign(payload, JWT_SECRET, {
+    algorithm: "HS256",
     expiresIn: "7d",
   });
 }
 
 export function verifyToken(token: string): AuthJwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as unknown as AuthJwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET, {
+      algorithms: ["HS256"],
+    }) as unknown as AuthJwtPayload;
+
+    if (!decoded || typeof decoded !== "object" || !decoded.userId || !decoded.role) {
+      return null;
+    }
+
+    return decoded;
   } catch {
     return null;
   }

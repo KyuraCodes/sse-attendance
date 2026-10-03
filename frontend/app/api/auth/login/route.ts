@@ -2,26 +2,32 @@ import { NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { supabase } from "@/lib/supabase";
 import { signToken, logAudit } from "@/lib/auth";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { sanitizeInput } from "@/lib/security";
+
+// Constant dummy hash for constant-time comparison to prevent user enumeration
+const DUMMY_HASH = "$2a$10$e7K429h5wX75x3p0U2eUeOD7h0iP2uRkF1qIq2p1e0yUeOD7h0iP2";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { email, password } = body;
 
-    if (!email || !password) {
+    if (!email || !password || typeof email !== "string" || typeof password !== "string") {
       return errorResponse("Email and password are required", "INVALID_CREDENTIALS", 400);
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
+    const sanitizedEmail = sanitizeInput(email).toLowerCase();
 
     const { data: user, error } = await supabase
       .from("users")
-      .select("*")
-      .eq("email", normalizedEmail)
+      .select("id, name, email, role, status, avatar_url, created_at, password_hash")
+      .eq("email", sanitizedEmail)
       .maybeSingle();
 
     if (error || !user) {
+      // Perform constant-time dummy compare to prevent user enumeration timing attacks
+      bcrypt.compareSync(password, DUMMY_HASH);
       return errorResponse("Invalid email or password", "BAD_CREDENTIALS", 401);
     }
 
@@ -55,7 +61,6 @@ export async function POST(req: NextRequest) {
 
     return successResponse({ token, user: userDto }, "Login successful");
   } catch (error) {
-    console.error("Login error:", error);
-    return errorResponse("An unexpected error occurred during login", "INTERNAL_SERVER_ERROR", 500);
+    return safeServerError(error, "An unexpected error occurred during login");
   }
 }

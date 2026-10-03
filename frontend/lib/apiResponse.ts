@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { maskSensitiveError } from "./security";
 
 export function successResponse<T>(data: T, message: string = "Success", status: number = 200) {
   return NextResponse.json(
@@ -20,4 +21,13 @@ export function errorResponse(message: string, code: string = "BAD_REQUEST", sta
     },
     { status }
   );
+}
+
+export function safeServerError(
+  err: unknown,
+  userMessage: string = "An unexpected server error occurred. Please try again later.",
+  code: string = "INTERNAL_SERVER_ERROR"
+) {
+  const maskedMessage = maskSensitiveError(err, userMessage);
+  return errorResponse(maskedMessage, code, 500);
 }
