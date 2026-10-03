@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
+import { MobileQuickBar } from "@/components/layout/MobileQuickBar";
 import { CircleNotch } from "@phosphor-icons/react";
 
 interface AppLayoutProps {
@@ -56,10 +57,13 @@ export function AppLayout({ children, title }: AppLayoutProps) {
         />
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full min-w-0 mx-auto overflow-x-hidden">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 pb-20 lg:pb-8 max-w-7xl w-full min-w-0 mx-auto overflow-x-hidden">
           {children}
         </main>
       </div>
+
+      {/* Mobile Navigation Bar */}
+      <MobileQuickBar />
     </div>
   );
 }

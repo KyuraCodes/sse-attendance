@@ -40,6 +40,13 @@ export interface DashboardPayment {
   createdAt?: string;
 }
 
+export interface WeeklyTrendPoint {
+  date: string;
+  dayLabel: string;
+  workersCount: number;
+  totalPayroll: number;
+}
+
 export interface DashboardSummary {
   activeEmployees: number;
   workingToday: number;
@@ -48,4 +55,5 @@ export interface DashboardSummary {
   storedSalaryAlerts: StoredSalaryAlert[];
   recentWorkRecords: DashboardWorkRecord[];
   recentPayments: DashboardPayment[];
+  weeklyTrends?: WeeklyTrendPoint[];
 }
