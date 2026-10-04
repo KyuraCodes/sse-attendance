@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { sanitizeInput, sanitizeNullable } from "@/lib/security";
 import { RateType } from "@/types/employee";
 
 export async function GET(req: NextRequest) {
@@ -20,18 +21,21 @@ export async function GET(req: NextRequest) {
     .order("id", { ascending: true });
 
   if (status && status !== "ALL") {
-    query = query.eq("status", status.toUpperCase());
+    const cleanStatus = sanitizeInput(status).toUpperCase();
+    query = query.eq("status", cleanStatus);
   }
 
   if (search && search.trim()) {
-    const s = search.trim();
-    query = query.or(`name.ilike.%${s}%,employee_code.ilike.%${s}%`);
+    // Sanitize search query and strip postgrest filter operators to avoid query injection
+    const s = sanitizeInput(search).replace(/[,()]/g, "").trim();
+    if (s) {
+      query = query.or(`name.ilike.%${s}%,employee_code.ilike.%${s}%`);
+    }
   }
 
   const { data: employees, error } = await query;
   if (error) {
-    console.error("Fetch employees error:", error);
-    return errorResponse("Failed to fetch employees", "FETCH_FAILED", 500);
+    return safeServerError(error, "Failed to fetch employees", "FETCH_FAILED");
   }
 
   const result = (employees || []).map((e) => ({
@@ -89,6 +93,12 @@ export async function POST(req: NextRequest) {
     }
     const rateType = normalizedRateType as RateType;
 
+    const sanitizedName = sanitizeInput(name);
+    const sanitizedPhone = sanitizeNullable(phone);
+    const sanitizedAddress = sanitizeNullable(address);
+    const sanitizedNotes = sanitizeNullable(notes);
+    const sanitizedStatus = status ? sanitizeInput(status).toUpperCase() : "ACTIVE";
+
     // Generate unique employee code
     const { count } = await supabase.from("employees").select("*", { count: "exact", head: true });
     let codeIndex = (count || 0) + 1;
@@ -110,21 +120,20 @@ export async function POST(req: NextRequest) {
       .from("employees")
       .insert({
         employee_code: employeeCode,
-        name: name.trim(),
-        phone: phone ? phone.trim() : null,
-        address: address ? address.trim() : null,
+        name: sanitizedName,
+        phone: sanitizedPhone || null,
+        address: sanitizedAddress || null,
         daily_rate: rate,
         rate_type: rateType,
         start_date: startDate,
-        status: status ? status.trim().toUpperCase() : "ACTIVE",
-        notes: notes ? notes.trim() : null,
+        status: sanitizedStatus,
+        notes: sanitizedNotes || null,
       })
       .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
       .single();
 
     if (error || !newEmployee) {
-      console.error("Create employee error:", error);
-      return errorResponse("Failed to create employee", "INSERT_FAILED", 500);
+      return safeServerError(error, "Failed to create employee", "INSERT_FAILED");
     }
 
     await logAudit(
@@ -161,7 +170,6 @@ export async function POST(req: NextRequest) {
       201
     );
   } catch (error) {
-    console.error("Create employee exception:", error);
-    return errorResponse("Failed to create employee", "INTERNAL_SERVER_ERROR", 500);
+    return safeServerError(error, "Failed to create employee");
   }
 }

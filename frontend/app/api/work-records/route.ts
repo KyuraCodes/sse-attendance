@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { isValidId, sanitizeInput, sanitizeNullable } from "@/lib/security";
 
 export async function GET(req: NextRequest) {
   const currentUser = await getAuthenticatedUser(req);
@@ -41,33 +42,34 @@ export async function GET(req: NextRequest) {
     .order("id", { ascending: false });
 
   if (date && date.trim()) {
-    query = query.eq("work_date", date.trim());
+    query = query.eq("work_date", sanitizeInput(date));
   }
 
-  if (employeeId) {
+  if (employeeId && isValidId(employeeId)) {
     query = query.eq("employee_id", Number(employeeId));
   }
 
   if (status && status !== "ALL" && status.trim()) {
-    query = query.eq("status", status.trim().toUpperCase());
+    query = query.eq("status", sanitizeInput(status).toUpperCase());
   }
 
   if (month && month.trim()) {
-    const [y, m] = month.trim().split("-");
+    const [y, m] = sanitizeInput(month).split("-");
     if (y && m) {
       const year = Number(y);
       const mon = Number(m);
-      const start = `${year}-${String(mon).padStart(2, "0")}-01`;
-      const lastDay = new Date(year, mon, 0).getDate();
-      const end = `${year}-${String(mon).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
-      query = query.gte("work_date", start).lte("work_date", end);
+      if (!isNaN(year) && !isNaN(mon) && mon >= 1 && mon <= 12) {
+        const start = `${year}-${String(mon).padStart(2, "0")}-01`;
+        const lastDay = new Date(year, mon, 0).getDate();
+        const end = `${year}-${String(mon).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+        query = query.gte("work_date", start).lte("work_date", end);
+      }
     }
   }
 
   const { data: records, error } = await query;
   if (error) {
-    console.error("Fetch work records error:", error);
-    return errorResponse("Failed to fetch work records", "FETCH_FAILED", 500);
+    return safeServerError(error, "Failed to fetch work records", "FETCH_FAILED");
   }
 
   const result = (records || []).map((r) => {
@@ -105,12 +107,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { employeeId, workDate, hoursWorked, amount, notes } = body;
 
-    if (!employeeId) {
-      return errorResponse("Employee ID is required", "INVALID_EMPLOYEE_ID", 400);
+    if (!employeeId || !isValidId(employeeId)) {
+      return errorResponse("Valid employee ID is required", "INVALID_EMPLOYEE_ID", 400);
     }
-    if (!workDate) {
+    if (!workDate || typeof workDate !== "string") {
       return errorResponse("Work date is required", "INVALID_WORK_DATE", 400);
     }
+
+    const cleanDate = sanitizeInput(workDate);
 
     const { data: employee, error: empErr } = await supabase
       .from("employees")
@@ -131,7 +135,7 @@ export async function POST(req: NextRequest) {
       .from("work_records")
       .select("id")
       .eq("employee_id", employee.id)
-      .eq("work_date", workDate)
+      .eq("work_date", cleanDate)
       .maybeSingle();
 
     if (existing) {
@@ -158,25 +162,26 @@ export async function POST(req: NextRequest) {
       finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : Number(employee.daily_rate);
     }
 
+    const sanitizedNotes = sanitizeNullable(notes);
+
     const { data: newRecord, error: insertErr } = await supabase
       .from("work_records")
       .insert({
         employee_id: employee.id,
-        work_date: workDate,
+        work_date: cleanDate,
         daily_rate: Number(employee.daily_rate),
         amount: finalAmount,
         hours_worked: hoursWorked ? Number(hoursWorked) : null,
         status: "UNPAID",
         waived_amount: 0.0,
-        notes: notes ? notes.trim() : null,
+        notes: sanitizedNotes || null,
         created_by: currentUser.id,
       })
       .select("id, employee_id, work_date, daily_rate, amount, hours_worked, waived_amount, status, notes, created_by, created_at, updated_at")
       .single();
 
     if (insertErr || !newRecord) {
-      console.error("Create work record error:", insertErr);
-      return errorResponse("Failed to create work record", "INSERT_FAILED", 500);
+      return safeServerError(insertErr, "Failed to create work record", "INSERT_FAILED");
     }
 
     await logAudit(
@@ -217,7 +222,6 @@ export async function POST(req: NextRequest) {
       201
     );
   } catch (error) {
-    console.error("Create work record exception:", error);
-    return errorResponse("Failed to create work record", "INTERNAL_SERVER_ERROR", 500);
+    return safeServerError(error, "Failed to create work record");
   }
 }

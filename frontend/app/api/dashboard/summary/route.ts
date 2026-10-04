@@ -1,16 +1,19 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { sanitizeInput } from "@/lib/security";
 
 export async function GET(req: NextRequest) {
-  const currentUser = await getAuthenticatedUser(req);
-  if (!currentUser) {
-    return errorResponse("Unauthorized", "UNAUTHORIZED", 401);
-  }
+  try {
+    const currentUser = await getAuthenticatedUser(req);
+    if (!currentUser) {
+      return errorResponse("Unauthorized", "UNAUTHORIZED", 401);
+    }
 
-  const { searchParams } = new URL(req.url);
-  const today = searchParams.get("date") || new Date().toISOString().split("T")[0];
+    const { searchParams } = new URL(req.url);
+    const rawDate = searchParams.get("date");
+    const today = rawDate ? sanitizeInput(rawDate) : new Date().toISOString().split("T")[0];
 
   // 1. Active employees count
   const { count: activeCount } = await supabase
@@ -193,6 +196,48 @@ export async function GET(req: NextRequest) {
     };
   });
 
+  // 6. Weekly trends (Last 7 days from selected date)
+  const targetDate = new Date(today);
+  const trendDays: { date: string; dayLabel: string }[] = [];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(targetDate);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split("T")[0];
+    const dayLabel = dayNames[d.getDay()];
+    trendDays.push({ date: dateStr, dayLabel });
+  }
+
+  const startDate = trendDays[0].date;
+  const endDate = trendDays[trendDays.length - 1].date;
+
+  const { data: trendRecords } = await supabase
+    .from("work_records")
+    .select("work_date, amount, employee_id")
+    .gte("work_date", startDate)
+    .lte("work_date", endDate)
+    .neq("status", "VOID");
+
+  const trendMap: Record<string, { workersCount: number; totalPayroll: number }> = {};
+  for (const day of trendDays) {
+    trendMap[day.date] = { workersCount: 0, totalPayroll: 0 };
+  }
+
+  for (const r of trendRecords || []) {
+    if (trendMap[r.work_date]) {
+      trendMap[r.work_date].workersCount++;
+      trendMap[r.work_date].totalPayroll += Number(r.amount);
+    }
+  }
+
+  const weeklyTrends = trendDays.map((d) => ({
+    date: d.date,
+    dayLabel: d.dayLabel,
+    workersCount: trendMap[d.date]?.workersCount || 0,
+    totalPayroll: Number((trendMap[d.date]?.totalPayroll || 0).toFixed(2)),
+  }));
+
   return successResponse({
     activeEmployees: activeCount || 0,
     workingToday,
@@ -201,5 +246,9 @@ export async function GET(req: NextRequest) {
     storedSalaryAlerts,
     recentWorkRecords,
     recentPayments,
+    weeklyTrends,
   });
+  } catch (err) {
+    return safeServerError(err, "Failed to load dashboard summary");
+  }
 }

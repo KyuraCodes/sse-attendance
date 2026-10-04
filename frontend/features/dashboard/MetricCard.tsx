@@ -11,6 +11,7 @@ export interface MetricCardProps {
   badge?: string;
   badgeVariant?: "emerald" | "amber" | "sky" | "slate";
   isLoading?: boolean;
+  isLive?: boolean;
 }
 
 export function MetricCard({
@@ -23,6 +24,7 @@ export function MetricCard({
   badge,
   badgeVariant = "slate",
   isLoading = false,
+  isLive = false,
 }: MetricCardProps) {
   const badgeColors = {
     emerald: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
@@ -33,7 +35,7 @@ export function MetricCard({
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs animate-pulse">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs animate-pulse">
         <div className="flex items-center justify-between mb-3">
           <div className="h-4 w-28 bg-slate-200 dark:bg-slate-800 rounded" />
           <div className="w-10 h-10 bg-slate-200 dark:bg-slate-800 rounded-lg" />
@@ -45,14 +47,26 @@ export function MetricCard({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+    <div
+      role="region"
+      aria-label={`${title}: ${value}`}
+      className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-5 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+    >
       <div className="flex items-start justify-between gap-3 mb-2">
-        <span className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          {title}
-        </span>
+        <div className="flex items-center gap-1.5 min-w-0">
+          {isLive && (
+            <span className="relative flex h-2 w-2 shrink-0" title="Live update">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+          )}
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+            {title}
+          </span>
+        </div>
         <div
           className={cn(
-            "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border border-slate-200/60 dark:border-slate-800",
+            "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border border-slate-200/60 dark:border-slate-800 transition-transform duration-200 group-hover:scale-105",
             iconBg
           )}
         >
@@ -60,14 +74,14 @@ export function MetricCard({
         </div>
       </div>
 
-      <div className="flex items-baseline gap-2 mb-1">
+      <div className="flex items-baseline gap-2 mb-1 flex-wrap">
         <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono tabular-nums">
           {value}
         </div>
         {badge && (
           <span
             className={cn(
-              "px-2 py-0.5 rounded text-[11px] font-semibold border",
+              "px-2 py-0.5 rounded text-[11px] font-semibold border shrink-0",
               badgeColors[badgeVariant]
             )}
           >

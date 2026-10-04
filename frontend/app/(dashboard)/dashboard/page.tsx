@@ -15,6 +15,7 @@ import {
 import { dashboardService } from "@/services/dashboardService";
 import { DashboardSummary } from "@/types/dashboard";
 import { MetricCard } from "@/features/dashboard/MetricCard";
+import { WeeklyTrendChart } from "@/features/dashboard/WeeklyTrendChart";
 import { StoredSalaryAlert } from "@/features/dashboard/StoredSalaryAlert";
 import { RecentActivityTable } from "@/features/dashboard/RecentActivityTable";
 import { formatCurrency } from "@/lib/utils";
@@ -158,6 +159,7 @@ export default function DashboardPage() {
           badge={isLoading ? undefined : `${attendanceRate}%`}
           badgeVariant="emerald"
           isLoading={isLoading}
+          isLive={true}
         />
 
         {/* Metric 3: Today's Payroll */}
@@ -169,6 +171,7 @@ export default function DashboardPage() {
           iconColor="text-indigo-600 dark:text-indigo-400"
           iconBg="bg-indigo-50 dark:bg-indigo-950/50"
           isLoading={isLoading}
+          isLive={true}
         />
 
         {/* Metric 4: Outstanding Salary */}
@@ -190,6 +193,12 @@ export default function DashboardPage() {
           isLoading={isLoading}
         />
       </div>
+
+      {/* 7-Day Performance & Trends */}
+      <WeeklyTrendChart
+        data={summary?.weeklyTrends || []}
+        isLoading={isLoading}
+      />
 
       {/* Stored Salary Notice Banner */}
       {summary?.storedSalaryAlerts && summary.storedSalaryAlerts.length > 0 && (

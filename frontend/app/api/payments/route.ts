@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { isValidId, sanitizeInput, sanitizeNullable } from "@/lib/security";
 
 const VALID_METHODS = ["CASH", "BANK_TRANSFER", "DUITNOW", "OTHER"];
 
@@ -39,20 +40,19 @@ export async function GET(req: NextRequest) {
     .order("payment_date", { ascending: false })
     .order("id", { ascending: false });
 
-  if (employeeId) {
+  if (employeeId && isValidId(employeeId)) {
     query = query.eq("employee_id", Number(employeeId));
   }
   if (startDate && startDate.trim()) {
-    query = query.gte("payment_date", startDate.trim());
+    query = query.gte("payment_date", sanitizeInput(startDate));
   }
   if (endDate && endDate.trim()) {
-    query = query.lte("payment_date", endDate.trim());
+    query = query.lte("payment_date", sanitizeInput(endDate));
   }
 
   const { data: payments, error } = await query;
   if (error) {
-    console.error("Fetch payments error:", error);
-    return errorResponse("Failed to fetch payments", "FETCH_FAILED", 500);
+    return safeServerError(error, "Failed to fetch payments", "FETCH_FAILED");
   }
 
   const result = (payments || []).map((p) => {
@@ -90,8 +90,8 @@ export async function POST(req: NextRequest) {
     const settleInFull =
       body.settleInFull !== undefined ? Boolean(body.settleInFull) : true;
 
-    if (!employeeId) {
-      return errorResponse("Employee ID is required", "INVALID_EMPLOYEE_ID", 400);
+    if (!employeeId || !isValidId(employeeId)) {
+      return errorResponse("Valid employee ID is required", "INVALID_EMPLOYEE_ID", 400);
     }
     const payAmount = Number(amount);
     if (isNaN(payAmount) || payAmount <= 0) {
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
       .order("id", { ascending: true });
 
     if (wrErr) {
-      return errorResponse("Failed to fetch work records", "FETCH_FAILED", 500);
+      return safeServerError(wrErr, "Failed to fetch work records", "FETCH_FAILED");
     }
 
     // Calculate applied payments for each work record
@@ -184,19 +184,20 @@ export async function POST(req: NextRequest) {
       paymentCode = `PAY-${String(payIndex).padStart(3, "0")}`;
     }
 
-    const payDate = paymentDate || new Date().toISOString().split("T")[0];
+    const cleanPaymentDate = paymentDate ? sanitizeInput(paymentDate) : new Date().toISOString().slice(0, 10);
+    const sanitizedReference = sanitizeNullable(reference);
+    const sanitizedNotes = sanitizeNullable(notes);
 
-    // Insert payment
     const { data: newPayment, error: payErr } = await supabase
       .from("payments")
       .insert({
         payment_code: paymentCode,
         employee_id: employee.id,
-        payment_date: payDate,
+        payment_date: cleanPaymentDate,
         amount: payAmount,
         payment_method: normMethod,
-        reference: reference ? reference.trim() : null,
-        notes: notes ? notes.trim() : null,
+        reference: sanitizedReference || null,
+        notes: sanitizedNotes || null,
         settle_in_full: settleInFull,
         created_by: currentUser.id,
       })
@@ -204,37 +205,36 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (payErr || !newPayment) {
-      console.error("Insert payment error:", payErr);
-      return errorResponse("Failed to create payment", "INSERT_FAILED", 500);
+      return safeServerError(payErr, "Failed to record payment", "INSERT_FAILED");
     }
 
-    // FIFO Allocation
+    // FIFO allocation to work records
     let remainingPayment = payAmount;
-    const paymentItemsToInsert = [];
+    const paymentItemsToInsert: { payment_id: number; work_record_id: number; amount_applied: number }[] = [];
     const workRecordUpdates: { id: number; newStatus: string; waivedAmount: number }[] = [];
 
     for (const rec of recordsWithUnpaid) {
-      const allocation = Math.min(remainingPayment, rec.unpaid);
-      remainingPayment = Math.max(0, remainingPayment - allocation);
+      if (remainingPayment <= 0.001) break;
 
-      if (allocation > 0) {
-        paymentItemsToInsert.push({
-          payment_id: newPayment.id,
-          work_record_id: rec.id,
-          amount_applied: allocation,
-        });
-      }
+      const allocation = Math.min(remainingPayment, rec.unpaid);
+      remainingPayment = Number((remainingPayment - allocation).toFixed(2));
+
+      paymentItemsToInsert.push({
+        payment_id: newPayment.id,
+        work_record_id: rec.id,
+        amount_applied: Number(allocation.toFixed(2)),
+      });
 
       if (settleInFull) {
-        const waived = Number((rec.unpaid - allocation).toFixed(2));
+        const waivedForRecord = Number(Math.max(0, rec.unpaid - allocation).toFixed(2));
         workRecordUpdates.push({
           id: rec.id,
           newStatus: "PAID",
-          waivedAmount: waived,
+          waivedAmount: waivedForRecord,
         });
       } else {
-        const newRemaining = rec.unpaid - allocation;
-        const newStatus = newRemaining <= 0.001 ? "PAID" : "PARTIALLY_PAID";
+        const isFullyCovered = allocation >= rec.unpaid - 0.001;
+        const newStatus = isFullyCovered ? "PAID" : "PARTIALLY_PAID";
         workRecordUpdates.push({
           id: rec.id,
           newStatus,
@@ -293,7 +293,6 @@ export async function POST(req: NextRequest) {
       201
     );
   } catch (error) {
-    console.error("Create payment exception:", error);
-    return errorResponse("Failed to create payment", "INTERNAL_SERVER_ERROR", 500);
+    return safeServerError(error, "Failed to create payment");
   }
 }

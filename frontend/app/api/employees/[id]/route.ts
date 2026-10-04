@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { isValidId, sanitizeInput, sanitizeNullable } from "@/lib/security";
 import { RateType } from "@/types/employee";
 
 export async function GET(
@@ -15,6 +16,9 @@ export async function GET(
 
   const { id } = await params;
   const employeeId = Number(id);
+  if (!isValidId(employeeId)) {
+    return errorResponse("Invalid employee ID", "INVALID_ID", 400);
+  }
 
   const { data: employee, error } = await supabase
     .from("employees")
@@ -57,6 +61,9 @@ export async function PUT(
 
   const { id } = await params;
   const employeeId = Number(id);
+  if (!isValidId(employeeId)) {
+    return errorResponse("Invalid employee ID", "INVALID_ID", 400);
+  }
 
   try {
     const body = await req.json();
@@ -77,11 +84,12 @@ export async function PUT(
     };
 
     if (name !== undefined) {
-      if (!name.trim()) return errorResponse("Name cannot be empty", "INVALID_NAME", 400);
-      updates.name = name.trim();
+      const sanitizedName = sanitizeInput(name);
+      if (!sanitizedName) return errorResponse("Name cannot be empty", "INVALID_NAME", 400);
+      updates.name = sanitizedName;
     }
-    if (phone !== undefined) updates.phone = phone ? phone.trim() : null;
-    if (address !== undefined) updates.address = address ? address.trim() : null;
+    if (phone !== undefined) updates.phone = sanitizeNullable(phone) || null;
+    if (address !== undefined) updates.address = sanitizeNullable(address) || null;
     if (dailyRate !== undefined) {
       const rate = Number(dailyRate);
       if (isNaN(rate) || rate <= 0) {
@@ -102,8 +110,8 @@ export async function PUT(
       updates.rate_type = normalizedRateType;
     }
     if (startDate !== undefined) updates.start_date = startDate;
-    if (status !== undefined) updates.status = status.trim().toUpperCase();
-    if (notes !== undefined) updates.notes = notes ? notes.trim() : null;
+    if (status !== undefined) updates.status = sanitizeInput(status).toUpperCase();
+    if (notes !== undefined) updates.notes = sanitizeNullable(notes) || null;
 
     const { data: updated, error } = await supabase
       .from("employees")
@@ -113,8 +121,7 @@ export async function PUT(
       .single();
 
     if (error || !updated) {
-      console.error("Update employee error:", error);
-      return errorResponse("Failed to update employee", "UPDATE_FAILED", 500);
+      return safeServerError(error, "Failed to update employee", "UPDATE_FAILED");
     }
 
     await logAudit(
@@ -141,8 +148,7 @@ export async function PUT(
       updatedAt: updated.updated_at,
     });
   } catch (error) {
-    console.error("Update employee exception:", error);
-    return errorResponse("Failed to update employee", "INTERNAL_SERVER_ERROR", 500);
+    return safeServerError(error, "Failed to update employee");
   }
 }
 
@@ -161,6 +167,9 @@ export async function DELETE(
 
   const { id } = await params;
   const employeeId = Number(id);
+  if (!isValidId(employeeId)) {
+    return errorResponse("Invalid employee ID", "INVALID_ID", 400);
+  }
 
   const { data: existing } = await supabase
     .from("employees")
@@ -178,8 +187,7 @@ export async function DELETE(
   const { error } = await supabase.from("employees").delete().eq("id", employeeId);
 
   if (error) {
-    console.error("Delete employee error:", error);
-    return errorResponse("Failed to delete employee", "DELETE_FAILED", 500);
+    return safeServerError(error, "Failed to delete employee", "DELETE_FAILED");
   }
 
   await logAudit(
