@@ -1,84 +1,87 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   TrendUp,
   Users,
   Money,
   CalendarBlank,
+  ChartBar,
 } from "@phosphor-icons/react";
+import {
+  ComposedChart,
+  Area,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
 import { WeeklyTrendPoint } from "@/types/dashboard";
 import { formatCurrency, cn } from "@/lib/utils";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 interface WeeklyTrendChartProps {
   data?: WeeklyTrendPoint[];
   isLoading?: boolean;
 }
 
+type MetricMode = "payroll" | "attendance" | "combined";
+
+const chartConfig = {
+  payroll: {
+    label: "Kos Gaji",
+    color: "#10b981",
+  },
+  workers: {
+    label: "Kehadiran",
+    color: "#3b82f6",
+  },
+} satisfies ChartConfig;
+
 export function WeeklyTrendChart({
   data = [],
   isLoading = false,
 }: WeeklyTrendChartProps) {
-  const [activeMetric, setActiveMetric] = useState<"payroll" | "attendance">("payroll");
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [activeMetric, setActiveMetric] = useState<MetricMode>("payroll");
+
+  const points = useMemo(() => (Array.isArray(data) ? data : []), [data]);
+
+  const totalWeekPayroll = useMemo(() => {
+    return points.reduce((acc, p) => acc + (p.totalPayroll || 0), 0);
+  }, [points]);
+
+  const avgAttendance = useMemo(() => {
+    if (points.length === 0) return 0;
+    return Math.round(
+      points.reduce((acc, p) => acc + (p.workersCount || 0), 0) / points.length
+    );
+  }, [points]);
+
+  const chartData = useMemo(() => {
+    return points.map((p) => ({
+      date: p.date,
+      dayLabel: p.dayLabel,
+      payroll: p.totalPayroll,
+      workers: p.workersCount,
+    }));
+  }, [points]);
 
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs animate-pulse">
         <div className="flex items-center justify-between mb-4">
-          <div className="h-5 w-40 bg-slate-200 dark:bg-slate-800 rounded" />
-          <div className="h-8 w-36 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+          <div className="h-5 w-44 bg-slate-200 dark:bg-slate-800 rounded" />
+          <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
         </div>
-        <div className="h-48 w-full bg-slate-100 dark:bg-slate-800/50 rounded-lg" />
+        <div className="h-56 w-full bg-slate-100 dark:bg-slate-800/50 rounded-lg" />
       </div>
     );
   }
-
-  // Fallback if data is empty
-  const points = data.length > 0 ? data : [];
-  const maxPayroll = Math.max(...points.map((p) => p.totalPayroll), 100);
-  const maxAttendance = Math.max(...points.map((p) => p.workersCount), 5);
-
-  const totalWeekPayroll = points.reduce((acc, p) => acc + p.totalPayroll, 0);
-  const avgAttendance = points.length > 0
-    ? Math.round(points.reduce((acc, p) => acc + p.workersCount, 0) / points.length)
-    : 0;
-
-  // SVG Chart dimensions
-  const svgWidth = 640;
-  const svgHeight = 180;
-  const paddingX = 40;
-  const paddingTop = 25;
-  const paddingBottom = 30;
-  const plotWidth = svgWidth - paddingX * 2;
-  const plotHeight = svgHeight - paddingTop - paddingBottom;
-
-  const getX = (index: number) => {
-    if (points.length <= 1) return paddingX + plotWidth / 2;
-    return paddingX + (index / (points.length - 1)) * plotWidth;
-  };
-
-  const getYPayroll = (val: number) => {
-    const ratio = val / maxPayroll;
-    return paddingTop + plotHeight - ratio * plotHeight;
-  };
-
-  const getYAttendance = (val: number) => {
-    const ratio = val / maxAttendance;
-    return paddingTop + plotHeight - ratio * plotHeight;
-  };
-
-  // Generate SVG path for line chart
-  const linePoints = points.map((p, idx) => {
-    const x = getX(idx);
-    const y = activeMetric === "payroll" ? getYPayroll(p.totalPayroll) : getYAttendance(p.workersCount);
-    return `${x},${y}`;
-  });
-
-  const pathD = linePoints.length > 0 ? `M ${linePoints.join(" L ")}` : "";
-  const areaD = linePoints.length > 0
-    ? `M ${getX(0)},${paddingTop + plotHeight} L ${linePoints.join(" L ")} L ${getX(points.length - 1)},${paddingTop + plotHeight} Z`
-    : "";
 
   return (
     <div
@@ -86,8 +89,8 @@ export function WeeklyTrendChart({
       aria-label="Weekly Performance and Trends"
       className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-5 shadow-xs"
     >
-      {/* Header and Toggle Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      {/* Header and Metric Selector */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -97,15 +100,18 @@ export function WeeklyTrendChart({
               7-Day Operational Trends
             </h3>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            {activeMetric === "payroll"
-              ? `Total 7-day liability: ${formatCurrency(totalWeekPayroll)}`
-              : `Average daily presence: ${avgAttendance} staff`}
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            {activeMetric === "payroll" &&
+              `Total 7-day payroll liability: ${formatCurrency(totalWeekPayroll)}`}
+            {activeMetric === "attendance" &&
+              `Average daily presence: ${avgAttendance} staff`}
+            {activeMetric === "combined" &&
+              `Overview: ${formatCurrency(totalWeekPayroll)} total | ${avgAttendance} staff avg`}
           </p>
         </div>
 
         {/* Metric Selector Buttons */}
-        <div className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg self-start sm:self-auto">
+        <div className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg self-start sm:self-auto gap-1">
           <button
             type="button"
             onClick={() => setActiveMetric("payroll")}
@@ -117,7 +123,7 @@ export function WeeklyTrendChart({
             )}
           >
             <Money size={14} weight="bold" />
-            <span>Payroll (RM)</span>
+            <span>Payroll</span>
           </button>
           <button
             type="button"
@@ -132,167 +138,251 @@ export function WeeklyTrendChart({
             <Users size={14} weight="bold" />
             <span>Attendance</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveMetric("combined")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer",
+              activeMetric === "combined"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs font-bold"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+            )}
+          >
+            <ChartBar size={14} weight="bold" />
+            <span>Combined</span>
+          </button>
         </div>
       </div>
 
-      {/* SVG Canvas Area */}
+      {/* Chart Canvas Area */}
       {points.length === 0 ? (
-        <div className="h-44 flex flex-col items-center justify-center text-slate-400 text-xs gap-1.5">
-          <CalendarBlank size={24} weight="duotone" />
-          <span>No attendance data available for the past 7 days</span>
+        <div className="h-56 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-xs gap-2">
+          <CalendarBlank size={28} weight="duotone" />
+          <span>No operational trend data available for the past 7 days</span>
         </div>
       ) : (
-        <div className="relative w-full">
-          <svg
-            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-            className="w-full h-auto overflow-visible select-none"
-            role="img"
-            aria-label="7-Day performance chart"
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[220px] w-full"
+        >
+          <ComposedChart
+            accessibilityLayer
+            data={chartData}
+            margin={{ top: 12, right: 12, left: 12, bottom: 4 }}
           >
             <defs>
-              {/* Linear Gradient for Payroll */}
-              <linearGradient id="payrollGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+              <linearGradient id="fillPayroll" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-payroll)"
+                  stopOpacity={0.35}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-payroll)"
+                  stopOpacity={0.0}
+                />
               </linearGradient>
-
-              {/* Linear Gradient for Attendance */}
-              <linearGradient id="attendanceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+              <linearGradient id="fillWorkers" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-workers)"
+                  stopOpacity={0.35}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-workers)"
+                  stopOpacity={0.0}
+                />
               </linearGradient>
             </defs>
 
-            {/* Subtle horizontal grid lines */}
-            {[0, 0.5, 1].map((ratio) => {
-              const y = paddingTop + plotHeight * (1 - ratio);
-              return (
-                <g key={ratio}>
-                  <line
-                    x1={paddingX}
-                    y1={y}
-                    x2={svgWidth - paddingX}
-                    y2={y}
-                    stroke="currentColor"
-                    strokeDasharray="3 3"
-                    className="text-slate-200 dark:text-slate-800"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x={paddingX - 8}
-                    y={y + 3}
-                    textAnchor="end"
-                    className="text-[10px] font-mono fill-slate-400 dark:fill-slate-500"
-                  >
-                    {activeMetric === "payroll"
-                      ? `${Math.round(maxPayroll * ratio)}`
-                      : `${Math.round(maxAttendance * ratio)}`}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* Area Fill */}
-            <path
-              d={areaD}
-              fill={activeMetric === "payroll" ? "url(#payrollGradient)" : "url(#attendanceGradient)"}
-              className="transition-all duration-300"
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray="3 3"
+              className="stroke-slate-200 dark:stroke-slate-800"
             />
 
-            {/* Trend Line */}
-            <path
-              d={pathD}
-              fill="none"
-              stroke={activeMetric === "payroll" ? "#10b981" : "#3b82f6"}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="transition-all duration-300"
+            <XAxis
+              dataKey="dayLabel"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={16}
+              className="text-[11px] font-medium fill-slate-500 dark:fill-slate-400"
             />
 
-            {/* Interactive Data Nodes */}
-            {points.map((p, idx) => {
-              const cx = getX(idx);
-              const cy = activeMetric === "payroll" ? getYPayroll(p.totalPayroll) : getYAttendance(p.workersCount);
-              const isHovered = hoveredIndex === idx;
+            <YAxis yAxisId="payroll" hide domain={[0, "auto"]} />
+            <YAxis
+              yAxisId="workers"
+              orientation="right"
+              hide
+              domain={[0, "auto"]}
+            />
 
-              return (
-                <g
-                  key={p.date}
-                  className="cursor-pointer"
-                  onMouseEnter={() => setHoveredIndex(idx)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`${p.dayLabel} (${p.date}): ${
-                    activeMetric === "payroll"
-                      ? formatCurrency(p.totalPayroll)
-                      : `${p.workersCount} workers`
-                  }`}
-                  onFocus={() => setHoveredIndex(idx)}
-                  onBlur={() => setHoveredIndex(null)}
-                >
-                  {/* Vertical Guideline on Hover */}
-                  {isHovered && (
-                    <line
-                      x1={cx}
-                      y1={paddingTop}
-                      x2={cx}
-                      y2={paddingTop + plotHeight}
-                      stroke="currentColor"
-                      strokeDasharray="2 2"
-                      className="text-slate-400 dark:text-slate-600"
-                      strokeWidth="1"
-                    />
-                  )}
-
-                  {/* Node Circle */}
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={isHovered ? 5.5 : 3.5}
-                    fill={activeMetric === "payroll" ? "#10b981" : "#3b82f6"}
-                    className="stroke-white dark:stroke-slate-900 stroke-2 transition-all duration-150"
-                  />
-
-                  {/* Day Label on X Axis */}
-                  <text
-                    x={cx}
-                    y={svgHeight - 8}
-                    textAnchor="middle"
-                    className={cn(
-                      "text-[10px] font-mono transition-colors",
-                      isHovered
-                        ? "font-bold fill-slate-900 dark:fill-slate-100"
-                        : "fill-slate-400 dark:fill-slate-500"
-                    )}
-                  >
-                    {p.dayLabel}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-
-          {/* Floating Tooltip */}
-          {hoveredIndex !== null && points[hoveredIndex] && (
-            <div
-              className="absolute pointer-events-none -top-2 transform -translate-x-1/2 bg-slate-900/95 dark:bg-slate-800/95 backdrop-blur-xs text-white text-xs px-2.5 py-1.5 rounded-lg shadow-lg border border-slate-700/60 z-20 whitespace-nowrap"
-              style={{
-                left: `${(getX(hoveredIndex) / svgWidth) * 100}%`,
+            {/* shadcn ui Chart Tooltip per https://ui.shadcn.com/charts/tooltip#charts */}
+            <ChartTooltip
+              cursor={{
+                stroke: "rgba(148, 163, 184, 0.35)",
+                strokeWidth: 1,
+                strokeDasharray: "3 3",
               }}
-            >
-              <div className="font-semibold text-[11px] text-slate-300">
-                {points[hoveredIndex].dayLabel}, {points[hoveredIndex].date}
-              </div>
-              <div className="font-mono font-bold text-xs mt-0.5 text-emerald-400">
-                {activeMetric === "payroll"
-                  ? formatCurrency(points[hoveredIndex].totalPayroll)
-                  : `${points[hoveredIndex].workersCount} pekerja hadir`}
-              </div>
-            </div>
-          )}
-        </div>
+              content={
+                <ChartTooltipContent
+                  indicator="dot"
+                  className="w-56 p-3 shadow-xl border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs"
+                  labelFormatter={(_label, payload) => {
+                    const item = payload?.[0]?.payload as
+                      | { date: string; dayLabel: string }
+                      | undefined;
+                    if (!item) return null;
+                    return (
+                      <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200 mb-1 border-b border-slate-100 dark:border-slate-800/80 pb-1.5">
+                        <CalendarBlank size={13} className="text-slate-400" />
+                        <span>
+                          {item.dayLabel}, {item.date}
+                        </span>
+                      </div>
+                    );
+                  }}
+                  formatter={(value, name, item) => {
+                    const isPayroll = name === "payroll";
+                    const isWorkers = name === "workers";
+                    const itemRow = item?.payload as
+                      | { payroll?: number; workers?: number }
+                      | undefined;
+
+                    return (
+                      <div className="flex flex-col w-full gap-1">
+                        <div className="flex w-full items-center justify-between gap-3 text-xs py-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <div
+                              className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                              style={{
+                                backgroundColor: isPayroll
+                                  ? "var(--color-payroll)"
+                                  : "var(--color-workers)",
+                              }}
+                            />
+                            <span className="text-slate-600 dark:text-slate-400 font-medium">
+                              {isPayroll ? "Kos Gaji" : "Kehadiran"}
+                            </span>
+                          </div>
+                          <span className="font-mono font-bold text-slate-900 dark:text-slate-100 text-xs tabular-nums">
+                            {isPayroll
+                              ? formatCurrency(Number(value))
+                              : `${value} staf`}
+                          </span>
+                        </div>
+
+                        {/* Show secondary metric if currently in single metric view */}
+                        {activeMetric === "payroll" &&
+                          isPayroll &&
+                          itemRow?.workers !== undefined && (
+                            <div className="flex w-full items-center justify-between gap-3 text-[11px] py-0.5 opacity-80">
+                              <div className="flex items-center gap-1.5">
+                                <div
+                                  className="h-2 w-2 shrink-0 rounded-[2px]"
+                                  style={{
+                                    backgroundColor: "var(--color-workers)",
+                                  }}
+                                />
+                                <span className="text-slate-500 dark:text-slate-400">
+                                  Kehadiran
+                                </span>
+                              </div>
+                              <span className="font-mono font-medium text-slate-700 dark:text-slate-300 tabular-nums">
+                                {itemRow.workers} staf
+                              </span>
+                            </div>
+                          )}
+
+                        {activeMetric === "attendance" &&
+                          isWorkers &&
+                          itemRow?.payroll !== undefined && (
+                            <div className="flex w-full items-center justify-between gap-3 text-[11px] py-0.5 opacity-80">
+                              <div className="flex items-center gap-1.5">
+                                <div
+                                  className="h-2 w-2 shrink-0 rounded-[2px]"
+                                  style={{
+                                    backgroundColor: "var(--color-payroll)",
+                                  }}
+                                />
+                                <span className="text-slate-500 dark:text-slate-400">
+                                  Kos Gaji
+                                </span>
+                              </div>
+                              <span className="font-mono font-medium text-slate-700 dark:text-slate-300 tabular-nums">
+                                {formatCurrency(itemRow.payroll)}
+                              </span>
+                            </div>
+                          )}
+                      </div>
+                    );
+                  }}
+                />
+              }
+            />
+
+            {/* Payroll Area Curve */}
+            {(activeMetric === "payroll" || activeMetric === "combined") && (
+              <Area
+                yAxisId="payroll"
+                type="monotone"
+                dataKey="payroll"
+                name="payroll"
+                fill="url(#fillPayroll)"
+                stroke="var(--color-payroll)"
+                strokeWidth={2.5}
+                dot={{
+                  fill: "var(--color-payroll)",
+                  strokeWidth: 2,
+                  r: 3,
+                }}
+                activeDot={{
+                  r: 5.5,
+                  strokeWidth: 2,
+                  stroke: "#ffffff",
+                }}
+              />
+            )}
+
+            {/* Attendance Series */}
+            {activeMetric === "attendance" && (
+              <Area
+                yAxisId="workers"
+                type="monotone"
+                dataKey="workers"
+                name="workers"
+                fill="url(#fillWorkers)"
+                stroke="var(--color-workers)"
+                strokeWidth={2.5}
+                dot={{
+                  fill: "var(--color-workers)",
+                  strokeWidth: 2,
+                  r: 3,
+                }}
+                activeDot={{
+                  r: 5.5,
+                  strokeWidth: 2,
+                  stroke: "#ffffff",
+                }}
+              />
+            )}
+
+            {activeMetric === "combined" && (
+              <Bar
+                yAxisId="workers"
+                dataKey="workers"
+                name="workers"
+                fill="var(--color-workers)"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={28}
+                opacity={0.85}
+              />
+            )}
+          </ComposedChart>
+        </ChartContainer>
       )}
     </div>
   );
