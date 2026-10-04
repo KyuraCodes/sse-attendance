@@ -2335,6 +2335,12 @@
       "skillPath": "skills/hunting-saas-sso-token-abuse/SKILL.md",
       "computedHash": "2d5c44d8a58f40fed43f2fdfc9e9e8456a1b3998bcaf7f67f333b5eaaf8da5df"
     },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "2ad3631de3d9af6ab30a2154644d450c258624742d8c83d928b22e3b94f37e59"
+    },
     "implementing-aes-encryption-for-data-at-rest": {
       "source": "mukul975/Anthropic-Cybersecurity-Skills",
       "sourceType": "github",
