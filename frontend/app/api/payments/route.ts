@@ -84,6 +84,10 @@ export async function POST(req: NextRequest) {
     return errorResponse("Unauthorized", "UNAUTHORIZED", 401);
   }
 
+  if (currentUser.role !== "CEO" && currentUser.role !== "ADMIN") {
+    return errorResponse("Access denied", "FORBIDDEN", 403);
+  }
+
   try {
     const body = await req.json();
     const { employeeId, amount, paymentDate, paymentMethod, reference, notes } = body;
@@ -94,8 +98,8 @@ export async function POST(req: NextRequest) {
       return errorResponse("Valid employee ID is required", "INVALID_EMPLOYEE_ID", 400);
     }
     const payAmount = Number(amount);
-    if (isNaN(payAmount) || payAmount <= 0) {
-      return errorResponse("Payment amount must be greater than zero", "INVALID_PAYMENT_AMOUNT", 400);
+    if (isNaN(payAmount) || payAmount <= 0 || payAmount > 1_000_000) {
+      return errorResponse("Payment amount must be between 0.01 and 1,000,000", "INVALID_PAYMENT_AMOUNT", 400);
     }
 
     const normMethod = (paymentMethod || "CASH").trim().toUpperCase();
@@ -145,7 +149,7 @@ export async function POST(req: NextRequest) {
     }
 
     let totalOutstanding = 0;
-    const recordsWithUnpaid: { id: number; workDate: string; amount: number; unpaid: number; status: string }[] = [];
+    const recordsWithUnpaid: { id: number; workDate: string; amount: number; unpaid: number; waived: number; status: string }[] = [];
 
     for (const r of payableRecords || []) {
       const applied = appliedMap[r.id] || 0;
@@ -158,6 +162,7 @@ export async function POST(req: NextRequest) {
           workDate: r.work_date,
           amount: Number(r.amount),
           unpaid,
+          waived,
           status: r.status,
         });
       }
@@ -214,19 +219,21 @@ export async function POST(req: NextRequest) {
     const workRecordUpdates: { id: number; newStatus: string; waivedAmount: number }[] = [];
 
     for (const rec of recordsWithUnpaid) {
-      if (remainingPayment <= 0.001) break;
+      if (!settleInFull && remainingPayment <= 0.001) break;
 
-      const allocation = Math.min(remainingPayment, rec.unpaid);
-      remainingPayment = Number((remainingPayment - allocation).toFixed(2));
+      const allocation = remainingPayment > 0.001 ? Math.min(remainingPayment, rec.unpaid) : 0;
+      remainingPayment = Number(Math.max(0, remainingPayment - allocation).toFixed(2));
 
-      paymentItemsToInsert.push({
-        payment_id: newPayment.id,
-        work_record_id: rec.id,
-        amount_applied: Number(allocation.toFixed(2)),
-      });
+      if (allocation > 0.001) {
+        paymentItemsToInsert.push({
+          payment_id: newPayment.id,
+          work_record_id: rec.id,
+          amount_applied: Number(allocation.toFixed(2)),
+        });
+      }
 
       if (settleInFull) {
-        const waivedForRecord = Number(Math.max(0, rec.unpaid - allocation).toFixed(2));
+        const waivedForRecord = Number((rec.waived + Math.max(0, rec.unpaid - allocation)).toFixed(2));
         workRecordUpdates.push({
           id: rec.id,
           newStatus: "PAID",
@@ -238,7 +245,7 @@ export async function POST(req: NextRequest) {
         workRecordUpdates.push({
           id: rec.id,
           newStatus,
-          waivedAmount: 0,
+          waivedAmount: rec.waived,
         });
       }
     }

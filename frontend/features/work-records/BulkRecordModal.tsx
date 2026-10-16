@@ -11,6 +11,7 @@ import {
   CircleNotch,
   CalendarBlank,
   CurrencyCircleDollar,
+  Clock,
 } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
 import { workRecordService } from "@/services/workRecordService";
@@ -21,6 +22,7 @@ import {
   RATE_UNIT_LABELS,
 } from "@/types/employee";
 import { BulkWorkRecordEntry } from "@/types/workRecord";
+import { calculateDefaultOtRate, calculateOtAmount } from "@/lib/otUtils";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -35,31 +37,40 @@ interface BulkRecordModalProps {
 
 export const computeBulkWorkerWage = (
   emp: Employee,
-  hoursWorked?: number
-): { amount: number; hours?: number } => {
+  hoursWorked?: number,
+  otHours?: number,
+  customOtRate?: number
+): { amount: number; baseAmount: number; otAmount: number; otRate: number; hours?: number } => {
   const rateType = emp.rateType || "DAILY";
   const rate = Number(emp.dailyRate) || 0;
+  let baseAmount = rate;
+  let hours: number | undefined = undefined;
 
   if (rateType === "HOURLY") {
-    const hours = hoursWorked !== undefined && hoursWorked > 0 ? hoursWorked : 8;
-    return {
-      amount: Number((hours * rate).toFixed(2)),
-      hours,
-    };
+    hours = hoursWorked !== undefined && hoursWorked > 0 ? hoursWorked : 8;
+    baseAmount = Number((hours * rate).toFixed(2));
   } else if (rateType === "WEEKLY") {
-    return {
-      amount: Number((rate / 6).toFixed(2)),
-    };
+    baseAmount = Number((rate / 6).toFixed(2));
   } else if (rateType === "MONTHLY") {
-    return {
-      amount: Number((rate / 26).toFixed(2)),
-    };
+    baseAmount = Number((rate / 26).toFixed(2));
   } else {
     // DAILY
-    return {
-      amount: rate,
-    };
+    baseAmount = rate;
   }
+
+  const effectiveOtHours = otHours !== undefined && !isNaN(otHours) && otHours > 0 ? otHours : 0;
+  const defaultOtRate = calculateDefaultOtRate(rate, rateType);
+  const otRate = customOtRate !== undefined && !isNaN(customOtRate) && customOtRate > 0 ? customOtRate : defaultOtRate;
+  const otAmount = calculateOtAmount(effectiveOtHours, otRate);
+  const amount = Number((baseAmount + otAmount).toFixed(2));
+
+  return {
+    amount,
+    baseAmount,
+    otAmount,
+    otRate,
+    hours,
+  };
 };
 
 const getTodayDateString = (): string => {
@@ -81,6 +92,7 @@ export function BulkRecordModal({
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [hourlyHours, setHourlyHours] = useState<Record<number, string>>({});
+  const [otHoursState, setOtHoursState] = useState<Record<number, string>>({});
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isLoadingEmployees, setIsLoadingEmployees] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -109,6 +121,7 @@ export function BulkRecordModal({
         }
       });
       setHourlyHours(initialHours);
+      setOtHoursState({});
     } catch (err) {
       const msg =
         err instanceof Error
@@ -127,6 +140,7 @@ export function BulkRecordModal({
       setSearchTerm("");
       setErrorMessage(null);
       setHourlyHours({});
+      setOtHoursState({});
       fetchActiveEmployees();
     }
   }, [isOpen, initialDate, fetchActiveEmployees]);
@@ -189,19 +203,22 @@ export function BulkRecordModal({
   };
 
   // Calculate live tally
-  const { selectedCount, totalAmount } = useMemo(() => {
+  const { selectedCount, totalAmount, totalOtAmount } = useMemo(() => {
     let count = 0;
     let sum = 0;
+    let otSum = 0;
     employees.forEach((emp) => {
       if (selectedIds.has(emp.id)) {
         count += 1;
         const hours = emp.rateType === "HOURLY" ? getHoursForEmployee(emp.id) : undefined;
-        const { amount } = computeBulkWorkerWage(emp, hours);
+        const otVal = otHoursState[emp.id] ? parseFloat(otHoursState[emp.id]) : 0;
+        const { amount, otAmount } = computeBulkWorkerWage(emp, hours, otVal);
         sum += amount;
+        otSum += otAmount;
       }
     });
-    return { selectedCount: count, totalAmount: sum };
-  }, [employees, selectedIds, hourlyHours]);
+    return { selectedCount: count, totalAmount: sum, totalOtAmount: otSum };
+  }, [employees, selectedIds, hourlyHours, otHoursState]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -224,11 +241,15 @@ export function BulkRecordModal({
           return { employeeId: id };
         }
         const hours = emp.rateType === "HOURLY" ? getHoursForEmployee(id) : undefined;
-        const { amount } = computeBulkWorkerWage(emp, hours);
+        const otVal = otHoursState[id] ? parseFloat(otHoursState[id]) : 0;
+        const { amount, otAmount, otRate } = computeBulkWorkerWage(emp, hours, otVal);
         return {
           employeeId: id,
           hoursWorked: hours,
           amount,
+          otHours: otVal > 0 ? otVal : undefined,
+          otRate: otVal > 0 ? otRate : undefined,
+          otAmount: otVal > 0 ? otAmount : undefined,
         };
       });
 
@@ -419,7 +440,8 @@ export function BulkRecordModal({
                     const isSelected = selectedIds.has(emp.id);
                     const isHourly = emp.rateType === "HOURLY";
                     const hours = isHourly ? getHoursForEmployee(emp.id) : undefined;
-                    const { amount } = computeBulkWorkerWage(emp, hours);
+                    const otVal = otHoursState[emp.id] ? parseFloat(otHoursState[emp.id]) : 0;
+                    const { amount, otAmount } = computeBulkWorkerWage(emp, hours, otVal);
 
                     return (
                       <div
@@ -467,7 +489,7 @@ export function BulkRecordModal({
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5 sm:gap-3">
                           {isHourly && (
                             <div
                               className="flex items-center gap-1.5"
@@ -495,7 +517,7 @@ export function BulkRecordModal({
                                 }}
                                 disabled={isSubmitting || !isSelected}
                                 className={cn(
-                                  "w-16 h-8 px-2 text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
+                                  "w-14 h-7.5 px-1.5 text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
                                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                                   "border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500",
                                   (!isSelected || isSubmitting) && "opacity-50 cursor-not-allowed"
@@ -504,18 +526,62 @@ export function BulkRecordModal({
                             </div>
                           )}
 
-                          <div className="text-right shrink-0 min-w-[70px]">
+                          {/* OT Hours Input */}
+                          <div
+                            className="flex items-center gap-1.5"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <label
+                              htmlFor={`ot-${emp.id}`}
+                              className="text-2xs font-medium text-amber-600 dark:text-amber-400 whitespace-nowrap flex items-center gap-0.5"
+                            >
+                              <Clock size={12} weight="bold" />
+                              OT:
+                            </label>
+                            <input
+                              id={`ot-${emp.id}`}
+                              type="number"
+                              step="0.5"
+                              min="0"
+                              placeholder="0j"
+                              value={otHoursState[emp.id] || ""}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                const val = e.target.value;
+                                setOtHoursState((prev) => ({
+                                  ...prev,
+                                  [emp.id]: val,
+                                }));
+                              }}
+                              disabled={isSubmitting || !isSelected}
+                              className={cn(
+                                "w-14 h-7.5 px-1.5 text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
+                                "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
+                                "border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500",
+                                (otHoursState[emp.id] && parseFloat(otHoursState[emp.id]) > 0) && "border-amber-400 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 font-bold",
+                                (!isSelected || isSubmitting) && "opacity-50 cursor-not-allowed"
+                              )}
+                            />
+                          </div>
+
+                          <div className="text-right shrink-0 min-w-[75px]">
                             <span className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
                               {formatCurrency(amount)}
                             </span>
                             <div className="text-2xs text-slate-400">
-                              {isHourly
-                                ? `${formatCurrency(emp.dailyRate)}/j`
-                                : emp.rateType === "WEEKLY"
-                                ? "Prorata (1/6)"
-                                : emp.rateType === "MONTHLY"
-                                ? "Prorata (1/26)"
-                                : "Daily Rate"}
+                              {otAmount > 0 ? (
+                                <span className="text-amber-600 dark:text-amber-400 font-semibold font-mono">
+                                  +{formatCurrency(otAmount)} OT
+                                </span>
+                              ) : isHourly ? (
+                                `${formatCurrency(emp.dailyRate)}/j`
+                              ) : emp.rateType === "WEEKLY" ? (
+                                "Prorata (1/6)"
+                              ) : emp.rateType === "MONTHLY" ? (
+                                "Prorata (1/26)"
+                              ) : (
+                                "Daily Rate"
+                              )}
                             </div>
                           </div>
                         </div>
@@ -529,9 +595,14 @@ export function BulkRecordModal({
 
           {/* Footer */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
-            <span className="text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
-              {selectedCount} of {employees.length} workers selected
-            </span>
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
+              <span>{selectedCount} of {employees.length} workers selected</span>
+              {totalOtAmount > 0 && (
+                <span className="text-amber-600 dark:text-amber-400 font-medium">
+                  (termasuk {formatCurrency(totalOtAmount)} OT)
+                </span>
+              )}
+            </div>
             <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <Button
                 type="button"

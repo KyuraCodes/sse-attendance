@@ -1,12 +1,37 @@
 import * as XLSX from "xlsx";
 
 /**
+ * Sanitizes cell values against CSV/Spreadsheet Formula Injection (OWASP).
+ * Prefixes strings starting with =, +, @, Tab, CR (or - when non-numeric) with a single quote.
+ */
+function sanitizeSpreadsheetCell(val: string | number | null | undefined): string | number {
+  if (val === null || val === undefined) return "";
+  if (typeof val === "number") return val;
+
+  const str = String(val);
+  if (!str) return "";
+
+  const firstChar = str.charAt(0);
+  if (
+    firstChar === "=" ||
+    firstChar === "+" ||
+    firstChar === "@" ||
+    firstChar === "\t" ||
+    firstChar === "\r" ||
+    (firstChar === "-" && str !== "-" && isNaN(Number(str)))
+  ) {
+    return `'${str}`;
+  }
+  return str;
+}
+
+/**
  * Universal CSV export with UTF-8 BOM so Microsoft Excel and Google Sheets open Malay/special characters correctly.
  */
 export function exportToCsv(filename: string, headers: string[], rows: (string | number)[][]): void {
   const escapeCell = (val: string | number | null | undefined): string => {
-    if (val === null || val === undefined) return '""';
-    const str = String(val).replace(/"/g, '""');
+    const safeVal = sanitizeSpreadsheetCell(val);
+    const str = String(safeVal).replace(/"/g, '""');
     return `"${str}"`;
   };
 
@@ -26,7 +51,7 @@ export function exportToCsv(filename: string, headers: string[], rows: (string |
 }
 
 /**
- * Excel (.xlsx) export using xlsx package with auto-calculated column widths.
+ * Excel (.xlsx) export using xlsx package with auto-calculated column widths and formula injection protection.
  */
 export function exportToExcel(
   filename: string,
@@ -34,13 +59,15 @@ export function exportToExcel(
   headers: string[],
   rows: (string | number)[][]
 ): void {
-  const data = [headers, ...rows];
+  const sanitizedHeaders = headers.map((h) => String(sanitizeSpreadsheetCell(h)));
+  const sanitizedRows = rows.map((r) => r.map((cell) => sanitizeSpreadsheetCell(cell)));
+  const data = [sanitizedHeaders, ...sanitizedRows];
   const worksheet = XLSX.utils.aoa_to_sheet(data);
 
   // Set column widths based on longest text
-  const colWidths = headers.map((h, i) => {
+  const colWidths = sanitizedHeaders.map((h, i) => {
     let max = h.length;
-    for (const r of rows) {
+    for (const r of sanitizedRows) {
       const cellVal = String(r[i] ?? "");
       if (cellVal.length > max) max = cellVal.length;
     }

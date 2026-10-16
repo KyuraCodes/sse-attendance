@@ -14,10 +14,12 @@ import {
   DownloadSimple,
   FileXls,
   FileCsv,
+  Clock,
 } from "@phosphor-icons/react";
 import { DailyReport } from "@/types/report";
 import { WorkRecord } from "@/types/workRecord";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
+import { parseOtFromNotes } from "@/lib/otUtils";
 import { STATUS_CONFIG, RecordStatus, COMPANY_NAME, SYSTEM_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
 import { downloadDailyReportPdf } from "@/lib/pdfGenerator";
@@ -247,7 +249,7 @@ export function DailyReportCard({
             {isLoading ? (
               <div className="h-7 sm:h-8 w-16 sm:w-20 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100">
+              <div className="text-lg sm:text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-slate-100">
                 {report?.totalRecords ?? 0}
               </div>
             )}
@@ -271,12 +273,14 @@ export function DailyReportCard({
             {isLoading ? (
               <div className="h-7 sm:h-8 w-24 sm:w-32 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono truncate">
+              <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono tabular-nums truncate">
                 {formatCurrency(report?.totalAmount ?? 0)}
               </div>
             )}
             <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Gross wages earned for this day
+              {report?.totalOtAmount && report.totalOtAmount > 0
+                ? `Includes ${formatCurrency(report.totalOtAmount)} OT`
+                : "Gross wages earned for this day"}
             </p>
           </div>
         </div>
@@ -295,7 +299,7 @@ export function DailyReportCard({
             {isLoading ? (
               <div className="h-8 w-36 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             ) : (
-              <div className="flex items-center gap-3 text-xs">
+              <div className="flex items-center gap-3 text-xs font-mono tabular-nums">
                 <span className="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   {breakdown.counts.PAID} Paid
@@ -328,7 +332,7 @@ export function DailyReportCard({
               Workers recorded on {formatDate(selectedDate)}
             </p>
           </div>
-          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 py-1 px-2.5 rounded-full">
+          <span className="text-xs font-semibold font-mono tabular-nums text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 py-1 px-2.5 rounded-full">
             {report?.records?.length ?? 0} records
           </span>
         </div>
@@ -364,11 +368,14 @@ export function DailyReportCard({
                   <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                     Worker Name
                   </th>
-                  <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    Daily Rate
+                  <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                    Rate
                   </th>
-                  <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    Amount
+                  <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                    Overtime (OT)
+                  </th>
+                  <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                    Total Amount
                   </th>
                   <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                     Status
@@ -382,13 +389,17 @@ export function DailyReportCard({
                 {report.records.map((record: WorkRecord) => {
                   const statusKey = (record.status || "UNPAID") as RecordStatus;
                   const meta = STATUS_CONFIG[statusKey] || STATUS_CONFIG.UNPAID;
+                  const parsedOt = parseOtFromNotes(record.notes);
+                  const otHours = record.otHours ?? parsedOt?.otHours ?? 0;
+                  const otAmount = record.otAmount ?? parsedOt?.otAmount ?? 0;
+                  const cleanNotes = parsedOt ? parsedOt.cleanNotes : (record.notes || "");
 
                   return (
                     <tr
                       key={record.id}
                       className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
                     >
-                      <td className="py-3.5 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">
+                      <td className="py-3.5 px-4 font-mono tabular-nums text-xs text-slate-600 dark:text-slate-400">
                         {record.employeeCode}
                       </td>
                       <td className="py-3.5 px-4">
@@ -396,10 +407,25 @@ export function DailyReportCard({
                           {record.employeeName}
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-400 font-mono text-xs">
+                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-400 font-mono tabular-nums text-xs text-right">
                         {formatCurrency(record.dailyRate)}
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-slate-100 font-mono">
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                        {otHours > 0 ? (
+                          <div className="inline-flex flex-col items-end">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/70 text-2xs font-mono tabular-nums font-bold text-amber-700 dark:text-amber-300">
+                              <Clock size={11} weight="bold" />
+                              +{otHours.toFixed(1)}j OT
+                            </span>
+                            <span className="text-2xs font-mono tabular-nums text-amber-600 dark:text-amber-400 mt-0.5">
+                              +{formatCurrency(otAmount)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400 font-mono">-</span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-slate-100 font-mono tabular-nums text-right">
                         {formatCurrency(record.amount)}
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">
@@ -414,7 +440,7 @@ export function DailyReportCard({
                         </span>
                       </td>
                       <td className="py-3.5 px-4 text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate">
-                        {record.notes || "-"}
+                        {cleanNotes || "-"}
                       </td>
                     </tr>
                   );
@@ -425,10 +451,15 @@ export function DailyReportCard({
                   <td colSpan={3} className="py-3.5 px-4 text-right text-slate-700 dark:text-slate-300">
                     Daily Total:
                   </td>
-                  <td className="py-3.5 px-4 font-mono text-base font-bold text-slate-900 dark:text-slate-100">
+                  <td className="py-3.5 px-4 font-mono tabular-nums text-xs font-semibold text-amber-700 dark:text-amber-400 text-right">
+                    {report.totalOtAmount && report.totalOtAmount > 0
+                      ? `+${formatCurrency(report.totalOtAmount)} OT`
+                      : "-"}
+                  </td>
+                  <td className="py-3.5 px-4 font-mono tabular-nums text-base font-bold text-slate-900 dark:text-slate-100 text-right">
                     {formatCurrency(report.totalAmount)}
                   </td>
-                  <td colSpan={2} className="py-3.5 px-4 text-xs text-slate-500 dark:text-slate-400">
+                  <td colSpan={2} className="py-3.5 px-4 text-xs font-mono tabular-nums text-slate-500 dark:text-slate-400">
                     {report.totalRecords} workers recorded
                   </td>
                 </tr>

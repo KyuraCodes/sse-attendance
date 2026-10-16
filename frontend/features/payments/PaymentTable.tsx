@@ -178,9 +178,16 @@ export function PaymentTable({
             <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-2xs">Disbursed Amount</span>
-                <span className="font-mono font-bold text-base text-slate-900 dark:text-slate-100">
-                  {formatCurrency(payment.amount)}
-                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-mono tabular-nums font-bold text-base text-slate-900 dark:text-slate-100">
+                    {formatCurrency(payment.amount)}
+                  </span>
+                  {payment.settleInFull && (
+                    <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                      LUNAS PENUH
+                    </span>
+                  )}
+                </div>
               </div>
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-2xs">Reference</span>
@@ -227,7 +234,7 @@ export function PaymentTable({
                   key={payment.id}
                   className="hover:bg-slate-50/75 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <td className="py-3.5 px-4 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-xs font-mono tabular-nums font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
                     {payment.paymentCode}
                   </td>
                   <td className="py-3.5 px-4">
@@ -235,16 +242,23 @@ export function PaymentTable({
                       {payment.employeeName}
                     </div>
                     {payment.employeeCode && (
-                      <div className="text-xs font-mono text-slate-400 dark:text-slate-500">
+                      <div className="text-xs font-mono tabular-nums text-slate-400 dark:text-slate-500">
                         {payment.employeeCode}
                       </div>
                     )}
                   </td>
-                  <td className="py-3.5 px-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-sm font-mono tabular-nums font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
                     {formatDate(payment.paymentDate)}
                   </td>
                   <td className="py-3.5 px-4 text-sm font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
-                    {formatCurrency(payment.amount)}
+                    <div className="flex items-center gap-2">
+                      <span>{formatCurrency(payment.amount)}</span>
+                      {payment.settleInFull && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                          LUNAS PENUH
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3.5 px-4 whitespace-nowrap">
                     {renderMethodBadge(payment.paymentMethod)}

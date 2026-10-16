@@ -311,7 +311,7 @@ export function OutstandingReportTable({
                       <td className="py-3.5 px-4 text-center">
                         <span
                           className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold",
+                            "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono tabular-nums font-semibold",
                             unpaid > 0
                               ? "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200"
                               : "text-slate-400"
@@ -323,7 +323,7 @@ export function OutstandingReportTable({
                       <td className="py-3.5 px-4 text-center">
                         <span
                           className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold",
+                            "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono tabular-nums font-semibold",
                             storedDays > 0
                               ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
                               : "text-slate-400"
@@ -332,16 +332,16 @@ export function OutstandingReportTable({
                           {storedDays} {storedDays === 1 ? "day" : "days"}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">
+                      <td className="py-3.5 px-4 font-mono tabular-nums text-xs font-medium text-slate-700 dark:text-slate-300">
                         {formatCurrency(storedAmt)}
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-rose-600 dark:text-rose-400">
+                      <td className="py-3.5 px-4 font-mono tabular-nums font-bold text-rose-600 dark:text-rose-400">
                         {formatCurrency(total)}
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <Link
                           href={`/payments?employeeId=${row.employeeId}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-xs transition-colors whitespace-nowrap"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] shadow-xs transition-all whitespace-nowrap"
                         >
                           <CreditCard size={14} weight="bold" />
                           <span>Pay</span>
@@ -356,16 +356,16 @@ export function OutstandingReportTable({
                   <td colSpan={2} className="py-3.5 px-4 text-right text-slate-700 dark:text-slate-300">
                     Grand Total:
                   </td>
-                  <td className="py-3.5 px-4 text-center font-bold text-slate-900 dark:text-slate-100">
+                  <td className="py-3.5 px-4 text-center font-mono tabular-nums font-bold text-slate-900 dark:text-slate-100">
                     {totals.totalUnpaidDays} days
                   </td>
-                  <td className="py-3.5 px-4 text-center font-bold text-slate-900 dark:text-slate-100">
+                  <td className="py-3.5 px-4 text-center font-mono tabular-nums font-bold text-slate-900 dark:text-slate-100">
                     {totals.totalStoredDays} days
                   </td>
-                  <td className="py-3.5 px-4 font-mono text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <td className="py-3.5 px-4 font-mono tabular-nums text-xs font-bold text-slate-900 dark:text-slate-100">
                     {formatCurrency(totals.totalStoredAmount)}
                   </td>
-                  <td className="py-3.5 px-4 font-mono text-base font-bold text-rose-600 dark:text-rose-400">
+                  <td className="py-3.5 px-4 font-mono tabular-nums text-base font-bold text-rose-600 dark:text-rose-400">
                     {formatCurrency(totals.totalOutstanding)}
                   </td>
                   <td className="py-3.5 px-4" />
