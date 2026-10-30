@@ -112,6 +112,12 @@ export function PaymentReceiptModal({
     downloadReceiptPdf(receipt);
   };
 
+  const downloadOptions = [
+    { label: "PDF", title: "Muat turun resit PDF", icon: <DownloadSimple size={15} weight="bold" />, onClick: handleDownloadReceipt },
+    { label: "Word", title: "Muat turun resit Word (.docx)", icon: <FileDoc size={15} weight="bold" />, onClick: handleExportWord },
+    { label: "Excel", title: "Muat turun resit Excel (.xlsx)", icon: <FileXls size={15} weight="bold" />, onClick: handleExportExcel },
+  ];
+
   if (!isOpen) {
     return null;
   }
@@ -181,78 +187,32 @@ export function PaymentReceiptModal({
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header Controls (Hidden on Print) */}
-          <div className="receipt-no-print flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 shrink-0">
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
+          <div className="receipt-no-print flex items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 shrink-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <Receipt size={22} weight="duotone" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h2
                   id="payment-receipt-title"
-                  className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
+                  className="text-base sm:text-lg font-semibold leading-tight text-slate-900 dark:text-slate-100 whitespace-nowrap"
                 >
                   Payment Receipt
                 </h2>
-                <p className="text-2xs sm:text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                   Official settlement receipt for disbursed wages
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleExportWord}
-                disabled={isLoading || !receipt}
-                leftIcon={<FileDoc size={16} weight="bold" />}
-                className="hidden sm:inline-flex whitespace-nowrap"
-              >
-                Word (.docx)
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleExportExcel}
-                disabled={isLoading || !receipt}
-                leftIcon={<FileXls size={16} weight="bold" />}
-                className="hidden sm:inline-flex whitespace-nowrap"
-              >
-                Excel (.xlsx)
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleDownloadReceipt}
-                disabled={isLoading || !receipt}
-                leftIcon={<DownloadSimple size={16} weight="bold" />}
-                className="hidden sm:inline-flex whitespace-nowrap"
-              >
-                Download PDF
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handlePrint}
-                disabled={isLoading || !receipt}
-                leftIcon={<Printer size={16} weight="bold" />}
-                className="hidden sm:inline-flex whitespace-nowrap"
-              >
-                Print Receipt
-              </Button>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close dialog"
-                className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-              >
-                <X size={20} weight="bold" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close dialog"
+              className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+            >
+              <X size={20} weight="bold" />
+            </button>
           </div>
 
           {/* Modal Content Scroll Area */}
@@ -453,60 +413,56 @@ export function PaymentReceiptModal({
           </div>
 
           {/* Footer Actions (Hidden on Print) */}
-          <div className="receipt-no-print px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 shrink-0">
-            <Button
-              type="button"
-              variant="outline"
-              size="md"
-              onClick={onClose}
-              className="w-full sm:w-auto"
-            >
-              Close
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="md"
-              onClick={handleExportWord}
-              disabled={isLoading || !receipt}
-              leftIcon={<FileDoc size={16} weight="bold" />}
-              className="sm:hidden w-full text-xs"
-            >
-              Word (.docx)
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="md"
-              onClick={handleExportExcel}
-              disabled={isLoading || !receipt}
-              leftIcon={<FileXls size={16} weight="bold" />}
-              className="sm:hidden w-full text-xs"
-            >
-              Excel (.xlsx)
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="md"
-              onClick={handleDownloadReceipt}
-              disabled={isLoading || !receipt}
-              leftIcon={<DownloadSimple size={16} weight="bold" />}
-              className="w-full sm:w-auto text-xs sm:text-sm"
-            >
-              Download PDF Receipt
-            </Button>
-            <Button
-              type="button"
-              variant="primary"
-              size="md"
-              onClick={handlePrint}
-              disabled={isLoading || !receipt}
-              leftIcon={<Printer size={16} weight="bold" />}
-              className="w-full sm:w-auto text-xs sm:text-sm"
-            >
-              Print Receipt
-            </Button>
+          <div className="receipt-no-print px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+            {/* Download format group */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5">
+              <span className="text-2xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Muat turun
+              </span>
+              <div
+                role="group"
+                aria-label="Muat turun resit"
+                className="grid grid-cols-3 sm:inline-flex rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 divide-x divide-slate-200 dark:divide-slate-700 overflow-hidden"
+              >
+                {downloadOptions.map((opt) => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={opt.onClick}
+                    disabled={isLoading || !receipt}
+                    title={opt.title}
+                    className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-300 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent whitespace-nowrap"
+                  >
+                    {opt.icon}
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Primary actions */}
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="md"
+                onClick={onClose}
+                className="w-full sm:w-auto"
+              >
+                Close
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={handlePrint}
+                disabled={isLoading || !receipt}
+                leftIcon={<Printer size={16} weight="bold" />}
+                className="w-full sm:w-auto whitespace-nowrap"
+              >
+                Print Receipt
+              </Button>
+            </div>
           </div>
         </div>
       </div>
