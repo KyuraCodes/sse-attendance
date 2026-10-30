@@ -47,6 +47,7 @@ export const reportService = {
       grossPayroll: Number(data.grossPayroll || 0),
       paidAmount: Number(data.paidAmount || 0),
       outstandingAmount: Number(data.outstandingAmount || 0),
+      totalOtAmount: Number(data.totalOtAmount || 0),
       records: Array.isArray(data.records) ? data.records : [],
     };
   },
@@ -75,6 +76,7 @@ export const reportService = {
       date: data.date,
       totalRecords: Number(data.totalRecords || 0),
       totalAmount: Number(data.totalAmount || 0),
+      totalOtAmount: Number(data.totalOtAmount || 0),
       records: Array.isArray(data.records) ? data.records : [],
     };
   },

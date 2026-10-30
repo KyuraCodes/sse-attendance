@@ -3,6 +3,12 @@ import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
 import { isValidId, sanitizeInput, sanitizeNullable } from "@/lib/security";
+import {
+  calculateDefaultOtRate,
+  calculateOtAmount,
+  formatOtNotes,
+  parseOtFromNotes,
+} from "@/lib/otUtils";
 
 export async function GET(req: NextRequest) {
   const currentUser = await getAuthenticatedUser(req);
@@ -75,6 +81,7 @@ export async function GET(req: NextRequest) {
   const result = (records || []).map((r) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const emp = r.employees as any;
+    const otInfo = parseOtFromNotes(r.notes);
     return {
       id: r.id,
       employeeId: r.employee_id,
@@ -86,6 +93,9 @@ export async function GET(req: NextRequest) {
       hoursWorked: r.hours_worked !== null && r.hours_worked !== undefined ? Number(r.hours_worked) : undefined,
       waivedAmount: Number(r.waived_amount || 0),
       rateType: emp?.rate_type || "DAILY",
+      otHours: otInfo?.otHours,
+      otRate: otInfo?.otRate,
+      otAmount: otInfo?.otAmount,
       status: r.status,
       notes: r.notes,
       createdBy: r.created_by,
@@ -105,7 +115,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { employeeId, workDate, hoursWorked, amount, notes } = body;
+    const { employeeId, workDate, hoursWorked, amount, notes, otHours, otRate } = body;
 
     if (!employeeId || !isValidId(employeeId)) {
       return errorResponse("Valid employee ID is required", "INVALID_EMPLOYEE_ID", 400);
@@ -143,26 +153,43 @@ export async function POST(req: NextRequest) {
     }
 
     const rateType = employee.rate_type || "DAILY";
-    let finalAmount: number;
+    let baseAmount: number;
 
     if (rateType === "HOURLY") {
       if (hoursWorked === undefined || hoursWorked === null || isNaN(Number(hoursWorked)) || Number(hoursWorked) <= 0) {
         return errorResponse("Hours worked must be greater than 0 for hourly employees", "INVALID_HOURS_WORKED", 400);
       }
-      const calculatedAmount = Number((Number(hoursWorked) * Number(employee.daily_rate)).toFixed(2));
-      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : calculatedAmount;
+      baseAmount = Number((Number(hoursWorked) * Number(employee.daily_rate)).toFixed(2));
     } else if (rateType === "WEEKLY") {
-      const calculatedAmount = Number((Number(employee.daily_rate) / 6).toFixed(2));
-      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : calculatedAmount;
+      baseAmount = Number((Number(employee.daily_rate) / 6).toFixed(2));
     } else if (rateType === "MONTHLY") {
-      const calculatedAmount = Number((Number(employee.daily_rate) / 26).toFixed(2));
-      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : calculatedAmount;
+      baseAmount = Number((Number(employee.daily_rate) / 26).toFixed(2));
     } else {
       // DAILY (default)
-      finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : Number(employee.daily_rate);
+      baseAmount = Number(employee.daily_rate);
     }
 
-    const sanitizedNotes = sanitizeNullable(notes);
+    let otAmountValue: number | undefined;
+    let otRateValue: number | undefined;
+    let otHoursValue: number | undefined;
+    let finalAmount = amount !== undefined && !isNaN(Number(amount)) ? Number(amount) : baseAmount;
+
+    let sanitizedNotes = sanitizeNullable(notes);
+
+    if (otHours !== undefined && otHours !== null && !isNaN(Number(otHours)) && Number(otHours) > 0) {
+      otHoursValue = Number(Number(otHours).toFixed(2));
+      const defaultOtRate = calculateDefaultOtRate(Number(employee.daily_rate), rateType);
+      otRateValue = otRate !== undefined && !isNaN(Number(otRate)) && Number(otRate) > 0
+        ? Number(Number(otRate).toFixed(2))
+        : defaultOtRate;
+      otAmountValue = calculateOtAmount(otHoursValue, otRateValue);
+
+      if (amount === undefined || isNaN(Number(amount))) {
+        finalAmount = Number((baseAmount + otAmountValue).toFixed(2));
+      }
+
+      sanitizedNotes = formatOtNotes(otHoursValue, otRateValue, otAmountValue, sanitizedNotes);
+    }
 
     const { data: newRecord, error: insertErr } = await supabase
       .from("work_records")
@@ -196,6 +223,8 @@ export async function POST(req: NextRequest) {
         dailyRate: newRecord.daily_rate,
         amount: newRecord.amount,
         hoursWorked: newRecord.hours_worked,
+        otHours: otHoursValue,
+        otAmount: otAmountValue,
         status: newRecord.status,
       })
     );
@@ -212,6 +241,9 @@ export async function POST(req: NextRequest) {
         hoursWorked: newRecord.hours_worked !== null && newRecord.hours_worked !== undefined ? Number(newRecord.hours_worked) : undefined,
         waivedAmount: Number(newRecord.waived_amount || 0),
         rateType: employee.rate_type || "DAILY",
+        otHours: otHoursValue,
+        otRate: otRateValue,
+        otAmount: otAmountValue,
         status: newRecord.status,
         notes: newRecord.notes,
         createdBy: newRecord.created_by,

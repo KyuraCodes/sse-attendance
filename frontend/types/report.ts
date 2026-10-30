@@ -8,6 +8,7 @@ export interface MonthlyReport {
   grossPayroll: number;
   paidAmount: number;
   outstandingAmount: number;
+  totalOtAmount?: number;
   records: WorkRecord[];
 }
 
@@ -30,6 +31,7 @@ export interface DailyReport {
   date: string;
   totalRecords: number;
   totalAmount: number;
+  totalOtAmount?: number;
   records: WorkRecord[];
 }
 

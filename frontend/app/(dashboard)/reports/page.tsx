@@ -25,6 +25,7 @@ import {
   downloadDailyReportPdf,
 } from "@/lib/pdfGenerator";
 import { exportToCsv, exportToExcel } from "@/lib/exportUtils";
+import { parseOtFromNotes } from "@/lib/otUtils";
 
 type ReportTab = "monthly" | "outstanding" | "daily";
 
@@ -143,27 +144,40 @@ export default function ReportsPage() {
         "Kod Pekerja",
         "Nama Pekerja",
         "Kadar (RM)",
+        "Jam OT",
+        "Amaun OT (RM)",
         "Jumlah (RM)",
         "Status",
         "Catatan",
       ];
-      const rows: (string | number)[][] = monthlyReport.records.map((r) => [
-        r.workDate,
-        r.employeeCode,
-        r.employeeName,
-        Number(r.dailyRate || 0).toFixed(2),
-        Number(r.amount || 0).toFixed(2),
-        r.status,
-        r.notes || "",
-      ]);
+      const rows: (string | number)[][] = monthlyReport.records.map((r) => {
+        const parsedOt = parseOtFromNotes(r.notes);
+        const otHours = r.otHours ?? parsedOt?.otHours ?? 0;
+        const otAmount = r.otAmount ?? parsedOt?.otAmount ?? 0;
+        const cleanNotes = parsedOt ? parsedOt.cleanNotes : (r.notes || "");
+        return [
+          r.workDate,
+          r.employeeCode,
+          r.employeeName,
+          Number(r.dailyRate || 0).toFixed(2),
+          otHours > 0 ? otHours.toFixed(1) : "-",
+          otAmount > 0 ? otAmount.toFixed(2) : "0.00",
+          Number(r.amount || 0).toFixed(2),
+          r.status,
+          cleanNotes,
+        ];
+      });
       const totalGross = (monthlyReport as any).totalGross ?? monthlyReport.grossPayroll ?? 0;
       const totalPaid = (monthlyReport as any).totalPaid ?? monthlyReport.paidAmount ?? 0;
       const totalOutstanding = (monthlyReport as any).totalOutstanding ?? monthlyReport.outstandingAmount ?? 0;
+      const totalOt = monthlyReport.totalOtAmount ?? monthlyReport.records.reduce((s, r) => s + (r.otAmount ?? parseOtFromNotes(r.notes)?.otAmount ?? 0), 0);
       const summaryRow: (string | number)[] = [
         "JUMLAH",
         "",
         "",
         "",
+        "",
+        Number(totalOt).toFixed(2),
         Number(totalGross).toFixed(2),
         `Dibayar: RM ${Number(totalPaid).toFixed(2)} | Tertunggak: RM ${Number(totalOutstanding).toFixed(2)}`,
         "",
@@ -218,28 +232,41 @@ export default function ReportsPage() {
         "Nama Pekerja",
         "Kadar (RM)",
         "Jam Bekerja",
+        "Jam OT",
+        "Amaun OT (RM)",
         "Jumlah (RM)",
         "Status",
         "Catatan",
       ];
-      const rows: (string | number)[][] = dailyReport.records.map((r) => [
-        r.workDate,
-        r.employeeCode,
-        r.employeeName,
-        Number(r.dailyRate || 0).toFixed(2),
-        r.hoursWorked != null ? r.hoursWorked.toString() : "-",
-        Number(r.amount || 0).toFixed(2),
-        r.status,
-        r.notes || "",
-      ]);
+      const rows: (string | number)[][] = dailyReport.records.map((r) => {
+        const parsedOt = parseOtFromNotes(r.notes);
+        const otHours = r.otHours ?? parsedOt?.otHours ?? 0;
+        const otAmount = r.otAmount ?? parsedOt?.otAmount ?? 0;
+        const cleanNotes = parsedOt ? parsedOt.cleanNotes : (r.notes || "");
+        return [
+          r.workDate,
+          r.employeeCode,
+          r.employeeName,
+          Number(r.dailyRate || 0).toFixed(2),
+          r.hoursWorked != null ? r.hoursWorked.toString() : "-",
+          otHours > 0 ? otHours.toFixed(1) : "-",
+          otAmount > 0 ? otAmount.toFixed(2) : "0.00",
+          Number(r.amount || 0).toFixed(2),
+          r.status,
+          cleanNotes,
+        ];
+      });
       const totalPayroll = (dailyReport as any).totalPayroll ?? dailyReport.totalAmount ?? 0;
       const totalWorkers = (dailyReport as any).totalWorkers ?? dailyReport.totalRecords ?? dailyReport.records.length;
+      const totalOt = dailyReport.totalOtAmount ?? dailyReport.records.reduce((s, r) => s + (r.otAmount ?? parseOtFromNotes(r.notes)?.otAmount ?? 0), 0);
       const summaryRow: (string | number)[] = [
         "JUMLAH",
         "",
         "",
         "",
         "",
+        "",
+        Number(totalOt).toFixed(2),
         Number(totalPayroll).toFixed(2),
         `Pekerja: ${totalWorkers}`,
         "",
@@ -341,7 +368,7 @@ export default function ReportsPage() {
             className={cn(
               "flex items-center gap-1.5 sm:gap-2 py-2.5 px-3 sm:py-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap cursor-pointer",
               activeTab === "monthly"
-                ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 font-semibold"
+                ? "border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-300"
             )}
           >
@@ -355,7 +382,7 @@ export default function ReportsPage() {
             className={cn(
               "flex items-center gap-1.5 sm:gap-2 py-2.5 px-3 sm:py-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap cursor-pointer",
               activeTab === "outstanding"
-                ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 font-semibold"
+                ? "border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-300"
             )}
           >
@@ -369,7 +396,7 @@ export default function ReportsPage() {
             className={cn(
               "flex items-center gap-1.5 sm:gap-2 py-2.5 px-3 sm:py-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap cursor-pointer",
               activeTab === "daily"
-                ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 font-semibold"
+                ? "border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-300"
             )}
           >

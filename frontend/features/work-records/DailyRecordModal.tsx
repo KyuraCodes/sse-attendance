@@ -9,6 +9,7 @@ import {
   WarningCircle,
   FileText,
   CircleNotch,
+  Clock,
 } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
 import { workRecordService } from "@/services/workRecordService";
@@ -19,6 +20,7 @@ import {
   RATE_UNIT_LABELS,
 } from "@/types/employee";
 import { WorkRecord, CreateWorkRecordRequest } from "@/types/workRecord";
+import { calculateDefaultOtRate } from "@/lib/otUtils";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -49,6 +51,9 @@ export function DailyRecordModal({
   const [employeeId, setEmployeeId] = useState<string>("");
   const [hoursWorked, setHoursWorked] = useState<string>("8");
   const [customAmount, setCustomAmount] = useState<string>("");
+  const [hasOt, setHasOt] = useState<boolean>(false);
+  const [otHours, setOtHours] = useState<string>("2.0");
+  const [otRate, setOtRate] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoadingEmployees, setIsLoadingEmployees] = useState<boolean>(false);
@@ -78,6 +83,9 @@ export function DailyRecordModal({
       setEmployeeId("");
       setHoursWorked("8");
       setCustomAmount("");
+      setHasOt(false);
+      setOtHours("2.0");
+      setOtRate("");
       setNotes("");
       setErrorMessage(null);
       fetchActiveEmployees();
@@ -107,6 +115,8 @@ export function DailyRecordModal({
     if (emp) {
       const rType = emp.rateType || "DAILY";
       const rateNum = Number(emp.dailyRate) || 0;
+      const defaultOt = calculateDefaultOtRate(rateNum, rType);
+      setOtRate(defaultOt.toFixed(2));
       if (rType === "HOURLY") {
         setHoursWorked("8");
         setCustomAmount(Number((8 * rateNum).toFixed(2)).toString());
@@ -123,13 +133,14 @@ export function DailyRecordModal({
     } else {
       setHoursWorked("8");
       setCustomAmount("");
+      setOtRate("");
     }
   };
 
   const hourlyHours = parseFloat(hoursWorked) || 0;
   const hourlyCalculatedAmount = Number((hourlyHours * dailyRate).toFixed(2));
 
-  const finalCalculatedAmount = useMemo(() => {
+  const baseCalculatedAmount = useMemo(() => {
     if (!selectedEmployee) return 0;
     if (rateType === "HOURLY") {
       return hourlyCalculatedAmount;
@@ -145,6 +156,11 @@ export function DailyRecordModal({
     const parsed = parseFloat(customAmount);
     return !isNaN(parsed) && parsed >= 0 ? parsed : dailyRate;
   }, [selectedEmployee, rateType, hourlyCalculatedAmount, customAmount, dailyRate]);
+
+  const parsedOtHours = hasOt ? parseFloat(otHours) || 0 : 0;
+  const parsedOtRate = hasOt ? parseFloat(otRate) || 0 : 0;
+  const calculatedOtAmount = hasOt ? Number((parsedOtHours * parsedOtRate).toFixed(2)) : 0;
+  const totalAmountWithOt = Number((baseCalculatedAmount + calculatedOtAmount).toFixed(2));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,15 +201,33 @@ export function DailyRecordModal({
       amountToSend = !isNaN(a) && a > 0 ? Number(a.toFixed(2)) : dailyRate;
     }
 
+    if (hasOt) {
+      if (isNaN(parsedOtHours) || parsedOtHours <= 0) {
+        setErrorMessage("Sila masukkan jam OT yang sah (sekurang-kurangnya 0.5 jam).");
+        return;
+      }
+      if (isNaN(parsedOtRate) || parsedOtRate <= 0) {
+        setErrorMessage("Sila masukkan kadar OT sejam yang sah.");
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
+      const finalTotalAmount = hasOt
+        ? Number((amountToSend + calculatedOtAmount).toFixed(2))
+        : amountToSend;
+
       const payload: CreateWorkRecordRequest = {
         employeeId: Number(employeeId),
         workDate,
         hoursWorked: hoursToSend,
-        amount: amountToSend,
+        amount: finalTotalAmount,
+        otHours: hasOt ? parsedOtHours : undefined,
+        otRate: hasOt ? parsedOtRate : undefined,
+        otAmount: hasOt ? calculatedOtAmount : undefined,
         notes: notes.trim() ? notes.trim() : undefined,
       };
 
@@ -337,7 +371,7 @@ export function DailyRecordModal({
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                    Jam Bekerja <span className="text-rose-500">*</span>
+                    Jam Bekerja Biasa <span className="text-rose-500">*</span>
                   </label>
                   <Input
                     type="number"
@@ -351,7 +385,7 @@ export function DailyRecordModal({
                   />
                 </div>
                 <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-medium text-emerald-900 dark:text-emerald-200">
-                  Pengiraan: {hoursWorked || 0} jam x RM {dailyRate.toFixed(2)} = RM {hourlyCalculatedAmount.toFixed(2)}
+                  Pengiraan Biasa: {hoursWorked || 0} jam x RM {dailyRate.toFixed(2)} = RM {hourlyCalculatedAmount.toFixed(2)}
                 </div>
               </div>
             )}
@@ -402,36 +436,116 @@ export function DailyRecordModal({
               </div>
             )}
 
-            {/* Rate Preview Card */}
+            {/* Overtime (OT) Toggle and Inputs */}
             {selectedEmployee && (
-              <div className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl p-3.5 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <CurrencyCircleDollar size={24} weight="duotone" className="text-emerald-600 dark:text-emerald-400" />
-                  <div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                      <span>Standard Rate</span>
-                      <span
-                        className={cn(
-                          "inline-flex items-center px-1.5 py-0.2 rounded text-2xs font-semibold border",
-                          getRateBadgeClass(rateType)
-                        )}
-                      >
-                        {RATE_TYPE_LABELS[rateType] || "Harian"}
+              <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 bg-slate-50/70 dark:bg-slate-800/40 transition-colors">
+                <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={hasOt}
+                    onChange={(e) => {
+                      setHasOt(e.target.checked);
+                      if (e.target.checked && (!otRate || otRate === "0.00") && selectedEmployee) {
+                        const defRate = calculateDefaultOtRate(Number(selectedEmployee.dailyRate), rateType);
+                        setOtRate(defRate.toFixed(2));
+                      }
+                    }}
+                    disabled={isSubmitting}
+                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 dark:border-slate-700"
+                  />
+                  <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                    <Clock size={16} weight="bold" className="text-amber-500" />
+                    Tambah Kerja Lebih Masa (Overtime / OT)
+                  </span>
+                </label>
+
+                {hasOt && (
+                  <div className="mt-3 pt-3 border-t border-slate-200/80 dark:border-slate-700/80 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-2xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                          Jam OT <span className="text-rose-500">*</span>
+                        </label>
+                        <Input
+                          type="number"
+                          step="0.5"
+                          min="0.5"
+                          value={otHours}
+                          onChange={(e) => setOtHours(e.target.value)}
+                          disabled={isSubmitting}
+                          required={hasOt}
+                          placeholder="2.0"
+                          className="h-9 text-xs font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-2xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                          Kadar OT Sejam (RM) <span className="text-rose-500">*</span>
+                        </label>
+                        <Input
+                          type="number"
+                          step="0.5"
+                          min="0.1"
+                          value={otRate}
+                          onChange={(e) => setOtRate(e.target.value)}
+                          disabled={isSubmitting}
+                          required={hasOt}
+                          placeholder="15.00"
+                          className="h-9 text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 rounded-lg text-2xs text-amber-900 dark:text-amber-200 flex items-center justify-between">
+                      <span>Gaji Tambahan OT ({parsedOtHours} jam x RM {parsedOtRate.toFixed(2)}):</span>
+                      <span className="font-bold font-mono text-xs tabular-nums text-amber-700 dark:text-amber-300">
+                        + {formatCurrency(calculatedOtAmount)}
                       </span>
                     </div>
-                    <div className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
-                      {formatCurrency(selectedEmployee.dailyRate)} / {RATE_UNIT_LABELS[rateType] || "hari"}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Rate Preview Card */}
+            {selectedEmployee && (
+              <div className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <CurrencyCircleDollar size={24} weight="duotone" className="text-emerald-600 dark:text-emerald-400" />
+                    <div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                        <span>Standard Rate</span>
+                        <span
+                          className={cn(
+                            "inline-flex items-center px-1.5 py-0.2 rounded text-2xs font-semibold border",
+                            getRateBadgeClass(rateType)
+                          )}
+                        >
+                          {RATE_TYPE_LABELS[rateType] || "Harian"}
+                        </span>
+                      </div>
+                      <div className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
+                        {formatCurrency(selectedEmployee.dailyRate)} / {RATE_UNIT_LABELS[rateType] || "hari"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+                      {hasOt ? "Jumlah Keseluruhan (Termasuk OT)" : "Calculated Amount"}
+                    </div>
+                    <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
+                      {formatCurrency(totalAmountWithOt)}
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
-                    Calculated Amount
+
+                {hasOt && (
+                  <div className="pt-2 border-t border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between text-2xs text-slate-500 dark:text-slate-400 font-mono">
+                    <span>Gaji Asas: {formatCurrency(baseCalculatedAmount)}</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-semibold">+ OT: {formatCurrency(calculatedOtAmount)}</span>
                   </div>
-                  <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
-                    {formatCurrency(finalCalculatedAmount)}
-                  </div>
-                </div>
+                )}
               </div>
             )}
 

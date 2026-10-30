@@ -13,8 +13,10 @@ import {
   WarningCircle,
   CheckCircle,
   User as UserIcon,
+  Database,
 } from "@phosphor-icons/react";
 import { useAuth } from "@/contexts/AuthContext";
+import { getAuthToken } from "@/services/api";
 import { userService } from "@/services/userService";
 import { User, CreateUserRequest, UpdateUserRequest } from "@/types/auth";
 import { Button } from "@/components/ui/Button";
@@ -86,6 +88,58 @@ export default function AccountsPage() {
     setTimeout(() => {
       setSuccessMessage(null);
     }, 3500);
+  };
+
+  const isOwner = currentUser?.role === "CEO" || currentUser?.role === "OWNER";
+  const [isDownloadingBackup, setIsDownloadingBackup] = useState(false);
+
+  const handleQuickBackup = async () => {
+    setIsDownloadingBackup(true);
+    try {
+      const token = getAuthToken();
+      const response = await fetch("/api/backup", {
+        method: "GET",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!response.ok) {
+        let errMsg = "Ralat semasa memuat turun sandaran pangkalan data.";
+        try {
+          const errJson = await response.json();
+          if (errJson.message) errMsg = errJson.message;
+        } catch {
+          // ignore
+        }
+        throw new Error(errMsg);
+      }
+
+      const blob = await response.blob();
+      const disposition = response.headers.get("Content-Disposition");
+      let filename = `ssep-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+      if (disposition) {
+        const match = disposition.match(/filename=["']?([^"']+)["']?/);
+        if (match && match[1]) {
+          filename = match[1];
+        }
+      }
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      triggerSuccess("Sandaran pangkalan data berjaya dimuat turun sebelum perubahan.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal memuat turun sandaran pangkalan data.");
+    } finally {
+      setIsDownloadingBackup(false);
+    }
   };
 
   // Filtered Users List
@@ -222,19 +276,36 @@ export default function AccountsPage() {
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="primary"
-          size="md"
-          onClick={() => {
-            setCreateError(null);
-            setIsCreateOpen(true);
-          }}
-          leftIcon={<Plus size={16} weight="bold" />}
-          className="whitespace-nowrap shadow-xs w-full sm:w-auto justify-center"
-        >
-          Create New Account
-        </Button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {isOwner && (
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              onClick={handleQuickBackup}
+              disabled={isDownloadingBackup}
+              isLoading={isDownloadingBackup}
+              leftIcon={<Database size={16} weight="bold" />}
+              className="whitespace-nowrap shadow-xs justify-center text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Backup DB
+            </Button>
+          )}
+
+          <Button
+            type="button"
+            variant="primary"
+            size="md"
+            onClick={() => {
+              setCreateError(null);
+              setIsCreateOpen(true);
+            }}
+            leftIcon={<Plus size={16} weight="bold" />}
+            className="whitespace-nowrap shadow-xs w-full sm:w-auto justify-center"
+          >
+            Create New Account
+          </Button>
+        </div>
       </div>
 
       {/* Success Notification */}

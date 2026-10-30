@@ -11,13 +11,25 @@ import {
   Sun,
   Moon,
   FloppyDisk,
+  Database,
+  DownloadSimple,
+  WarningCircle,
 } from "@phosphor-icons/react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { getAuthToken } from "@/services/api";
 import { Button } from "@/components/ui/Button";
 import { COMPANY_NAME, COMPANY_SHORT, SYSTEM_NAME } from "@/lib/constants";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
+  const isOwner = user?.role === "CEO" || user?.role === "OWNER";
+
+  // Backup state
+  const [isDownloadingBackup, setIsDownloadingBackup] = useState(false);
+  const [backupError, setBackupError] = useState<string | null>(null);
+  const [backupSuccess, setBackupSuccess] = useState<string | null>(null);
 
   // Settings local state
   const [companyName, setCompanyName] = useState(COMPANY_NAME);
@@ -39,6 +51,60 @@ export default function SettingsPage() {
     setTimeout(() => {
       setSavedSuccess(false);
     }, 3500);
+  };
+
+  const handleDownloadBackup = async () => {
+    setIsDownloadingBackup(true);
+    setBackupError(null);
+    setBackupSuccess(null);
+    try {
+      const token = getAuthToken();
+      const response = await fetch("/api/backup", {
+        method: "GET",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!response.ok) {
+        let errMsg = "Ralat semasa memuat turun sandaran pangkalan data.";
+        try {
+          const errJson = await response.json();
+          if (errJson.message) errMsg = errJson.message;
+        } catch {
+          // ignore parsing error
+        }
+        throw new Error(errMsg);
+      }
+
+      const blob = await response.blob();
+      const disposition = response.headers.get("Content-Disposition");
+      let filename = `ssep-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+      if (disposition) {
+        const match = disposition.match(/filename=["']?([^"']+)["']?/);
+        if (match && match[1]) {
+          filename = match[1];
+        }
+      }
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      setBackupSuccess("Sandaran pangkalan data berjaya dimuat turun.");
+      setTimeout(() => {
+        setBackupSuccess(null);
+      }, 4000);
+    } catch (err) {
+      setBackupError(err instanceof Error ? err.message : "Gagal memuat turun sandaran pangkalan data.");
+    } finally {
+      setIsDownloadingBackup(false);
+    }
   };
 
   return (
@@ -339,6 +405,80 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+
+        {/* Section 5: Owner Disaster Recovery & Database Backup */}
+        {isOwner && (
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <Database size={22} weight="duotone" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                      Database Disaster Recovery & Backup
+                    </h2>
+                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                      CEO / OWNER
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Export complete offline snapshot of all system tables with OWASP sensitive data protection
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={handleDownloadBackup}
+                disabled={isDownloadingBackup}
+                isLoading={isDownloadingBackup}
+                leftIcon={<DownloadSimple size={16} weight="bold" />}
+                className="w-full sm:w-auto justify-center whitespace-nowrap shadow-xs"
+              >
+                Download Database Backup (.json)
+              </Button>
+            </div>
+
+            {backupSuccess && (
+              <div
+                role="status"
+                className="flex items-center gap-2 px-3.5 py-2 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 rounded-xl text-emerald-800 dark:text-emerald-300 text-xs font-semibold shadow-xs animate-in fade-in"
+              >
+                <CheckCircle size={16} weight="fill" className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>{backupSuccess}</span>
+              </div>
+            )}
+
+            {backupError && (
+              <div
+                role="alert"
+                className="flex items-center gap-2 px-3.5 py-2 bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-700 rounded-xl text-rose-800 dark:text-rose-300 text-xs font-semibold shadow-xs animate-in fade-in"
+              >
+                <WarningCircle size={16} weight="fill" className="text-rose-600 shrink-0" />
+                <span>{backupError}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs pt-1">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
+                <span className="text-slate-400 dark:text-slate-500 block mb-0.5 text-2xs">Data Sanitization:</span>
+                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">OWASP Redacted (Hashes Hidden)</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
+                <span className="text-slate-400 dark:text-slate-500 block mb-0.5 text-2xs">Included Tables:</span>
+                <span className="font-mono font-bold text-slate-800 dark:text-slate-200">6 Core Relational Tables</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
+                <span className="text-slate-400 dark:text-slate-500 block mb-0.5 text-2xs">Audit Logging:</span>
+                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">Timestamped Forensic Trail</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Save Button */}
         <div className="flex items-center justify-end gap-3 pt-2">

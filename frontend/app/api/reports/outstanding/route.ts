@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
 
 export async function GET(req: NextRequest) {
   const currentUser = await getAuthenticatedUser(req);
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     .order("id", { ascending: true });
 
   if (empErr) {
-    return errorResponse("Failed to fetch employees", "FETCH_FAILED", 500);
+    return safeServerError(empErr, "Failed to fetch employees", "FETCH_FAILED");
   }
 
   const { data: payableRecords, error: wrErr } = await supabase
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     .in("status", ["UNPAID", "STORED", "PARTIALLY_PAID"]);
 
   if (wrErr) {
-    return errorResponse("Failed to fetch payable records", "FETCH_FAILED", 500);
+    return safeServerError(wrErr, "Failed to fetch payable records", "FETCH_FAILED");
   }
 
   const recordIds = (payableRecords || []).map((r) => r.id);

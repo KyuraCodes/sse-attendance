@@ -2,6 +2,12 @@ import { NextRequest } from "next/server";
 import { getAuthenticatedUser, logAudit } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { successResponse, errorResponse } from "@/lib/apiResponse";
+import {
+  calculateDefaultOtRate,
+  calculateOtAmount,
+  formatOtNotes,
+  parseOtFromNotes,
+} from "@/lib/otUtils";
 
 export async function POST(req: NextRequest) {
   const currentUser = await getAuthenticatedUser(req);
@@ -21,6 +27,9 @@ export async function POST(req: NextRequest) {
       employeeId: number;
       hoursWorked?: number;
       amount?: number;
+      otHours?: number;
+      otRate?: number;
+      otAmount?: number;
     }[] = [];
 
     if (entries && Array.isArray(entries) && entries.length > 0) {
@@ -39,6 +48,24 @@ export async function POST(req: NextRequest) {
             e.amount !== null &&
             !isNaN(Number(e.amount))
               ? Number(e.amount)
+              : undefined,
+          otHours:
+            e.otHours !== undefined &&
+            e.otHours !== null &&
+            !isNaN(Number(e.otHours))
+              ? Number(e.otHours)
+              : undefined,
+          otRate:
+            e.otRate !== undefined &&
+            e.otRate !== null &&
+            !isNaN(Number(e.otRate))
+              ? Number(e.otRate)
+              : undefined,
+          otAmount:
+            e.otAmount !== undefined &&
+            e.otAmount !== null &&
+            !isNaN(Number(e.otAmount))
+              ? Number(e.otAmount)
               : undefined,
         })
       );
@@ -202,6 +229,34 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      let workerNotes = notes ? notes.trim() : null;
+      let otAmountValue: number | undefined;
+      let otRateValue: number | undefined;
+      let otHoursValue: number | undefined;
+
+      if (
+        entry?.otHours !== undefined &&
+        entry?.otHours !== null &&
+        !isNaN(Number(entry.otHours)) &&
+        Number(entry.otHours) > 0
+      ) {
+        otHoursValue = Number(Number(entry.otHours).toFixed(2));
+        const defaultOtRate = calculateDefaultOtRate(Number(emp.daily_rate), rateType);
+        otRateValue =
+          entry?.otRate !== undefined &&
+          !isNaN(Number(entry.otRate)) &&
+          Number(entry.otRate) > 0
+            ? Number(Number(entry.otRate).toFixed(2))
+            : defaultOtRate;
+        otAmountValue = calculateOtAmount(otHoursValue, otRateValue);
+
+        if (customAmount === undefined) {
+          finalAmount = Number((finalAmount + otAmountValue).toFixed(2));
+        }
+
+        workerNotes = formatOtNotes(otHoursValue, otRateValue, otAmountValue, workerNotes);
+      }
+
       newRecordsToInsert.push({
         employee_id: emp.id,
         work_date: workDate,
@@ -210,7 +265,7 @@ export async function POST(req: NextRequest) {
         hours_worked: recordHoursWorked,
         status: "UNPAID",
         waived_amount: 0.0,
-        notes: notes ? notes.trim() : null,
+        notes: workerNotes,
         created_by: currentUser.id,
       });
     }
@@ -234,6 +289,7 @@ export async function POST(req: NextRequest) {
     const empMap = new Map(employees.map((e) => [e.id, e]));
     const result = insertedRecords.map((r) => {
       const emp = empMap.get(r.employee_id);
+      const otInfo = parseOtFromNotes(r.notes);
       return {
         id: r.id,
         employeeId: r.employee_id,
@@ -248,6 +304,9 @@ export async function POST(req: NextRequest) {
             : undefined,
         waivedAmount: Number(r.waived_amount || 0),
         rateType: emp?.rate_type || "DAILY",
+        otHours: otInfo?.otHours,
+        otRate: otInfo?.otRate,
+        otAmount: otInfo?.otAmount,
         status: r.status,
         notes: r.notes,
         createdBy: r.created_by,

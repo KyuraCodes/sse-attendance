@@ -21,6 +21,9 @@ export interface WorkRecord {
   hoursWorked?: number;
   waivedAmount?: number;
   rateType?: RateType;
+  otHours?: number;
+  otRate?: number;
+  otAmount?: number;
   notes?: string | null;
   createdBy?: number | null;
   createdAt?: string | null;
@@ -31,6 +34,9 @@ export interface WorkRecordDto extends WorkRecord {
   hoursWorked?: number;
   waivedAmount?: number;
   rateType?: RateType;
+  otHours?: number;
+  otRate?: number;
+  otAmount?: number;
 }
 
 export interface CreateWorkRecordRequest {
@@ -38,6 +44,9 @@ export interface CreateWorkRecordRequest {
   workDate: string; // ISO format: YYYY-MM-DD
   hoursWorked?: number;
   amount?: number;
+  otHours?: number;
+  otRate?: number;
+  otAmount?: number;
   notes?: string;
 }
 
@@ -45,6 +54,9 @@ export interface BulkWorkRecordEntry {
   employeeId: number;
   hoursWorked?: number;
   amount?: number;
+  otHours?: number;
+  otRate?: number;
+  otAmount?: number;
 }
 
 export interface BulkWorkRecordRequest {

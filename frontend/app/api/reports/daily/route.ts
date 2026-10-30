@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { successResponse, errorResponse } from "@/lib/apiResponse";
+import { successResponse, errorResponse, safeServerError } from "@/lib/apiResponse";
+import { sanitizeInput } from "@/lib/security";
+import { parseOtFromNotes } from "@/lib/otUtils";
 
 export async function GET(req: NextRequest) {
   const currentUser = await getAuthenticatedUser(req);
@@ -10,7 +12,8 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const date = searchParams.get("date") || new Date().toISOString().split("T")[0];
+  const rawDate = searchParams.get("date") || new Date().toISOString().split("T")[0];
+  const date = sanitizeInput(rawDate);
 
   const { data: records, error } = await supabase
     .from("work_records")
@@ -20,6 +23,8 @@ export async function GET(req: NextRequest) {
       work_date,
       daily_rate,
       amount,
+      hours_worked,
+      waived_amount,
       status,
       notes,
       created_by,
@@ -28,7 +33,8 @@ export async function GET(req: NextRequest) {
       employees (
         id,
         employee_code,
-        name
+        name,
+        rate_type
       )
     `)
     .eq("work_date", date)
@@ -36,18 +42,22 @@ export async function GET(req: NextRequest) {
     .order("id", { ascending: true });
 
   if (error) {
-    console.error("Daily report error:", error);
-    return errorResponse("Failed to fetch daily report", "FETCH_FAILED", 500);
+    return safeServerError(error, "Failed to fetch daily report", "FETCH_FAILED");
   }
 
   const validRecords = records || [];
   let totalAmount = 0;
+  let totalOtAmount = 0;
 
   const recordDtos = validRecords.map((r) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const emp = r.employees as any;
     const amount = Number(r.amount);
+    const otInfo = parseOtFromNotes(r.notes);
     totalAmount += amount;
+    if (otInfo?.otAmount) {
+      totalOtAmount += otInfo.otAmount;
+    }
 
     return {
       id: r.id,
@@ -57,6 +67,12 @@ export async function GET(req: NextRequest) {
       workDate: r.work_date,
       dailyRate: Number(r.daily_rate),
       amount,
+      hoursWorked: r.hours_worked !== null && r.hours_worked !== undefined ? Number(r.hours_worked) : undefined,
+      waivedAmount: Number(r.waived_amount || 0),
+      rateType: emp?.rate_type || "DAILY",
+      otHours: otInfo?.otHours,
+      otRate: otInfo?.otRate,
+      otAmount: otInfo?.otAmount,
       status: r.status,
       notes: r.notes,
       createdBy: r.created_by,
@@ -68,7 +84,8 @@ export async function GET(req: NextRequest) {
   return successResponse({
     date,
     totalRecords: validRecords.length,
-    totalAmount,
+    totalAmount: Number(totalAmount.toFixed(2)),
+    totalOtAmount: Number(totalOtAmount.toFixed(2)),
     records: recordDtos,
   });
 }
