@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.109.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
+    "docx": "^9.15.0",
     "jsonwebtoken": "^9.0.3",
     "jspdf": "^4.2.1",
     "next": "^15.2.0",

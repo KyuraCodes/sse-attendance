@@ -12,6 +12,8 @@ import {
   WarningCircle,
   CircleNotch,
   DownloadSimple,
+  FileDoc,
+  FileXls,
 } from "@phosphor-icons/react";
 import { ReceiptDto } from "@/types/payment";
 import { paymentService } from "@/services/paymentService";
@@ -19,6 +21,7 @@ import { Button } from "@/components/ui/Button";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { COMPANY_NAME, SYSTEM_NAME } from "@/lib/constants";
 import { downloadReceiptPdf } from "@/lib/pdfGenerator";
+import { exportReceiptToWord, exportReceiptToExcel } from "@/lib/exportUtils";
 
 interface PaymentReceiptModalProps {
   isOpen: boolean;
@@ -79,6 +82,24 @@ export function PaymentReceiptModal({
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
+
+  const handleExportWord = async () => {
+    if (!receipt) return;
+    try {
+      await exportReceiptToWord(receipt);
+    } catch (err) {
+      console.error("Failed to export Word receipt:", err);
+    }
+  };
+
+  const handleExportExcel = () => {
+    if (!receipt) return;
+    try {
+      exportReceiptToExcel(receipt);
+    } catch (err) {
+      console.error("Failed to export Excel receipt:", err);
+    }
+  };
 
   const handlePrint = () => {
     if (typeof window !== "undefined") {
@@ -179,6 +200,28 @@ export function PaymentReceiptModal({
             </div>
 
             <div className="flex items-center gap-1.5 sm:gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleExportWord}
+                disabled={isLoading || !receipt}
+                leftIcon={<FileDoc size={16} weight="bold" />}
+                className="hidden sm:inline-flex whitespace-nowrap"
+              >
+                Word (.docx)
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleExportExcel}
+                disabled={isLoading || !receipt}
+                leftIcon={<FileXls size={16} weight="bold" />}
+                className="hidden sm:inline-flex whitespace-nowrap"
+              >
+                Excel (.xlsx)
+              </Button>
               <Button
                 type="button"
                 variant="outline"
@@ -419,6 +462,28 @@ export function PaymentReceiptModal({
               className="w-full sm:w-auto"
             >
               Close
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              onClick={handleExportWord}
+              disabled={isLoading || !receipt}
+              leftIcon={<FileDoc size={16} weight="bold" />}
+              className="sm:hidden w-full text-xs"
+            >
+              Word (.docx)
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              onClick={handleExportExcel}
+              disabled={isLoading || !receipt}
+              leftIcon={<FileXls size={16} weight="bold" />}
+              className="sm:hidden w-full text-xs"
+            >
+              Excel (.xlsx)
             </Button>
             <Button
               type="button"
