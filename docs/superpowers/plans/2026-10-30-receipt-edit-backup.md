@@ -1,6 +1,6 @@
 # Receipt Export, Work Record Mutation, and Owner Database Backup Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Implement official payment receipt export in Word (`.docx`) and Excel (`.xlsx`), enable work record editing for non-paid records with Overtime recalculation and audit logging, and provide secure owner-only JSON database backup download.
 
@@ -33,7 +33,7 @@
 - Produces: `exportReceiptToExcel(receipt: ReceiptDto): void`
 - Consumes: `ReceiptDto` from `@/types/payment`
 
-- [ ] **Step 1: Install `docx` package**
+- [x] **Step 1: Install `docx` package**
 
 Run:
 ```bash
@@ -42,7 +42,7 @@ cd frontend && npm install docx
 
 Verify in `frontend/package.json` that `"docx"` is listed under dependencies.
 
-- [ ] **Step 2: Add `exportReceiptToWord` and `exportReceiptToExcel` to `frontend/lib/exportUtils.ts`**
+- [x] **Step 2: Add `exportReceiptToWord` and `exportReceiptToExcel` to `frontend/lib/exportUtils.ts`**
 
 Add imports and implementations:
 ```typescript
@@ -66,7 +66,7 @@ Implement `exportReceiptToExcel(receipt: ReceiptDto)`:
 - Configure column widths.
 - Build workbook and write using `XLSX.writeFile(workbook, 'Resit-' + receipt.paymentCode + '.xlsx')`.
 
-- [ ] **Step 3: Update `frontend/features/payments/PaymentReceiptModal.tsx`**
+- [x] **Step 3: Update `frontend/features/payments/PaymentReceiptModal.tsx`**
 
 Import `exportReceiptToWord` and `exportReceiptToExcel` from `@/lib/exportUtils`.
 Import `FileDoc` and `FileXls` (or `MicrosoftWordLogo`, `MicrosoftExcelLogo`) from `@phosphor-icons/react`.
@@ -75,7 +75,7 @@ Add two action buttons in the modal header actions strip alongside existing "Dow
 - Button: "Excel (.xlsx)" calling `exportReceiptToExcel(receipt)`.
 Ensure buttons are disabled when `isLoading || !receipt`.
 
-- [ ] **Step 4: Verify TypeScript compilation**
+- [x] **Step 4: Verify TypeScript compilation**
 
 Run:
 ```bash
@@ -83,7 +83,7 @@ npx tsc --noEmit
 ```
 Expected: PASS (0 errors).
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add frontend/package.json frontend/package-lock.json frontend/lib/exportUtils.ts frontend/features/payments/PaymentReceiptModal.tsx
@@ -101,7 +101,7 @@ git commit -m "feat: add Word and Excel receipt export generators"
 - Produces: `PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> })`
 - Consumes: `getAuthenticatedUser`, `supabase`, `logAudit`, `safeServerError`
 
-- [ ] **Step 1: Implement `PUT` method in `frontend/app/api/work-records/[id]/route.ts`**
+- [x] **Step 1: Implement `PUT` method in `frontend/app/api/work-records/[id]/route.ts`**
 
 Include:
 1. Authenticate user: Verify token with `getAuthenticatedUser(req)`. Return 401 if null.
@@ -127,7 +127,7 @@ Include:
    - `logAudit(currentUser.id, "UPDATE", "work_records", recordId, JSON.stringify(oldData), JSON.stringify(newData))`
 8. Return `successResponse` with updated record data. Wrap with `safeServerError` on unexpected catch.
 
-- [ ] **Step 2: Verify TypeScript compilation**
+- [x] **Step 2: Verify TypeScript compilation**
 
 Run:
 ```bash
@@ -135,7 +135,7 @@ npx tsc --noEmit
 ```
 Expected: PASS (0 errors).
 
-- [ ] **Step 3: Commit changes**
+- [x] **Step 3: Commit changes**
 
 ```bash
 git add "frontend/app/api/work-records/[id]/route.ts"
@@ -157,7 +157,7 @@ git commit -m "feat: implement PUT /api/work-records/[id] with status locking an
 - Produces: `<EditWorkRecordModal isOpen={...} onClose={...} record={...} onUpdated={...} />`
 - Consumes: `parseOtFromNotes`, `calculateOtAmount`, `formatCurrency`
 
-- [ ] **Step 1: Add update method in `frontend/services/workRecordService.ts`**
+- [x] **Step 1: Add update method in `frontend/services/workRecordService.ts`**
 
 Define interface:
 ```typescript
@@ -172,7 +172,7 @@ export interface UpdateWorkRecordPayload {
 ```
 Add `update(id: number, payload: UpdateWorkRecordPayload)` sending `PUT /api/work-records/${id}`.
 
-- [ ] **Step 2: Create `frontend/features/work-records/EditWorkRecordModal.tsx`**
+- [x] **Step 2: Create `frontend/features/work-records/EditWorkRecordModal.tsx`**
 
 Build modal with:
 - Header: "Sunting Rekod Kerja" with employee name and code.
@@ -181,20 +181,20 @@ Build modal with:
 - Save button: Calls `workRecordService.update`, handles loading spinner and error messages.
 - Cancel button.
 
-- [ ] **Step 3: Update `frontend/features/work-records/WorkRecordTable.tsx`**
+- [x] **Step 3: Update `frontend/features/work-records/WorkRecordTable.tsx`**
 
 - Add `onEditRecord?: (record: WorkRecord) => void;` to `WorkRecordTableProps`.
 - In mobile cards: Add "Edit" button (`PencilSimple` icon) when `record.status !== "PAID" && record.status !== "VOID"`.
 - In desktop table: Add "Edit" button (`PencilSimple` icon) in Actions column when `record.status !== "PAID" && record.status !== "VOID"`.
 - For records with status `PAID`, show a disabled state or tooltip "Rekod telah dibayar (terkunci)".
 
-- [ ] **Step 4: Update `frontend/app/(dashboard)/work-records/page.tsx`**
+- [x] **Step 4: Update `frontend/app/(dashboard)/work-records/page.tsx`**
 
 - State: `const [editingRecord, setEditingRecord] = useState<WorkRecord | null>(null);`
 - Connect `onEditRecord={(record) => setEditingRecord(record)}` in `WorkRecordTable`.
 - Render `<EditWorkRecordModal isOpen={!!editingRecord} onClose={() => setEditingRecord(null)} record={editingRecord} onUpdated={() => { setEditingRecord(null); fetchRecords(); }} />`.
 
-- [ ] **Step 5: Verify TypeScript compilation**
+- [x] **Step 5: Verify TypeScript compilation**
 
 Run:
 ```bash
@@ -202,7 +202,7 @@ npx tsc --noEmit
 ```
 Expected: PASS (0 errors).
 
-- [ ] **Step 6: Commit changes**
+- [x] **Step 6: Commit changes**
 
 ```bash
 git add frontend/services/workRecordService.ts frontend/features/work-records/EditWorkRecordModal.tsx frontend/features/work-records/WorkRecordTable.tsx "frontend/app/(dashboard)/work-records/page.tsx"
@@ -222,7 +222,7 @@ git commit -m "feat: add EditWorkRecordModal and integrate edit action into work
 - Produces: `GET /api/backup` delivering structured JSON database snapshot
 - Consumes: `getAuthenticatedUser`, `supabase`, `logAudit`
 
-- [ ] **Step 1: Create `frontend/app/api/backup/route.ts`**
+- [x] **Step 1: Create `frontend/app/api/backup/route.ts`**
 
 Implement:
 1. Verify token via `getAuthenticatedUser(req)`. Return 401 if null.
@@ -247,7 +247,7 @@ Implement:
    - `Content-Disposition: attachment; filename="ssep-backup-${timestamp}.json"`
    - `Cache-Control: no-store, no-cache, must-revalidate`
 
-- [ ] **Step 2: Update `frontend/app/(dashboard)/settings/page.tsx`**
+- [x] **Step 2: Update `frontend/app/(dashboard)/settings/page.tsx`**
 
 Add Owner Backup card:
 - Check `user?.role === "CEO" || user?.role === "OWNER"`.
@@ -255,11 +255,11 @@ Add Owner Backup card:
 - Include database description, table counts, security badge, and "Download Database Backup (.json)" button.
 - Implement download handler sending authorization token and triggering file download.
 
-- [ ] **Step 3: Update `frontend/app/(dashboard)/accounts/page.tsx`**
+- [x] **Step 3: Update `frontend/app/(dashboard)/accounts/page.tsx`**
 
 Add link or quick backup button for CEO in the user management header so Owner can easily initiate backup before making user/account modifications.
 
-- [ ] **Step 4: Verify TypeScript compilation**
+- [x] **Step 4: Verify TypeScript compilation**
 
 Run:
 ```bash
@@ -267,7 +267,7 @@ npx tsc --noEmit
 ```
 Expected: PASS (0 errors).
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add frontend/app/api/backup/route.ts "frontend/app/(dashboard)/settings/page.tsx" "frontend/app/(dashboard)/accounts/page.tsx"
@@ -284,7 +284,7 @@ git commit -m "feat: implement secure owner-only database backup route and UI"
 **Interfaces:**
 - Produces: Verified production build, zero type errors, zero em-dashes
 
-- [ ] **Step 1: Run TypeScript verification**
+- [x] **Step 1: Run TypeScript verification**
 
 Run:
 ```bash
@@ -292,7 +292,7 @@ npx tsc --noEmit
 ```
 Expected: PASS (0 errors).
 
-- [ ] **Step 2: Run Next.js production build**
+- [x] **Step 2: Run Next.js production build**
 
 Run:
 ```bash
@@ -300,7 +300,7 @@ npm run build
 ```
 Expected: PASS (All 34 static and dynamic routes compiled successfully).
 
-- [ ] **Step 3: Verify zero em-dash / en-dash characters**
+- [x] **Step 3: Verify zero em-dash / en-dash characters**
 
 Run verification script across all modified files:
 ```bash
@@ -308,7 +308,7 @@ node -e "const fs = require('fs'); const files = ['frontend/package.json', 'fron
 ```
 Expected: `Total files with dashes: 0`.
 
-- [ ] **Step 4: Verify current git branch is NOT main**
+- [x] **Step 4: Verify current git branch is NOT main**
 
 Run:
 ```bash
@@ -316,7 +316,7 @@ git branch --show-current
 ```
 Expected: `feature/ot-and-redesign`.
 
-- [ ] **Step 5: Final review commit**
+- [x] **Step 5: Final review commit**
 
 ```bash
 git add .
