@@ -24,6 +24,7 @@ import { BulkRecordModal } from "@/features/work-records/BulkRecordModal";
 import { DailyRecordModal } from "@/features/work-records/DailyRecordModal";
 import { StoreSalaryModal } from "@/features/work-records/StoreSalaryModal";
 import { VoidRecordModal } from "@/features/work-records/VoidRecordModal";
+import { EditWorkRecordModal } from "@/features/work-records/EditWorkRecordModal";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
@@ -61,6 +62,7 @@ export default function WorkRecordsPage() {
   const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
   const [storingRecord, setStoringRecord] = useState<WorkRecord | null>(null);
   const [voidingRecord, setVoidingRecord] = useState<WorkRecord | null>(null);
+  const [editingRecord, setEditingRecord] = useState<WorkRecord | null>(null);
 
   // Toast feedback
   const [feedbackMessage, setFeedbackMessage] = useState<{
@@ -96,6 +98,8 @@ export default function WorkRecordsPage() {
       setIsLoading(false);
     }
   }, [selectedDate, statusFilter]);
+
+  const fetchRecords = loadRecords;
 
   useEffect(() => {
     loadRecords();
@@ -480,6 +484,7 @@ export default function WorkRecordsPage() {
         isLoading={isLoading}
         onStoreSalary={(record) => setStoringRecord(record)}
         onVoidRecord={(record) => setVoidingRecord(record)}
+        onEditRecord={(record) => setEditingRecord(record)}
         onBulkClick={() => setIsBulkModalOpen(true)}
         onSingleClick={() => setIsDailyModalOpen(true)}
         hasFilter={Boolean(selectedDate || statusFilter !== "ALL" || debouncedSearch)}
@@ -512,6 +517,16 @@ export default function WorkRecordsPage() {
         record={voidingRecord}
         onClose={() => setVoidingRecord(null)}
         onSuccess={handleVoidSuccess}
+      />
+
+      <EditWorkRecordModal
+        isOpen={!!editingRecord}
+        onClose={() => setEditingRecord(null)}
+        record={editingRecord}
+        onUpdated={() => {
+          setEditingRecord(null);
+          fetchRecords();
+        }}
       />
     </div>
   );

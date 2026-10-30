@@ -9,6 +9,8 @@ import {
   CheckCircle,
   Clock,
   Money,
+  PencilSimple,
+  LockSimple,
 } from "@phosphor-icons/react";
 import { WorkRecord, WorkRecordStatus } from "@/types/workRecord";
 import { RateType, RATE_TYPE_LABELS, RATE_UNIT_LABELS } from "@/types/employee";
@@ -21,6 +23,7 @@ interface WorkRecordTableProps {
   isLoading?: boolean;
   onStoreSalary: (record: WorkRecord) => void;
   onVoidRecord: (record: WorkRecord) => void;
+  onEditRecord?: (record: WorkRecord) => void;
   onBulkClick?: () => void;
   onSingleClick?: () => void;
   hasFilter?: boolean;
@@ -31,6 +34,7 @@ export function WorkRecordTable({
   isLoading = false,
   onStoreSalary,
   onVoidRecord,
+  onEditRecord,
   onBulkClick,
   onSingleClick,
   hasFilter = false,
@@ -194,6 +198,8 @@ export function WorkRecordTable({
         {records.map((record) => {
           const isUnpaid = record.status === "UNPAID";
           const canVoid = record.status !== "PAID" && record.status !== "VOID";
+          const canEdit = record.status !== "PAID" && record.status !== "VOID";
+          const isPaid = record.status === "PAID";
           const otInfo = getOtDetails(record);
 
           return (
@@ -276,8 +282,31 @@ export function WorkRecordTable({
               )}
 
               {/* Action Buttons */}
-              {(isUnpaid || canVoid) && (
+              {(isUnpaid || canVoid || (canEdit && onEditRecord) || isPaid) && (
                 <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                  {isPaid && (
+                    <span
+                      className="inline-flex items-center gap-1 text-2xs font-medium text-slate-400 dark:text-slate-500 px-2 py-1 rounded bg-slate-100/70 dark:bg-slate-800/50 mr-auto"
+                      title="Rekod telah dibayar dan terkunci"
+                    >
+                      <LockSimple size={12} weight="bold" />
+                      Terkunci (PAID)
+                    </span>
+                  )}
+
+                  {onEditRecord && canEdit && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEditRecord(record)}
+                      className="text-slate-600 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 text-xs h-10"
+                      leftIcon={<PencilSimple size={14} />}
+                      title="Sunting rekod kerja"
+                    >
+                      Edit
+                    </Button>
+                  )}
+
                   {isUnpaid && (
                     <Button
                       variant="outline"
@@ -328,6 +357,8 @@ export function WorkRecordTable({
               {records.map((record) => {
                 const isUnpaid = record.status === "UNPAID";
                 const canVoid = record.status !== "PAID" && record.status !== "VOID";
+                const canEdit = record.status !== "PAID" && record.status !== "VOID";
+                const isPaid = record.status === "PAID";
                 const otInfo = getOtDetails(record);
 
                 return (
@@ -398,6 +429,29 @@ export function WorkRecordTable({
                     </td>
                     <td className="py-3 px-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
+                        {isPaid && (
+                          <span
+                            className="inline-flex items-center gap-1 text-2xs font-medium text-slate-400 dark:text-slate-500 px-2 py-1 rounded bg-slate-100/70 dark:bg-slate-800/50"
+                            title="Rekod telah dibayar dan terkunci"
+                          >
+                            <LockSimple size={12} weight="bold" />
+                            Terkunci (PAID)
+                          </span>
+                        )}
+
+                        {onEditRecord && canEdit && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onEditRecord(record)}
+                            className="whitespace-nowrap text-slate-600 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 text-xs"
+                            leftIcon={<PencilSimple size={14} />}
+                            title="Sunting rekod kerja ini"
+                          >
+                            Edit
+                          </Button>
+                        )}
+
                         {isUnpaid && (
                           <Button
                             variant="outline"
@@ -422,7 +476,7 @@ export function WorkRecordTable({
                           </Button>
                         )}
 
-                        {!isUnpaid && !canVoid && (
+                        {!isUnpaid && !canVoid && !isPaid && (!onEditRecord || !canEdit) && (
                           <span className="text-xs text-slate-400 dark:text-slate-600 px-2">
                             -
                           </span>

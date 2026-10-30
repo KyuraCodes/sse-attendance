@@ -7,6 +7,15 @@ import {
   WorkRecordQueryParams,
 } from "@/types/workRecord";
 
+export interface UpdateWorkRecordPayload {
+  workDate: string;
+  dailyRate: number;
+  hoursWorked?: number;
+  otHours?: number;
+  otRate?: number;
+  notes?: string;
+}
+
 export const workRecordService = {
   /**
    * Fetch work records with optional filters: date (YYYY-MM-DD), employeeId, status, and month (YYYY-MM).
@@ -80,6 +89,16 @@ export const workRecordService = {
     data: UpdateWorkRecordStatusRequest
   ): Promise<WorkRecord> => {
     return api.patch<WorkRecord>(`/api/work-records/${id}/status`, data);
+  },
+
+  /**
+   * Update an existing work record.
+   */
+  update: async (
+    id: number,
+    payload: UpdateWorkRecordPayload
+  ): Promise<WorkRecord> => {
+    return api.put<WorkRecord>(`/api/work-records/${id}`, payload);
   },
 };
 
