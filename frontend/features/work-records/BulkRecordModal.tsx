@@ -59,7 +59,9 @@ export const computeBulkWorkerWage = (
   }
 
   const effectiveOtHours = otHours !== undefined && !isNaN(otHours) && otHours > 0 ? otHours : 0;
-  const defaultOtRate = calculateDefaultOtRate(rate, rateType);
+  const defaultOtRate = emp.otRate && Number(emp.otRate) > 0
+    ? Number(emp.otRate)
+    : calculateDefaultOtRate(rate, rateType);
   const otRate = customOtRate !== undefined && !isNaN(customOtRate) && customOtRate > 0 ? customOtRate : defaultOtRate;
   const otAmount = calculateOtAmount(effectiveOtHours, otRate);
   const amount = Number((baseAmount + otAmount).toFixed(2));
@@ -212,7 +214,7 @@ export function BulkRecordModal({
         count += 1;
         const hours = emp.rateType === "HOURLY" ? getHoursForEmployee(emp.id) : undefined;
         const otVal = otHoursState[emp.id] ? parseFloat(otHoursState[emp.id]) : 0;
-        const { amount, otAmount } = computeBulkWorkerWage(emp, hours, otVal);
+        const { amount, otAmount, otRate } = computeBulkWorkerWage(emp, hours, otVal);
         sum += amount;
         otSum += otAmount;
       }
@@ -441,7 +443,7 @@ export function BulkRecordModal({
                     const isHourly = emp.rateType === "HOURLY";
                     const hours = isHourly ? getHoursForEmployee(emp.id) : undefined;
                     const otVal = otHoursState[emp.id] ? parseFloat(otHoursState[emp.id]) : 0;
-                    const { amount, otAmount } = computeBulkWorkerWage(emp, hours, otVal);
+                    const { amount, otAmount, otRate } = computeBulkWorkerWage(emp, hours, otVal);
 
                     return (
                       <div
@@ -541,7 +543,7 @@ export function BulkRecordModal({
                             <input
                               id={`ot-${emp.id}`}
                               type="number"
-                              step="0.5"
+                              step="any"
                               min="0"
                               placeholder="0j"
                               value={otHoursState[emp.id] || ""}
@@ -562,6 +564,9 @@ export function BulkRecordModal({
                                 (!isSelected || isSubmitting) && "opacity-50 cursor-not-allowed"
                               )}
                             />
+                            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                              @RM{otRate.toFixed(2)}/j
+                            </span>
                           </div>
 
                           <div className="text-right shrink-0 min-w-[75px]">

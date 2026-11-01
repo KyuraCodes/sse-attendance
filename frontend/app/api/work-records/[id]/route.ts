@@ -189,7 +189,8 @@ export async function PUT(
           id,
           employee_code,
           name,
-          rate_type
+          rate_type,
+          ot_rate
         )
       `)
       .eq("id", recordId)
@@ -247,7 +248,11 @@ export async function PUT(
     const otHoursValue = parsedOtHours ?? 0;
     let otRateValue = parsedOtRate ?? 0;
     if (otHoursValue > 0 && otRateValue === 0 && parsedOtRate === undefined) {
-      otRateValue = calculateDefaultOtRate(numDailyRate, rateType);
+      if (emp?.ot_rate !== undefined && emp?.ot_rate !== null && !isNaN(Number(emp.ot_rate)) && Number(emp.ot_rate) > 0) {
+        otRateValue = Number(Number(emp.ot_rate).toFixed(2));
+      } else {
+        otRateValue = calculateDefaultOtRate(numDailyRate, rateType);
+      }
     }
 
     const otAmount = Number((otHoursValue * otRateValue).toFixed(2));

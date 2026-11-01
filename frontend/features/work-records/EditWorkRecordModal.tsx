@@ -359,7 +359,7 @@ export function EditWorkRecordModal({
                   type="number"
                   min="0"
                   max="24"
-                  step="0.5"
+                  step="any"
                   value={otHours}
                   onChange={(e) => setOtHours(e.target.value)}
                   disabled={isSubmitting || isPaid}
@@ -375,7 +375,7 @@ export function EditWorkRecordModal({
                 <Input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="any"
                   value={otRate}
                   onChange={(e) => setOtRate(e.target.value)}
                   disabled={isSubmitting || isPaid}

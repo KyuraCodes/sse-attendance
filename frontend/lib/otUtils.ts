@@ -33,6 +33,19 @@ export function calculateDefaultOtRate(rate: number, rateType: RateType = "DAILY
 }
 
 /**
+ * Resolves the effective OT rate for an employee.
+ * Uses employee's custom otRate if defined and > 0, otherwise computes 1.5x of base hourly.
+ */
+export function getEmployeeOtRate(
+  emp: { dailyRate: number; rateType?: RateType; otRate?: number | null }
+): number {
+  if (emp.otRate !== undefined && emp.otRate !== null && !isNaN(Number(emp.otRate)) && Number(emp.otRate) > 0) {
+    return Number(Number(emp.otRate).toFixed(2));
+  }
+  return calculateDefaultOtRate(Number(emp.dailyRate) || 0, emp.rateType || "DAILY");
+}
+
+/**
  * Calculates total OT earnings for given hours and OT hourly rate.
  */
 export function calculateOtAmount(otHours: number, otRate: number): number {

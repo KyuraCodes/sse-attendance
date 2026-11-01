@@ -22,7 +22,7 @@ export async function GET(
 
   const { data: employee, error } = await supabase
     .from("employees")
-    .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
+    .select("id, employee_code, name, phone, address, daily_rate, rate_type, ot_rate, start_date, status, notes, created_at, updated_at")
     .eq("id", employeeId)
     .maybeSingle();
 
@@ -38,6 +38,7 @@ export async function GET(
     address: employee.address,
     dailyRate: Number(employee.daily_rate),
     rateType: (employee.rate_type as RateType) || "DAILY",
+    otRate: employee.ot_rate !== null && employee.ot_rate !== undefined && !isNaN(Number(employee.ot_rate)) ? Number(employee.ot_rate) : null,
     startDate: employee.start_date,
     status: employee.status,
     notes: employee.notes,
@@ -67,7 +68,7 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const { name, phone, address, dailyRate, rateType, startDate, status, notes } = body;
+    const { name, phone, address, dailyRate, rateType, otRate, startDate, status, notes } = body;
 
     const { data: existing } = await supabase
       .from("employees")
@@ -109,6 +110,12 @@ export async function PUT(
       }
       updates.rate_type = normalizedRateType;
     }
+    if (otRate !== undefined) {
+      updates.ot_rate =
+        otRate !== null && !isNaN(Number(otRate)) && Number(otRate) > 0
+          ? Number(Number(otRate).toFixed(2))
+          : null;
+    }
     if (startDate !== undefined) updates.start_date = startDate;
     if (status !== undefined) updates.status = sanitizeInput(status).toUpperCase();
     if (notes !== undefined) updates.notes = sanitizeNullable(notes) || null;
@@ -117,7 +124,7 @@ export async function PUT(
       .from("employees")
       .update(updates)
       .eq("id", employeeId)
-      .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
+      .select("id, employee_code, name, phone, address, daily_rate, rate_type, ot_rate, start_date, status, notes, created_at, updated_at")
       .single();
 
     if (error || !updated) {
@@ -141,6 +148,7 @@ export async function PUT(
       address: updated.address,
       dailyRate: Number(updated.daily_rate),
       rateType: (updated.rate_type as RateType) || "DAILY",
+      otRate: updated.ot_rate !== null && updated.ot_rate !== undefined ? Number(updated.ot_rate) : null,
       startDate: updated.start_date,
       status: updated.status,
       notes: updated.notes,

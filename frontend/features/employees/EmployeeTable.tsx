@@ -198,6 +198,15 @@ export function EmployeeTable({
                       {RATE_TYPE_LABELS[employee.rateType] || "Harian"}
                     </span>
                   </div>
+                  {employee.otRate && Number(employee.otRate) > 0 ? (
+                    <span className="text-[10px] font-mono font-semibold text-amber-700 dark:text-amber-400 block mt-0.5">
+                      OT: RM {Number(employee.otRate).toFixed(2)}/jam
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 block mt-0.5">
+                      OT: 1.5x lalai
+                    </span>
+                  )}
                 </div>
                 <div>
                   <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
@@ -369,6 +378,17 @@ export function EmployeeTable({
                         >
                           {RATE_TYPE_LABELS[employee.rateType] || "Harian"}
                         </span>
+                      </div>
+                      <div className="mt-1">
+                        {employee.otRate && Number(employee.otRate) > 0 ? (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60">
+                            OT: RM {Number(employee.otRate).toFixed(2)}/jam
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                            OT: 1.5x formula
+                          </span>
+                        )}
                       </div>
                     </td>
 

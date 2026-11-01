@@ -23,6 +23,7 @@ interface EditEmployeeModalProps {
 interface FormState {
   name: string;
   dailyRate: string;
+  otRate: string;
   startDate: string;
   phone: string;
   address: string;
@@ -60,6 +61,7 @@ export function EditEmployeeModal({
   const [formData, setFormData] = useState<FormState>({
     name: "",
     dailyRate: "",
+    otRate: "",
     startDate: "",
     phone: "",
     address: "",
@@ -74,6 +76,7 @@ export function EditEmployeeModal({
       setFormData({
         name: employee.name || "",
         dailyRate: employee.dailyRate ? String(employee.dailyRate) : "",
+        otRate: employee.otRate ? String(employee.otRate) : "",
         startDate: employee.startDate ? employee.startDate.split("T")[0] : "",
         phone: employee.phone || "",
         address: employee.address || "",
@@ -144,6 +147,7 @@ export function EditEmployeeModal({
         name: formData.name.trim(),
         dailyRate: parseFloat(formData.dailyRate),
         rateType: rateType,
+        otRate: formData.otRate.trim() && !isNaN(parseFloat(formData.otRate)) && parseFloat(formData.otRate) > 0 ? parseFloat(formData.otRate) : null,
         startDate: formData.startDate,
         phone: formData.phone.trim() || undefined,
         address: formData.address.trim() || undefined,
@@ -304,6 +308,20 @@ export function EditEmployeeModal({
               disabled={isSubmitting}
             />
           </div>
+
+          {/* Custom OT Rate */}
+          <Input
+            id="edit-emp-ot-rate"
+            label="Kadar OT Sejam (RM) - Pilihan"
+            placeholder="e.g. 10.00 (Lalai: formula 1.5x)"
+            type="number"
+            step="any"
+            min="0"
+            value={formData.otRate}
+            onChange={(e) => handleChange("otRate", e.target.value)}
+            disabled={isSubmitting}
+            helperText="Kadar bayaran OT khusus untuk pekerja ini (contoh: RM 10/jam). Biarkan kosong jika guna formula 1.5x."
+          />
 
           {/* Phone Number */}
           <Input

@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     const { data: employees, error: empErr } = await supabase
       .from("employees")
-      .select("id, employee_code, name, daily_rate, status, rate_type")
+      .select("id, employee_code, name, daily_rate, status, rate_type, ot_rate")
       .in("id", uniqueIds);
 
     if (empErr || !employees || employees.length !== uniqueIds.length) {
@@ -241,7 +241,7 @@ export async function POST(req: NextRequest) {
         Number(entry.otHours) > 0
       ) {
         otHoursValue = Number(Number(entry.otHours).toFixed(2));
-        const defaultOtRate = calculateDefaultOtRate(Number(emp.daily_rate), rateType);
+        const defaultOtRate = emp.ot_rate && Number(emp.ot_rate) > 0 ? Number(emp.ot_rate) : calculateDefaultOtRate(Number(emp.daily_rate), rateType);
         otRateValue =
           entry?.otRate !== undefined &&
           !isNaN(Number(entry.otRate)) &&

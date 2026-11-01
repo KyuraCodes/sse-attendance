@@ -26,6 +26,7 @@ export interface Employee {
   address?: string | null;
   dailyRate: number;
   rateType: RateType;
+  otRate?: number | null;
   startDate: string;
   status: EmployeeStatus | string;
   notes?: string | null;
@@ -39,6 +40,7 @@ export interface CreateEmployeeRequest {
   name: string;
   dailyRate: number;
   rateType?: RateType;
+  otRate?: number | null;
   startDate: string;
   phone?: string;
   address?: string;
@@ -50,6 +52,7 @@ export interface UpdateEmployeeRequest {
   name?: string;
   dailyRate?: number;
   rateType?: RateType;
+  otRate?: number | null;
   startDate?: string;
   phone?: string;
   address?: string;

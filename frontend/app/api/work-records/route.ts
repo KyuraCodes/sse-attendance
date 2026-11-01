@@ -41,7 +41,8 @@ export async function GET(req: NextRequest) {
         id,
         employee_code,
         name,
-        rate_type
+        rate_type,
+        ot_rate
       )
     `)
     .order("work_date", { ascending: false })
@@ -128,7 +129,7 @@ export async function POST(req: NextRequest) {
 
     const { data: employee, error: empErr } = await supabase
       .from("employees")
-      .select("id, employee_code, name, daily_rate, status, rate_type")
+      .select("id, employee_code, name, daily_rate, status, rate_type, ot_rate")
       .eq("id", Number(employeeId))
       .maybeSingle();
 
@@ -178,7 +179,9 @@ export async function POST(req: NextRequest) {
 
     if (otHours !== undefined && otHours !== null && !isNaN(Number(otHours)) && Number(otHours) > 0) {
       otHoursValue = Number(Number(otHours).toFixed(2));
-      const defaultOtRate = calculateDefaultOtRate(Number(employee.daily_rate), rateType);
+      const defaultOtRate = employee.ot_rate && Number(employee.ot_rate) > 0
+        ? Number(employee.ot_rate)
+        : calculateDefaultOtRate(Number(employee.daily_rate), rateType);
       otRateValue = otRate !== undefined && !isNaN(Number(otRate)) && Number(otRate) > 0
         ? Number(Number(otRate).toFixed(2))
         : defaultOtRate;

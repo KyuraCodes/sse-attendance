@@ -115,7 +115,9 @@ export function DailyRecordModal({
     if (emp) {
       const rType = emp.rateType || "DAILY";
       const rateNum = Number(emp.dailyRate) || 0;
-      const defaultOt = calculateDefaultOtRate(rateNum, rType);
+      const defaultOt = emp.otRate && Number(emp.otRate) > 0
+        ? Number(emp.otRate)
+        : calculateDefaultOtRate(rateNum, rType);
       setOtRate(defaultOt.toFixed(2));
       if (rType === "HOURLY") {
         setHoursWorked("8");
@@ -446,7 +448,9 @@ export function DailyRecordModal({
                     onChange={(e) => {
                       setHasOt(e.target.checked);
                       if (e.target.checked && (!otRate || otRate === "0.00") && selectedEmployee) {
-                        const defRate = calculateDefaultOtRate(Number(selectedEmployee.dailyRate), rateType);
+                        const defRate = selectedEmployee.otRate && Number(selectedEmployee.otRate) > 0
+                          ? Number(selectedEmployee.otRate)
+                          : calculateDefaultOtRate(Number(selectedEmployee.dailyRate), rateType);
                         setOtRate(defRate.toFixed(2));
                       }
                     }}
@@ -468,8 +472,8 @@ export function DailyRecordModal({
                         </label>
                         <Input
                           type="number"
-                          step="0.5"
-                          min="0.5"
+                          step="any"
+                          min="0"
                           value={otHours}
                           onChange={(e) => setOtHours(e.target.value)}
                           disabled={isSubmitting}
@@ -484,13 +488,13 @@ export function DailyRecordModal({
                         </label>
                         <Input
                           type="number"
-                          step="0.5"
-                          min="0.1"
+                          step="any"
+                          min="0"
                           value={otRate}
                           onChange={(e) => setOtRate(e.target.value)}
                           disabled={isSubmitting}
                           required={hasOt}
-                          placeholder="15.00"
+                          placeholder="10.00"
                           className="h-9 text-xs font-mono"
                         />
                       </div>

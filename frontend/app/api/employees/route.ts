@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
   let query = supabase
     .from("employees")
-    .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
+    .select("id, employee_code, name, phone, address, daily_rate, rate_type, ot_rate, start_date, status, notes, created_at, updated_at")
     .order("id", { ascending: true });
 
   if (status && status !== "ALL") {
@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
     address: e.address,
     dailyRate: Number(e.daily_rate),
     rateType: (e.rate_type as RateType) || "DAILY",
+    otRate: e.ot_rate !== null && e.ot_rate !== undefined && !isNaN(Number(e.ot_rate)) ? Number(e.ot_rate) : null,
     startDate: e.start_date,
     status: e.status,
     notes: e.notes,
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, phone, address, dailyRate, rateType: rawRateType, startDate, status, notes } = body;
+    const { name, phone, address, dailyRate, rateType: rawRateType, otRate, startDate, status, notes } = body;
 
     if (!name || !name.trim()) {
       return errorResponse("Name is required", "INVALID_NAME", 400);
@@ -92,6 +93,11 @@ export async function POST(req: NextRequest) {
       );
     }
     const rateType = normalizedRateType as RateType;
+
+    const numOtRate =
+      otRate !== undefined && otRate !== null && !isNaN(Number(otRate)) && Number(otRate) > 0
+        ? Number(Number(otRate).toFixed(2))
+        : null;
 
     const sanitizedName = sanitizeInput(name);
     const sanitizedPhone = sanitizeNullable(phone);
@@ -125,11 +131,12 @@ export async function POST(req: NextRequest) {
         address: sanitizedAddress || null,
         daily_rate: rate,
         rate_type: rateType,
+        ot_rate: numOtRate,
         start_date: startDate,
         status: sanitizedStatus,
         notes: sanitizedNotes || null,
       })
-      .select("id, employee_code, name, phone, address, daily_rate, rate_type, start_date, status, notes, created_at, updated_at")
+      .select("id, employee_code, name, phone, address, daily_rate, rate_type, ot_rate, start_date, status, notes, created_at, updated_at")
       .single();
 
     if (error || !newEmployee) {
@@ -147,6 +154,7 @@ export async function POST(req: NextRequest) {
         name: newEmployee.name,
         dailyRate: newEmployee.daily_rate,
         rateType: newEmployee.rate_type,
+        otRate: newEmployee.ot_rate,
         status: newEmployee.status,
       })
     );
@@ -160,6 +168,7 @@ export async function POST(req: NextRequest) {
         address: newEmployee.address,
         dailyRate: Number(newEmployee.daily_rate),
         rateType: (newEmployee.rate_type as RateType) || "DAILY",
+        otRate: newEmployee.ot_rate !== null && newEmployee.ot_rate !== undefined ? Number(newEmployee.ot_rate) : null,
         startDate: newEmployee.start_date,
         status: newEmployee.status,
         notes: newEmployee.notes,

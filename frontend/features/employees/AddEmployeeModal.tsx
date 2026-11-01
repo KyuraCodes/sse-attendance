@@ -22,6 +22,7 @@ interface AddEmployeeModalProps {
 interface FormState {
   name: string;
   dailyRate: string;
+  otRate: string;
   startDate: string;
   phone: string;
   address: string;
@@ -61,6 +62,7 @@ const getTodayDateString = (): string => {
 const initialFormState: FormState = {
   name: "",
   dailyRate: "",
+  otRate: "",
   startDate: getTodayDateString(),
   phone: "",
   address: "",
@@ -156,6 +158,7 @@ export function AddEmployeeModal({
         name: formData.name.trim(),
         dailyRate: parseFloat(formData.dailyRate),
         rateType: rateType,
+        otRate: formData.otRate.trim() && !isNaN(parseFloat(formData.otRate)) && parseFloat(formData.otRate) > 0 ? parseFloat(formData.otRate) : undefined,
         startDate: formData.startDate,
         phone: formData.phone.trim() || undefined,
         address: formData.address.trim() || undefined,
@@ -312,6 +315,20 @@ export function AddEmployeeModal({
               disabled={isSubmitting}
             />
           </div>
+
+          {/* Custom OT Rate */}
+          <Input
+            id="emp-ot-rate"
+            label="Kadar OT Sejam (RM) - Pilihan"
+            placeholder="e.g. 10.00 (Lalai: formula 1.5x)"
+            type="number"
+            step="any"
+            min="0"
+            value={formData.otRate}
+            onChange={(e) => handleChange("otRate", e.target.value)}
+            disabled={isSubmitting}
+            helperText="Kadar bayaran OT khusus untuk pekerja ini (contoh: RM 10/jam). Biarkan kosong untuk formula 1.5x."
+          />
 
           {/* Phone Number */}
           <Input
