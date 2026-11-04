@@ -225,7 +225,7 @@ export function AddEmployeeModal({
             onClick={handleResetAndClose}
             disabled={isSubmitting}
             aria-label="Tutup tetingkap"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1.5 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
           >
             <X size={18} weight="bold" />
           </button>
@@ -382,12 +382,13 @@ export function AddEmployeeModal({
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800 mt-auto shrink-0">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-200 dark:border-slate-800 mt-auto shrink-0">
             <Button
               type="button"
               variant="outline"
               size="md"
               onClick={handleResetAndClose}
+              className="w-full sm:w-auto min-h-[44px]"
               disabled={isSubmitting}
             >
               Batal
@@ -397,6 +398,7 @@ export function AddEmployeeModal({
               variant="primary"
               size="md"
               isLoading={isSubmitting}
+              className="w-full sm:w-auto min-h-[44px]"
             >
               Simpan Rekod Pekerja
             </Button>

@@ -218,7 +218,7 @@ export function EditEmployeeModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Tutup tetingkap"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1.5 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
           >
             <X size={18} weight="bold" />
           </button>
@@ -381,6 +381,7 @@ export function EditEmployeeModal({
               variant="outline"
               size="md"
               onClick={onClose}
+              className="w-full sm:w-auto min-h-[44px]"
               disabled={isSubmitting}
             >
               Batal
@@ -390,6 +391,7 @@ export function EditEmployeeModal({
               variant="primary"
               size="md"
               isLoading={isSubmitting}
+              className="w-full sm:w-auto min-h-[44px]"
             >
               Simpan Perubahan
             </Button>

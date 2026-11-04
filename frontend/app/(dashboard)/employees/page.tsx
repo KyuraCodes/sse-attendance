@@ -192,7 +192,7 @@ export default function EmployeesPage() {
             disabled={isLoading}
             aria-label="Muat semula senarai pekerja"
             title="Muat semula senarai pekerja"
-            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
           >
             <ArrowClockwise
               size={18}
@@ -205,7 +205,7 @@ export default function EmployeesPage() {
             variant="primary"
             size="md"
             onClick={() => setIsAddModalOpen(true)}
-            className="shadow-xs flex-1 sm:flex-initial justify-center"
+            className="shadow-xs flex-1 sm:flex-initial justify-center min-h-[44px]"
           >
             <Plus size={16} weight="bold" />
             <span>Tambah Pekerja</span>
@@ -282,14 +282,14 @@ export default function EmployeesPage() {
             placeholder="Cari nama atau kod pekerja (cth. EMP-001)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-9 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-colors"
+            className="w-full pl-9 pr-10 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-colors"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
               aria-label="Kosongkan carian"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
+              className="absolute right-1 top-1/2 -translate-y-1/2 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               <X size={14} weight="bold" />
             </button>
@@ -302,7 +302,7 @@ export default function EmployeesPage() {
             type="button"
             onClick={() => setStatusFilter("ALL")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-center whitespace-nowrap cursor-pointer",
+              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all flex items-center justify-center whitespace-nowrap cursor-pointer",
               statusFilter === "ALL"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -314,7 +314,7 @@ export default function EmployeesPage() {
             type="button"
             onClick={() => setStatusFilter("ACTIVE")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
+              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
               statusFilter === "ACTIVE"
                 ? "bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -327,7 +327,7 @@ export default function EmployeesPage() {
             type="button"
             onClick={() => setStatusFilter("INACTIVE")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
+              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
               statusFilter === "INACTIVE"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -433,7 +433,7 @@ export default function EmployeesPage() {
                 size="md"
                 onClick={() => setDeletingEmployee(null)}
                 disabled={isDeleting}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px]"
               >
                 Batal
               </Button>
@@ -443,7 +443,7 @@ export default function EmployeesPage() {
                 onClick={handleDeleteConfirm}
                 isLoading={isDeleting}
                 leftIcon={<Trash size={16} weight="bold" />}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px]"
               >
                 Padam Pekerja
               </Button>

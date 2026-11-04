@@ -118,7 +118,7 @@ export function EmployeeTable({
         </p>
         {!hasFilter && onAddClick && (
           <div className="mt-5">
-            <Button variant="primary" size="sm" onClick={onAddClick}>
+            <Button variant="primary" size="md" onClick={onAddClick} className="min-h-[44px] px-5">
               Daftar Pekerja Pertama
             </Button>
           </div>
@@ -241,7 +241,7 @@ export function EmployeeTable({
                   size="sm"
                   onClick={() => onEdit(employee)}
                   aria-label={`Sunting maklumat ${employee.name}`}
-                  className="w-full text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white justify-center px-1"
+                  className="w-full min-h-[44px] text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white justify-center px-2"
                 >
                   <PencilSimple size={13} weight="bold" />
                   <span>Sunting</span>
@@ -255,7 +255,7 @@ export function EmployeeTable({
                   isLoading={isUpdatingStatus}
                   aria-label={isActive ? `Nyahaktifkan pekerja ${employee.name}` : `Aktifkan pekerja ${employee.name}`}
                   className={cn(
-                    "w-full text-xs justify-center px-1",
+                    "w-full min-h-[44px] text-xs justify-center px-2",
                     isActive
                       ? "text-slate-600 hover:text-rose-600 hover:border-rose-300 dark:text-slate-400 dark:hover:text-rose-400"
                       : "text-emerald-700 border-emerald-300 hover:bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:hover:bg-emerald-950/50"
@@ -276,7 +276,7 @@ export function EmployeeTable({
                   size="sm"
                   onClick={() => onDelete(employee)}
                   aria-label={`Padam rekod ${employee.name}`}
-                  className="w-full text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 justify-center px-1"
+                  className="w-full min-h-[44px] text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 justify-center px-2"
                 >
                   <Trash size={13} weight="bold" />
                   <span>Padam</span>
