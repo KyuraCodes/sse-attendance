@@ -197,6 +197,26 @@ export default function EmployeesPage() {
     (e) => e.status?.toUpperCase() === "INACTIVE"
   ).length;
 
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    const tabs: EmployeeFilterStatus[] = ["ALL", "ACTIVE", "INACTIVE"];
+    const currentIndex = tabs.indexOf(statusFilter);
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % tabs.length;
+      setStatusFilter(tabs[nextIndex]);
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+      setStatusFilter(tabs[prevIndex]);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setStatusFilter(tabs[0]);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setStatusFilter(tabs[tabs.length - 1]);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Header & Add Button */}
@@ -327,6 +347,7 @@ export default function EmployeesPage() {
         <div
           role="tablist"
           aria-label="Penapis status pekerja"
+          onKeyDown={handleTabKeyDown}
           className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700"
         >
           <button
@@ -336,13 +357,23 @@ export default function EmployeesPage() {
             tabIndex={statusFilter === "ALL" ? 0 : -1}
             onClick={() => setStatusFilter("ALL")}
             className={cn(
-              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all flex items-center justify-center whitespace-nowrap cursor-pointer",
+              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all flex items-center justify-center whitespace-nowrap cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
               statusFilter === "ALL"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            Semua
+            <span>Semua</span>
+            <span
+              className={cn(
+                "text-2xs font-mono px-1.5 py-0.2 rounded-full ml-1 font-semibold",
+                statusFilter === "ALL"
+                  ? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200"
+                  : "bg-slate-200/80 dark:bg-slate-700/60 text-slate-600 dark:text-slate-400"
+              )}
+            >
+              {totalEmployees}
+            </span>
           </button>
           <button
             type="button"
@@ -351,7 +382,7 @@ export default function EmployeesPage() {
             tabIndex={statusFilter === "ACTIVE" ? 0 : -1}
             onClick={() => setStatusFilter("ACTIVE")}
             className={cn(
-              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
+              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
               statusFilter === "ACTIVE"
                 ? "bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -359,6 +390,16 @@ export default function EmployeesPage() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
             <span>Aktif</span>
+            <span
+              className={cn(
+                "text-2xs font-mono px-1.5 py-0.2 rounded-full ml-0.5 font-semibold",
+                statusFilter === "ACTIVE"
+                  ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
+                  : "bg-slate-200/80 dark:bg-slate-700/60 text-slate-600 dark:text-slate-400"
+              )}
+            >
+              {activeCount}
+            </span>
           </button>
           <button
             type="button"
@@ -367,7 +408,7 @@ export default function EmployeesPage() {
             tabIndex={statusFilter === "INACTIVE" ? 0 : -1}
             onClick={() => setStatusFilter("INACTIVE")}
             className={cn(
-              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
+              "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
               statusFilter === "INACTIVE"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -375,6 +416,16 @@ export default function EmployeesPage() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true" />
             <span>Tidak Aktif</span>
+            <span
+              className={cn(
+                "text-2xs font-mono px-1.5 py-0.2 rounded-full ml-0.5 font-semibold",
+                statusFilter === "INACTIVE"
+                  ? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200"
+                  : "bg-slate-200/80 dark:bg-slate-700/60 text-slate-600 dark:text-slate-400"
+              )}
+            >
+              {inactiveCount}
+            </span>
           </button>
         </div>
       </div>

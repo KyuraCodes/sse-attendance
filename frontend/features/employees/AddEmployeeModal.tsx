@@ -247,6 +247,7 @@ export function AddEmployeeModal({
           {/* Employee Name */}
           <Input
             id="emp-name"
+            autoFocus
             label="Nama Penuh"
             placeholder="cth. Ahmad bin Abdullah"
             value={formData.name}
