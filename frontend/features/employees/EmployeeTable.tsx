@@ -25,7 +25,7 @@ export const getRateBadgeClass = (rateType?: RateType): string => {
     case "WEEKLY":
       return "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800";
     case "MONTHLY":
-      return "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-800";
+      return "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800";
     case "DAILY":
     default:
       return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800";
@@ -71,7 +71,7 @@ export function EmployeeTable({
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {[1, 2, 3, 4, 5].map((idx) => (
-                <tr key={idx} className="animate-pulse">
+                <tr key={idx} className="animate-pulse motion-reduce:animate-none">
                   <td className="py-4 px-4">
                     <div className="h-5 w-16 bg-slate-200 dark:bg-slate-800 rounded" />
                   </td>
@@ -227,7 +227,7 @@ export function EmployeeTable({
                 {employee.notes && (
                   <div className="col-span-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
                     <span className="text-slate-400 dark:text-slate-500 text-2xs block">Nota:</span>
-                    <p className="text-slate-600 dark:text-slate-400 italic text-2xs mt-0.5">
+                    <p className="text-slate-600 dark:text-slate-400 italic text-2xs mt-0.5 break-words">
                       {employee.notes}
                     </p>
                   </div>

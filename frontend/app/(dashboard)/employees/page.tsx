@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useTransition } from "react";
+import React, { useState, useEffect, useCallback, useRef, useTransition } from "react";
 import {
   Users,
   Plus,
@@ -41,6 +41,15 @@ export default function EmployeesPage() {
     text: string;
   } | null>(null);
 
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   // Debounce search input by 300ms
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -60,15 +69,21 @@ export default function EmployeesPage() {
         debouncedSearch,
         statusFilter === "ALL" ? undefined : statusFilter
       );
-      setEmployees(data);
+      if (isMountedRef.current) {
+        setEmployees(data);
+      }
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Gagal memuatkan senarai pekerja. Sila semak sambungan internet anda.";
-      setError(message);
+      if (isMountedRef.current) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Gagal memuatkan senarai pekerja. Sila semak sambungan internet anda.";
+        setError(message);
+      }
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   }, [debouncedSearch, statusFilter]);
 
@@ -113,25 +128,31 @@ export default function EmployeesPage() {
         employee.id,
         nextStatus
       );
-      setFeedbackMessage({
-        type: "success",
-        text: `Status pekerja ${updated.name} ditukar kepada ${nextStatus === "ACTIVE" ? "AKTIF" : "TIDAK AKTIF"}.`,
-      });
-      // Optimistically update list
-      setEmployees((prev) =>
-        prev.map((e) => (e.id === updated.id ? updated : e))
-      );
+      if (isMountedRef.current) {
+        setFeedbackMessage({
+          type: "success",
+          text: `Status pekerja ${updated.name} ditukar kepada ${nextStatus === "ACTIVE" ? "AKTIF" : "TIDAK AKTIF"}.`,
+        });
+        // Optimistically update list
+        setEmployees((prev) =>
+          prev.map((e) => (e.id === updated.id ? updated : e))
+        );
+      }
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Gagal mengemas kini status pekerja. Sila cuba sebentar lagi.";
-      setFeedbackMessage({
-        type: "error",
-        text: message,
-      });
+      if (isMountedRef.current) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Gagal mengemas kini status pekerja. Sila cuba sebentar lagi.";
+        setFeedbackMessage({
+          type: "error",
+          text: message,
+        });
+      }
     } finally {
-      setTogglingId(null);
+      if (isMountedRef.current) {
+        setTogglingId(null);
+      }
     }
   };
 
@@ -141,23 +162,29 @@ export default function EmployeesPage() {
     setIsDeleting(true);
     try {
       await employeeService.deleteEmployee(deletingEmployee.id);
-      setFeedbackMessage({
-        type: "success",
-        text: `Pekerja ${deletingEmployee.name} (${deletingEmployee.employeeCode}) berjaya dipadam.`,
-      });
-      setDeletingEmployee(null);
-      loadEmployees();
+      if (isMountedRef.current) {
+        setFeedbackMessage({
+          type: "success",
+          text: `Pekerja ${deletingEmployee.name} (${deletingEmployee.employeeCode}) berjaya dipadam.`,
+        });
+        setDeletingEmployee(null);
+        loadEmployees();
+      }
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Gagal memadam rekod pekerja. Sila cuba sebentar lagi.";
-      setFeedbackMessage({
-        type: "error",
-        text: message,
-      });
+      if (isMountedRef.current) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Gagal memadam rekod pekerja. Sila cuba sebentar lagi.";
+        setFeedbackMessage({
+          type: "error",
+          text: message,
+        });
+      }
     } finally {
-      setIsDeleting(false);
+      if (isMountedRef.current) {
+        setIsDeleting(false);
+      }
     }
   };
 
@@ -197,7 +224,7 @@ export default function EmployeesPage() {
             <ArrowClockwise
               size={18}
               weight="bold"
-              className={isLoading ? "animate-spin text-emerald-600" : ""}
+              className={isLoading ? "animate-spin text-emerald-600 motion-reduce:animate-none" : ""}
             />
           </button>
 
@@ -218,7 +245,7 @@ export default function EmployeesPage() {
         <div
           role="status"
           className={cn(
-            "p-3.5 rounded-xl border flex items-center justify-between gap-3 text-sm animate-in fade-in slide-in-from-top-2 duration-200",
+            "p-3.5 rounded-xl border flex items-center justify-between gap-3 text-sm animate-in fade-in slide-in-from-top-2 duration-200 motion-reduce:animate-none",
             feedbackMessage.type === "success"
               ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
               : "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300"
@@ -297,9 +324,16 @@ export default function EmployeesPage() {
         </div>
 
         {/* Status Filter Tabs */}
-        <div className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div
+          role="tablist"
+          aria-label="Penapis status pekerja"
+          className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700"
+        >
           <button
             type="button"
+            role="tab"
+            aria-selected={statusFilter === "ALL"}
+            tabIndex={statusFilter === "ALL" ? 0 : -1}
             onClick={() => setStatusFilter("ALL")}
             className={cn(
               "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all flex items-center justify-center whitespace-nowrap cursor-pointer",
@@ -312,6 +346,9 @@ export default function EmployeesPage() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={statusFilter === "ACTIVE"}
+            tabIndex={statusFilter === "ACTIVE" ? 0 : -1}
             onClick={() => setStatusFilter("ACTIVE")}
             className={cn(
               "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
@@ -325,6 +362,9 @@ export default function EmployeesPage() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={statusFilter === "INACTIVE"}
+            tabIndex={statusFilter === "INACTIVE" ? 0 : -1}
             onClick={() => setStatusFilter("INACTIVE")}
             className={cn(
               "px-3 py-2 sm:py-1.5 min-h-[40px] sm:min-h-[36px] text-xs font-semibold rounded-md transition-all whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer",
@@ -372,7 +412,7 @@ export default function EmployeesPage() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-employee-title"
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150 motion-reduce:animate-none"
         >
           <div
             className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 space-y-4 sm:space-y-5"
