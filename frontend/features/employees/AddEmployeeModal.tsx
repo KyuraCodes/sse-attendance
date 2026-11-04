@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X, UserPlus, WarningCircle } from "@phosphor-icons/react";
 import { employeeService } from "@/services/employeeService";
 import {
@@ -32,6 +32,7 @@ interface FormState {
 interface FormErrors {
   name?: string;
   dailyRate?: string;
+  otRate?: string;
   startDate?: string;
   phone?: string;
   general?: string;
@@ -78,6 +79,7 @@ export function AddEmployeeModal({
   const [rateType, setRateType] = useState<RateType>("DAILY");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const handleResetAndClose = () => {
     setFormData(initialFormState);
@@ -100,15 +102,38 @@ export function AddEmployeeModal({
   }, [isOpen]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen && !isSubmitting) {
+      if (e.key === "Escape" && !isSubmitting) {
         handleResetAndClose();
+        return;
+      }
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length > 0) {
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+              e.preventDefault();
+              lastElement.focus();
+            }
+          } else {
+            if (document.activeElement === lastElement) {
+              e.preventDefault();
+              firstElement.focus();
+            }
+          }
+        }
       }
     };
 
-    if (isOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
+    window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, isSubmitting]);
 
@@ -130,10 +155,26 @@ export function AddEmployeeModal({
       newErrors.dailyRate = `${RATE_INPUT_LABELS[rateType]} diperlukan`;
     } else if (isNaN(rateNum) || rateNum <= 0) {
       newErrors.dailyRate = "Kadar upah mestilah melebihi RM 0.00";
+    } else if (rateNum > 1000000) {
+      newErrors.dailyRate = "Kadar upah tidak boleh melebihi RM 1,000,000.00";
     }
 
     if (!formData.startDate) {
       newErrors.startDate = "Tarikh mula bekerja diperlukan";
+    } else {
+      const year = new Date(formData.startDate).getFullYear();
+      if (isNaN(year) || year < 1970 || year > 2100) {
+        newErrors.startDate = "Sila masukkan tarikh yang sah (antara tahun 1970 dan 2100)";
+      }
+    }
+
+    if (formData.otRate.trim()) {
+      const otNum = parseFloat(formData.otRate);
+      if (isNaN(otNum) || otNum < 0) {
+        newErrors.otRate = "Kadar OT mestilah RM 0.00 atau lebih";
+      } else if (otNum > 100000) {
+        newErrors.otRate = "Kadar OT tidak boleh melebihi RM 100,000.00";
+      }
     }
 
     if (formData.phone && formData.phone.trim().length > 30) {
@@ -146,6 +187,7 @@ export function AddEmployeeModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!validate()) {
       return;
     }
@@ -198,6 +240,7 @@ export function AddEmployeeModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200 motion-reduce:animate-none"
     >
       <div
+        ref={modalRef}
         className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh]"
         onClick={(e) => e.stopPropagation()}
       >
@@ -320,6 +363,7 @@ export function AddEmployeeModal({
           {/* Custom OT Rate */}
           <Input
             id="emp-ot-rate"
+            error={errors.otRate}
             label="Kadar OT Sejam (RM) (Pilihan)"
             placeholder="cth. 10.00 (Lalai: formula 1.5x)"
             type="number"

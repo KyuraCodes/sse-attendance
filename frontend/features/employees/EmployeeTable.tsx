@@ -241,6 +241,7 @@ export function EmployeeTable({
                   size="sm"
                   onClick={() => onEdit(employee)}
                   aria-label={`Sunting maklumat ${employee.name}`}
+                  disabled={isUpdatingStatus}
                   className="w-full min-h-[44px] text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white justify-center px-2"
                 >
                   <PencilSimple size={13} weight="bold" />
@@ -276,6 +277,7 @@ export function EmployeeTable({
                   size="sm"
                   onClick={() => onDelete(employee)}
                   aria-label={`Padam rekod ${employee.name}`}
+                  disabled={isUpdatingStatus}
                   className="w-full min-h-[44px] text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 justify-center px-2"
                 >
                   <Trash size={13} weight="bold" />
@@ -426,6 +428,7 @@ export function EmployeeTable({
                           size="sm"
                           onClick={() => onEdit(employee)}
                           aria-label={`Sunting maklumat ${employee.name}`}
+                  disabled={isUpdatingStatus}
                           className="h-8 px-2.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                         >
                           <PencilSimple size={14} weight="bold" />
@@ -461,6 +464,7 @@ export function EmployeeTable({
                           size="sm"
                           onClick={() => onDelete(employee)}
                           aria-label={`Padam rekod ${employee.name}`}
+                  disabled={isUpdatingStatus}
                           className="h-8 px-2.5 text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800"
                         >
                           <Trash size={14} weight="bold" />

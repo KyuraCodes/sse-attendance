@@ -157,7 +157,7 @@ export default function EmployeesPage() {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!deletingEmployee) return;
+    if (!deletingEmployee || isDeleting) return;
 
     setIsDeleting(true);
     try {
@@ -264,6 +264,8 @@ export default function EmployeesPage() {
       {feedbackMessage && (
         <div
           role="status"
+          aria-live="polite"
+          aria-atomic="true"
           className={cn(
             "p-3.5 rounded-xl border flex items-center justify-between gap-3 text-sm animate-in fade-in slide-in-from-top-2 duration-200 motion-reduce:animate-none",
             feedbackMessage.type === "success"
@@ -294,6 +296,7 @@ export default function EmployeesPage() {
       {error && (
         <div
           role="alert"
+          aria-live="assertive"
           className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 flex items-start justify-between gap-3 text-sm"
         >
           <div className="flex items-start gap-2.5">
