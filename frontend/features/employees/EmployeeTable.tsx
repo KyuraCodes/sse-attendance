@@ -57,7 +57,7 @@ export function EmployeeTable({
     return (
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
@@ -130,7 +130,7 @@ export function EmployeeTable({
   return (
     <div className="space-y-3">
       {/* Mobile Card View (< md) */}
-      <div className="md:hidden space-y-3">
+      <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
         {employees.map((employee) => {
           const isActive = employee.status?.toUpperCase() === "ACTIVE";
           const isUpdatingStatus = togglingId === employee.id;
@@ -138,7 +138,7 @@ export function EmployeeTable({
           return (
             <div
               key={employee.id}
-              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-3"
+              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs flex flex-col justify-between space-y-3"
             >
               {/* Header: Avatar, Name, Code, and Status */}
               <div className="flex items-start justify-between gap-2.5">
@@ -290,7 +290,7 @@ export function EmployeeTable({
       {/* Desktop Table View (>= md) */}
       <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
         <div className="overflow-x-auto min-w-0 w-full">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
