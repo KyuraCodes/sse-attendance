@@ -60,13 +60,13 @@ export function EmployeeTable({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Phone</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rate</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Start Date</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Pekerja</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Telefon</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tarikh Mula</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -109,17 +109,17 @@ export function EmployeeTable({
           <Users size={28} weight="duotone" />
         </div>
         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-          {hasFilter ? "No matching employees found" : "No employees registered yet"}
+          {hasFilter ? "Tiada pekerja sepadan dijumpai" : "Tiada pekerja didaftarkan setakat ini"}
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
           {hasFilter
-            ? "Try adjusting your search criteria or switching the status filter tab."
-            : "Get started by adding your first daily-rated employee to the system."}
+            ? "Cuba ubah kata kunci carian atau tukar penapis status."
+            : "Mulakan dengan mendaftarkan pekerja pertama ke dalam sistem."}
         </p>
         {!hasFilter && onAddClick && (
           <div className="mt-5">
             <Button variant="primary" size="sm" onClick={onAddClick}>
-              Add First Employee
+              Daftar Pekerja Pertama
             </Button>
           </div>
         )}
@@ -172,7 +172,7 @@ export function EmployeeTable({
                     )}
                     aria-hidden="true"
                   />
-                  <span>{isActive ? "ACTIVE" : "INACTIVE"}</span>
+                  <span>{isActive ? "AKTIF" : "TIDAK AKTIF"}</span>
                 </span>
               </div>
 
@@ -180,7 +180,7 @@ export function EmployeeTable({
               <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800/80">
                 <div>
                   <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
-                    Rate
+                    Kadar Upah
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
                     <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-sm">
@@ -204,13 +204,13 @@ export function EmployeeTable({
                     </span>
                   ) : (
                     <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 block mt-0.5">
-                      OT: 1.5x lalai
+                      OT: formula 1.5x
                     </span>
                   )}
                 </div>
                 <div>
                   <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
-                    Start Date
+                    Tarikh Mula
                   </span>
                   <span className="font-mono text-slate-700 dark:text-slate-300">
                     {formatDate(employee.startDate)}
@@ -218,7 +218,7 @@ export function EmployeeTable({
                 </div>
                 {employee.phone && (
                   <div className="col-span-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between">
-                    <span className="text-slate-400 dark:text-slate-500 text-2xs">Phone:</span>
+                    <span className="text-slate-400 dark:text-slate-500 text-2xs">Telefon:</span>
                     <span className="font-mono text-slate-700 dark:text-slate-300 font-medium">
                       {employee.phone}
                     </span>
@@ -226,7 +226,7 @@ export function EmployeeTable({
                 )}
                 {employee.notes && (
                   <div className="col-span-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
-                    <span className="text-slate-400 dark:text-slate-500 text-2xs block">Notes:</span>
+                    <span className="text-slate-400 dark:text-slate-500 text-2xs block">Nota:</span>
                     <p className="text-slate-600 dark:text-slate-400 italic text-2xs mt-0.5">
                       {employee.notes}
                     </p>
@@ -240,11 +240,11 @@ export function EmployeeTable({
                   variant="outline"
                   size="sm"
                   onClick={() => onEdit(employee)}
-                  aria-label={`Edit ${employee.name}`}
+                  aria-label={`Sunting maklumat ${employee.name}`}
                   className="w-full text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white justify-center px-1"
                 >
                   <PencilSimple size={13} weight="bold" />
-                  <span>Edit</span>
+                  <span>Sunting</span>
                 </Button>
 
                 <Button
@@ -253,7 +253,7 @@ export function EmployeeTable({
                   onClick={() => onToggleStatus(employee)}
                   disabled={isUpdatingStatus}
                   isLoading={isUpdatingStatus}
-                  aria-label={isActive ? `Deactivate ${employee.name}` : `Activate ${employee.name}`}
+                  aria-label={isActive ? `Nyahaktifkan pekerja ${employee.name}` : `Aktifkan pekerja ${employee.name}`}
                   className={cn(
                     "w-full text-xs justify-center px-1",
                     isActive
@@ -268,18 +268,18 @@ export function EmployeeTable({
                       <UserCheck size={13} weight="bold" />
                     )
                   )}
-                  <span>{isActive ? "Deactivate" : "Activate"}</span>
+                  <span>{isActive ? "Nyahaktif" : "Aktifkan"}</span>
                 </Button>
 
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => onDelete(employee)}
-                  aria-label={`Delete ${employee.name}`}
+                  aria-label={`Padam rekod ${employee.name}`}
                   className="w-full text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800 justify-center px-1"
                 >
                   <Trash size={13} weight="bold" />
-                  <span>Delete</span>
+                  <span>Padam</span>
                 </Button>
               </div>
             </div>
@@ -294,25 +294,25 @@ export function EmployeeTable({
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Code
+                  Kod
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Name
+                  Pekerja
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Phone
+                  Telefon
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Rate
+                  Kadar Upah
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Start Date
+                  Tarikh Mula
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Status
                 </th>
                 <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">
-                  Actions
+                  Tindakan
                 </th>
               </tr>
             </thead>
@@ -386,7 +386,7 @@ export function EmployeeTable({
                           </span>
                         ) : (
                           <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
-                            OT: 1.5x formula
+                            OT: formula 1.5x
                           </span>
                         )}
                       </div>
@@ -414,7 +414,7 @@ export function EmployeeTable({
                           )}
                           aria-hidden="true"
                         />
-                        <span>{isActive ? "ACTIVE" : "INACTIVE"}</span>
+                        <span>{isActive ? "AKTIF" : "TIDAK AKTIF"}</span>
                       </span>
                     </td>
 
@@ -425,11 +425,11 @@ export function EmployeeTable({
                           variant="outline"
                           size="sm"
                           onClick={() => onEdit(employee)}
-                          aria-label={`Edit ${employee.name}`}
+                          aria-label={`Sunting maklumat ${employee.name}`}
                           className="h-8 px-2.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                         >
                           <PencilSimple size={14} weight="bold" />
-                          <span>Edit</span>
+                          <span>Sunting</span>
                         </Button>
 
                         <Button
@@ -438,7 +438,7 @@ export function EmployeeTable({
                           onClick={() => onToggleStatus(employee)}
                           disabled={isUpdatingStatus}
                           isLoading={isUpdatingStatus}
-                          aria-label={isActive ? `Deactivate ${employee.name}` : `Activate ${employee.name}`}
+                          aria-label={isActive ? `Nyahaktifkan pekerja ${employee.name}` : `Aktifkan pekerja ${employee.name}`}
                           className={cn(
                             "h-8 px-2.5 text-xs",
                             isActive
@@ -453,18 +453,18 @@ export function EmployeeTable({
                               <UserCheck size={14} weight="bold" />
                             )
                           )}
-                          <span>{isActive ? "Deactivate" : "Activate"}</span>
+                          <span>{isActive ? "Nyahaktif" : "Aktifkan"}</span>
                         </Button>
 
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => onDelete(employee)}
-                          aria-label={`Delete ${employee.name}`}
+                          aria-label={`Padam rekod ${employee.name}`}
                           className="h-8 px-2.5 text-xs text-rose-600 dark:text-rose-400 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-800"
                         >
                           <Trash size={14} weight="bold" />
-                          <span>Delete</span>
+                          <span>Padam</span>
                         </Button>
                       </div>
                     </td>

@@ -46,10 +46,10 @@ export const RATE_INPUT_LABELS: Record<RateType, string> = {
 };
 
 export const RATE_INPUT_HELPERS: Record<RateType, string> = {
-  HOURLY: "Agreed wage per worked hour",
-  DAILY: "Agreed wage per worked day",
-  WEEKLY: "Agreed wage per worked week",
-  MONTHLY: "Agreed wage per worked month",
+  HOURLY: "Kadar upah persetujuan bagi setiap jam bekerja",
+  DAILY: "Kadar upah persetujuan bagi setiap hari bekerja",
+  WEEKLY: "Kadar upah persetujuan bagi setiap minggu bekerja",
+  MONTHLY: "Kadar upah persetujuan bagi setiap bulan bekerja",
 };
 
 export function EditEmployeeModal({
@@ -109,24 +109,24 @@ export function EditEmployeeModal({
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Employee name is required";
+      newErrors.name = "Nama pekerja diperlukan";
     } else if (formData.name.trim().length > 150) {
-      newErrors.name = "Name must not exceed 150 characters";
+      newErrors.name = "Nama tidak boleh melebihi 150 aksara";
     }
 
     const rateNum = parseFloat(formData.dailyRate);
     if (!formData.dailyRate.trim()) {
-      newErrors.dailyRate = `${RATE_INPUT_LABELS[rateType]} is required`;
+      newErrors.dailyRate = `${RATE_INPUT_LABELS[rateType]} diperlukan`;
     } else if (isNaN(rateNum) || rateNum <= 0) {
-      newErrors.dailyRate = "Rate must be greater than 0";
+      newErrors.dailyRate = "Kadar upah mestilah melebihi RM 0.00";
     }
 
     if (!formData.startDate) {
-      newErrors.startDate = "Start date is required";
+      newErrors.startDate = "Tarikh mula bekerja diperlukan";
     }
 
     if (formData.phone && formData.phone.trim().length > 30) {
-      newErrors.phone = "Phone must not exceed 30 characters";
+      newErrors.phone = "Nombor telefon tidak boleh melebihi 30 aksara";
     }
 
     setErrors(newErrors);
@@ -161,7 +161,7 @@ export function EditEmployeeModal({
       const message =
         err instanceof Error
           ? err.message
-          : "Failed to update employee. Please check your input and try again.";
+          : "Gagal mengemas kini maklumat pekerja. Sila semak input dan cuba lagi.";
       setErrors((prev) => ({ ...prev, general: message }));
     } finally {
       setIsSubmitting(false);
@@ -201,14 +201,14 @@ export function EditEmployeeModal({
                   id="edit-employee-title"
                   className="text-base font-semibold text-slate-900 dark:text-slate-100"
                 >
-                  Edit Employee
+                  Sunting Maklumat Pekerja
                 </h2>
                 <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold">
                   {employee.employeeCode}
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Update pay rate, contact details, or background information
+                Kemas kini maklumat pekerja, kadar bayaran, dan butiran perhubungan
               </p>
             </div>
           </div>
@@ -217,7 +217,7 @@ export function EditEmployeeModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            aria-label="Close modal"
+            aria-label="Tutup tetingkap"
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
           >
             <X size={18} weight="bold" />
@@ -240,8 +240,8 @@ export function EditEmployeeModal({
           {/* Employee Name */}
           <Input
             id="edit-emp-name"
-            label="Full Name"
-            placeholder="e.g. Ahmad bin Abdullah"
+            label="Nama Penuh"
+            placeholder="cth. Ahmad bin Abdullah"
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
             error={errors.name}
@@ -255,7 +255,7 @@ export function EditEmployeeModal({
               htmlFor="edit-emp-rate-type"
               className="text-sm font-medium text-slate-800 dark:text-slate-200 select-none"
             >
-              Rate Type <span className="text-rose-600 ml-0.5">*</span>
+              Jenis Kadar Upah <span className="text-rose-600 ml-0.5">*</span>
             </label>
             <select
               id="edit-emp-rate-type"
@@ -265,10 +265,10 @@ export function EditEmployeeModal({
               disabled={isSubmitting}
               className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 shadow-2xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 disabled:bg-slate-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              <option value="HOURLY">Per Jam (Hourly)</option>
-              <option value="DAILY">Harian (Daily - default)</option>
-              <option value="WEEKLY">Mingguan (Weekly)</option>
-              <option value="MONTHLY">Bulanan (Monthly)</option>
+              <option value="HOURLY">Per Jam (Sejam)</option>
+              <option value="DAILY">Harian (Harian - lalai)</option>
+              <option value="WEEKLY">Mingguan (Mingguan)</option>
+              <option value="MONTHLY">Bulanan (Bulanan)</option>
             </select>
           </div>
 
@@ -279,12 +279,12 @@ export function EditEmployeeModal({
               label={RATE_INPUT_LABELS[rateType]}
               placeholder={
                 rateType === "HOURLY"
-                  ? "e.g. 10.00"
+                  ? "cth. 10.00"
                   : rateType === "DAILY"
-                  ? "e.g. 80.00"
+                  ? "cth. 80.00"
                   : rateType === "WEEKLY"
-                  ? "e.g. 500.00"
-                  : "e.g. 2000.00"
+                  ? "cth. 500.00"
+                  : "cth. 2000.00"
               }
               type="number"
               step="0.01"
@@ -299,7 +299,7 @@ export function EditEmployeeModal({
 
             <Input
               id="edit-emp-start-date"
-              label="Start Date"
+              label="Tarikh Mula Bekerja"
               type="date"
               value={formData.startDate}
               onChange={(e) => handleChange("startDate", e.target.value)}
@@ -312,28 +312,28 @@ export function EditEmployeeModal({
           {/* Custom OT Rate */}
           <Input
             id="edit-emp-ot-rate"
-            label="Kadar OT Sejam (RM) - Pilihan"
-            placeholder="e.g. 10.00 (Lalai: formula 1.5x)"
+            label="Kadar OT Sejam (RM) (Pilihan)"
+            placeholder="cth. 10.00 (Lalai: formula 1.5x)"
             type="number"
             step="any"
             min="0"
             value={formData.otRate}
             onChange={(e) => handleChange("otRate", e.target.value)}
             disabled={isSubmitting}
-            helperText="Kadar bayaran OT khusus untuk pekerja ini (contoh: RM 10/jam). Biarkan kosong jika guna formula 1.5x."
+            helperText="Kadar bayaran OT khusus untuk pekerja ini (cth: RM 10.00/jam). Biarkan kosong untuk formula lalai 1.5x."
           />
 
           {/* Phone Number */}
           <Input
             id="edit-emp-phone"
-            label="Phone Number"
-            placeholder="e.g. 012-3456789"
+            label="Nombor Telefon"
+            placeholder="cth. 012-3456789"
             type="tel"
             value={formData.phone}
             onChange={(e) => handleChange("phone", e.target.value)}
             error={errors.phone}
             disabled={isSubmitting}
-            helperText="Optional contact number"
+            helperText="Nombor perhubungan pekerja (pilihan)"
           />
 
           {/* Address */}
@@ -342,12 +342,12 @@ export function EditEmployeeModal({
               htmlFor="edit-emp-address"
               className="text-sm font-medium text-slate-800 dark:text-slate-200"
             >
-              Residential Address
+              Alamat Kediaman
             </label>
             <textarea
               id="edit-emp-address"
               rows={2}
-              placeholder="Optional residential address"
+              placeholder="Alamat tempat tinggal pekerja (pilihan)"
               value={formData.address}
               onChange={(e) => handleChange("address", e.target.value)}
               disabled={isSubmitting}
@@ -361,12 +361,12 @@ export function EditEmployeeModal({
               htmlFor="edit-emp-notes"
               className="text-sm font-medium text-slate-800 dark:text-slate-200"
             >
-              Notes / Remarks
+              Nota / Catatan
             </label>
             <textarea
               id="edit-emp-notes"
               rows={2}
-              placeholder="Optional notes regarding role, skill, or storage arrangements"
+              placeholder="Catatan tambahan peranan, kemahiran, atau simpanan gaji (pilihan)"
               value={formData.notes}
               onChange={(e) => handleChange("notes", e.target.value)}
               disabled={isSubmitting}
@@ -383,7 +383,7 @@ export function EditEmployeeModal({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Cancel
+              Batal
             </Button>
             <Button
               type="submit"
@@ -391,7 +391,7 @@ export function EditEmployeeModal({
               size="md"
               isLoading={isSubmitting}
             >
-              Update Changes
+              Simpan Perubahan
             </Button>
           </div>
         </form>

@@ -65,7 +65,7 @@ export default function EmployeesPage() {
       const message =
         err instanceof Error
           ? err.message
-          : "Failed to load employees. Please check your network connection.";
+          : "Gagal memuatkan senarai pekerja. Sila semak sambungan internet anda.";
       setError(message);
     } finally {
       setIsLoading(false);
@@ -90,7 +90,7 @@ export default function EmployeesPage() {
   const handleAddSuccess = (newEmployee: Employee) => {
     setFeedbackMessage({
       type: "success",
-      text: `Employee ${newEmployee.name} (${newEmployee.employeeCode}) was successfully registered.`,
+      text: `Pekerja ${newEmployee.name} (${newEmployee.employeeCode}) berjaya didaftarkan.`,
     });
     loadEmployees();
   };
@@ -98,7 +98,7 @@ export default function EmployeesPage() {
   const handleEditSuccess = (updatedEmployee: Employee) => {
     setFeedbackMessage({
       type: "success",
-      text: `Employee ${updatedEmployee.name} (${updatedEmployee.employeeCode}) was successfully updated.`,
+      text: `Maklumat pekerja ${updatedEmployee.name} (${updatedEmployee.employeeCode}) berjaya dikemas kini.`,
     });
     loadEmployees();
   };
@@ -115,7 +115,7 @@ export default function EmployeesPage() {
       );
       setFeedbackMessage({
         type: "success",
-        text: `Employee ${updated.name} status changed to ${nextStatus}.`,
+        text: `Status pekerja ${updated.name} ditukar kepada ${nextStatus === "ACTIVE" ? "AKTIF" : "TIDAK AKTIF"}.`,
       });
       // Optimistically update list
       setEmployees((prev) =>
@@ -125,7 +125,7 @@ export default function EmployeesPage() {
       const message =
         err instanceof Error
           ? err.message
-          : "Failed to update employee status. Please try again.";
+          : "Gagal mengemas kini status pekerja. Sila cuba sebentar lagi.";
       setFeedbackMessage({
         type: "error",
         text: message,
@@ -143,7 +143,7 @@ export default function EmployeesPage() {
       await employeeService.deleteEmployee(deletingEmployee.id);
       setFeedbackMessage({
         type: "success",
-        text: `Employee ${deletingEmployee.name} (${deletingEmployee.employeeCode}) was successfully deleted.`,
+        text: `Pekerja ${deletingEmployee.name} (${deletingEmployee.employeeCode}) berjaya dipadam.`,
       });
       setDeletingEmployee(null);
       loadEmployees();
@@ -151,7 +151,7 @@ export default function EmployeesPage() {
       const message =
         err instanceof Error
           ? err.message
-          : "Failed to delete employee. Please try again.";
+          : "Gagal memadam rekod pekerja. Sila cuba sebentar lagi.";
       setFeedbackMessage({
         type: "error",
         text: message,
@@ -177,11 +177,11 @@ export default function EmployeesPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Employee Management
+              Pengurusan Pekerja
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            Directory of daily-rated workforce, wage arrangements and active roster
+            Direktori tenaga kerja, penetapan kadar upah, dan senarai bertugas aktif
           </p>
         </div>
 
@@ -190,8 +190,8 @@ export default function EmployeesPage() {
             type="button"
             onClick={() => loadEmployees()}
             disabled={isLoading}
-            aria-label="Refresh employee list"
-            title="Refresh employee directory"
+            aria-label="Muat semula senarai pekerja"
+            title="Muat semula senarai pekerja"
             className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
           >
             <ArrowClockwise
@@ -208,7 +208,7 @@ export default function EmployeesPage() {
             className="shadow-xs flex-1 sm:flex-initial justify-center"
           >
             <Plus size={16} weight="bold" />
-            <span>Add Employee</span>
+            <span>Tambah Pekerja</span>
           </Button>
         </div>
       </div>
@@ -236,7 +236,7 @@ export default function EmployeesPage() {
             type="button"
             onClick={() => setFeedbackMessage(null)}
             className="text-current opacity-70 hover:opacity-100 p-1"
-            aria-label="Dismiss notification"
+            aria-label="Tutup pemberitahuan"
           >
             <X size={14} weight="bold" />
           </button>
@@ -252,7 +252,7 @@ export default function EmployeesPage() {
           <div className="flex items-start gap-2.5">
             <WarningCircle size={20} weight="bold" className="shrink-0 text-rose-600 mt-0.5" />
             <div>
-              <p className="font-semibold text-xs sm:text-sm">Unable to load employees</p>
+              <p className="font-semibold text-xs sm:text-sm">Ralat Memuatkan Senarai Pekerja</p>
               <p className="text-xs text-rose-700 dark:text-rose-400 mt-0.5">{error}</p>
             </div>
           </div>
@@ -262,7 +262,7 @@ export default function EmployeesPage() {
             onClick={() => loadEmployees()}
             className="shrink-0 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60"
           >
-            Retry
+            Cuba Semula
           </Button>
         </div>
       )}
@@ -279,7 +279,7 @@ export default function EmployeesPage() {
           </span>
           <input
             type="text"
-            placeholder="Search by name or code (e.g. EMP-001)..."
+            placeholder="Cari nama atau kod pekerja (cth. EMP-001)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-9 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-colors"
@@ -288,7 +288,7 @@ export default function EmployeesPage() {
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              aria-label="Clear search query"
+              aria-label="Kosongkan carian"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
             >
               <X size={14} weight="bold" />
@@ -308,7 +308,7 @@ export default function EmployeesPage() {
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            All
+            Semua
           </button>
           <button
             type="button"
@@ -321,7 +321,7 @@ export default function EmployeesPage() {
             )}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
-            <span>Active</span>
+            <span>Aktif</span>
           </button>
           <button
             type="button"
@@ -334,7 +334,7 @@ export default function EmployeesPage() {
             )}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true" />
-            <span>Inactive</span>
+            <span>Tidak Aktif</span>
           </button>
         </div>
       </div>
@@ -411,7 +411,7 @@ export default function EmployeesPage() {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Kadar Harian:</span>
+                <span className="text-slate-500 dark:text-slate-400">Kadar Upah:</span>
                 <span className="font-mono font-medium text-slate-700 dark:text-slate-300">
                   {formatCurrency(deletingEmployee.dailyRate)}
                 </span>
