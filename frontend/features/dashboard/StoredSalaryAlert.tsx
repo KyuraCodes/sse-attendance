@@ -65,7 +65,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
 
         <Link
           href="/work-records"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-amber-100 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200/80 dark:hover:bg-amber-800/60 px-3.5 py-2 min-h-[44px] sm:min-h-[36px] flex items-center rounded-lg transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
+          className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-amber-100 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200/80 dark:hover:bg-amber-800/60 px-3.5 py-2 min-h-[44px] sm:pointer-fine:min-h-[36px] rounded-lg transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
         >
           <span>Lihat Rekod Kerja</span>
           <ArrowRight size={14} weight="bold" aria-hidden="true" />
@@ -88,7 +88,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate" title={alert.employeeName}>
                     {alert.employeeName}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                  <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 shrink-0">
                     ({alert.employeeCode})
                   </span>
                 </div>
@@ -106,7 +106,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
                 <div className="text-sm font-bold font-mono tabular-nums text-amber-700 dark:text-amber-400">
                   {formatCurrency(amount)}
                 </div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono tabular-nums">
                   Sejak {formatDate(alert.oldestStoredDate)}
                 </div>
               </div>

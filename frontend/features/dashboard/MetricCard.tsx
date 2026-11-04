@@ -50,7 +50,7 @@ export function MetricCard({
     <div
       role="region"
       aria-label={`${title}: ${value}`}
-      className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-4 sm:p-5 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200"
+      className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-4 sm:p-5 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">

@@ -92,18 +92,18 @@ export default function DashboardPage() {
           </button>
 
           <Link href="/work-records" className="flex-1 sm:flex-initial">
-            <Button variant="outline" size="sm" className="w-full min-h-[44px] sm:min-h-[38px] shadow-2xs whitespace-nowrap active:scale-[0.98] transition-transform">
+            <Button variant="outline" size="sm" className="w-full min-h-[44px] sm:pointer-fine:min-h-[38px] shadow-2xs whitespace-nowrap active:scale-[0.98] transition-transform">
               <Plus size={15} weight="bold" aria-hidden="true" />
-              <span className="hidden xs:inline">Rekod Kehadiran</span>
-              <span className="xs:hidden">Kehadiran</span>
+              <span className="hidden sm:inline">Rekod Kehadiran</span>
+              <span className="sm:hidden">Kehadiran</span>
             </Button>
           </Link>
 
           <Link href="/payments" className="flex-1 sm:flex-initial">
-            <Button variant="primary" size="sm" className="w-full min-h-[44px] sm:min-h-[38px] shadow-2xs whitespace-nowrap active:scale-[0.98] transition-transform">
+            <Button variant="primary" size="sm" className="w-full min-h-[44px] sm:pointer-fine:min-h-[38px] shadow-2xs whitespace-nowrap active:scale-[0.98] transition-transform">
               <CreditCard size={15} weight="bold" aria-hidden="true" />
-              <span className="hidden xs:inline">Bayar Gaji</span>
-              <span className="xs:hidden">Bayar</span>
+              <span className="hidden sm:inline">Bayar Gaji</span>
+              <span className="sm:hidden">Bayar</span>
             </Button>
           </Link>
         </div>

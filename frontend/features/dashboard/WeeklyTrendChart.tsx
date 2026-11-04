@@ -32,6 +32,11 @@ interface WeeklyTrendChartProps {
 
 type MetricMode = "payroll" | "attendance" | "combined";
 
+// Segmented metric tabs: full-width with 44px tap height on phones and touch
+// tablets; compact 34px only when a mouse or trackpad is the primary pointer.
+const TREND_TAB_BASE =
+  "flex flex-1 sm:flex-initial items-center justify-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:pointer-fine:min-h-[34px] text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer";
+
 const chartConfig = {
   payroll: {
     label: "Kos Gaji",
@@ -87,7 +92,7 @@ export function WeeklyTrendChart({
     <div
       role="region"
       aria-label="Prestasi dan Trend Operasi Mingguan"
-      className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-5 shadow-xs"
+      className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-4 sm:p-5 shadow-xs"
     >
       {/* Header and Metric Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
@@ -114,7 +119,7 @@ export function WeeklyTrendChart({
         <div
           role="tablist"
           aria-label="Pilihan metrik trend operasi mingguan"
-          className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg self-start sm:self-auto gap-1"
+          className="flex w-full sm:w-auto sm:inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg gap-1"
         >
           <button
             type="button"
@@ -124,7 +129,7 @@ export function WeeklyTrendChart({
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("payroll")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] sm:min-h-[34px] text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer",
+              TREND_TAB_BASE,
               activeMetric === "payroll"
                 ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -141,7 +146,7 @@ export function WeeklyTrendChart({
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("attendance")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
+              TREND_TAB_BASE,
               activeMetric === "attendance"
                 ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -158,7 +163,7 @@ export function WeeklyTrendChart({
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("combined")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
+              TREND_TAB_BASE,
               activeMetric === "combined"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
