@@ -9,7 +9,6 @@ import {
   CreditCard,
   Bank,
   DeviceMobile,
-  Question,
 } from "@phosphor-icons/react";
 import { DashboardWorkRecord, DashboardPayment } from "@/types/dashboard";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
@@ -21,9 +20,12 @@ interface RecentActivityTableProps {
   isLoading?: boolean;
 }
 
+const TABS = ["all", "work", "payments"] as const;
+type ActivityTab = (typeof TABS)[number];
+
 // Shared mobile tab styling: 44px tap height for one-handed use on site.
 const MOBILE_TAB_BASE =
-  "flex-1 min-h-[44px] py-2 px-2.5 text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer";
+  "flex-1 min-h-[44px] py-2 px-2.5 text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-slate-800 cursor-pointer";
 const MOBILE_TAB_ACTIVE = "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs";
 const MOBILE_TAB_IDLE = "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100";
 
@@ -40,9 +42,23 @@ export function RecentActivityTable({
   payments,
   isLoading = false,
 }: RecentActivityTableProps) {
-  const [activeTab, setActiveTab] = useState<"all" | "work" | "payments">("all");
+  const [activeTab, setActiveTab] = useState<ActivityTab>("all");
   const records = Array.isArray(workRecords) ? workRecords : [];
   const paymentList = Array.isArray(payments) ? payments : [];
+
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const currentIndex = TABS.indexOf(activeTab);
+      const nextIndex =
+        e.key === "ArrowRight"
+          ? (currentIndex + 1) % TABS.length
+          : (currentIndex - 1 + TABS.length) % TABS.length;
+      const nextTab = TABS[nextIndex];
+      setActiveTab(nextTab);
+      document.getElementById(`tab-recent-${nextTab}`)?.focus();
+    }
+  };
 
   const getPaymentMethodIcon = (method: string) => {
     switch (method?.toUpperCase()) {
@@ -96,12 +112,14 @@ export function RecentActivityTable({
       <div
         role="tablist"
         aria-label="Pilihan paparan aktiviti terkini"
+        onKeyDown={handleTabKeyDown}
         className="flex sm:hidden items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg gap-1"
       >
         <button
           type="button"
           role="tab"
           id="tab-recent-all"
+          tabIndex={activeTab === "all" ? 0 : -1}
           aria-selected={activeTab === "all"}
           aria-controls="panel-recent-work panel-recent-payments"
           onClick={() => setActiveTab("all")}
@@ -113,6 +131,7 @@ export function RecentActivityTable({
           type="button"
           role="tab"
           id="tab-recent-work"
+          tabIndex={activeTab === "work" ? 0 : -1}
           aria-selected={activeTab === "work"}
           aria-controls="panel-recent-work"
           onClick={() => setActiveTab("work")}
@@ -124,6 +143,7 @@ export function RecentActivityTable({
           type="button"
           role="tab"
           id="tab-recent-payments"
+          tabIndex={activeTab === "payments" ? 0 : -1}
           aria-selected={activeTab === "payments"}
           aria-controls="panel-recent-payments"
           onClick={() => setActiveTab("payments")}
@@ -169,8 +189,9 @@ export function RecentActivityTable({
             {/* Table Content */}
             <div className="flex-1 overflow-x-auto">
               {records.length === 0 ? (
-                <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
-                  Tiada rekod kerja direkodkan bagi tempoh ini
+                <div className="py-12 flex flex-col items-center justify-center text-center text-xs text-slate-400 dark:text-slate-500 gap-2">
+                  <CalendarCheck size={28} weight="duotone" className="opacity-40" aria-hidden="true" />
+                  <span>Tiada rekod kerja direkodkan bagi tempoh ini</span>
                 </div>
               ) : (
                 <table aria-label="Senarai rekod kerja dan kehadiran harian terkini" className="w-full text-left text-xs">
@@ -284,8 +305,9 @@ export function RecentActivityTable({
             {/* Table Content */}
             <div className="flex-1 overflow-x-auto">
               {paymentList.length === 0 ? (
-                <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
-                  Tiada rekod pembayaran gaji setakat ini
+                <div className="py-12 flex flex-col items-center justify-center text-center text-xs text-slate-400 dark:text-slate-500 gap-2">
+                  <Money size={28} weight="duotone" className="opacity-40" aria-hidden="true" />
+                  <span>Tiada rekod pembayaran gaji setakat ini</span>
                 </div>
               ) : (
                 <table aria-label="Senarai rekod transaksi bayaran gaji terkini" className="w-full text-left text-xs">

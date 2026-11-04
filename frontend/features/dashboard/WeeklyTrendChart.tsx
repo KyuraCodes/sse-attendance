@@ -31,11 +31,12 @@ interface WeeklyTrendChartProps {
 }
 
 type MetricMode = "payroll" | "attendance" | "combined";
+const METRICS = ["payroll", "attendance", "combined"] as const;
 
 // Segmented metric tabs: full-width with 44px tap height on phones and touch
 // tablets; compact 34px only when a mouse or trackpad is the primary pointer.
 const TREND_TAB_BASE =
-  "flex flex-1 sm:flex-initial items-center justify-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:pointer-fine:min-h-[34px] text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer";
+  "flex flex-1 sm:flex-initial items-center justify-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:pointer-fine:min-h-[34px] text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-slate-900 cursor-pointer";
 
 const chartConfig = {
   payroll: {
@@ -53,6 +54,20 @@ export function WeeklyTrendChart({
   isLoading = false,
 }: WeeklyTrendChartProps) {
   const [activeMetric, setActiveMetric] = useState<MetricMode>("payroll");
+
+  const handleMetricKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const currentIndex = METRICS.indexOf(activeMetric);
+      const nextIndex =
+        e.key === "ArrowRight"
+          ? (currentIndex + 1) % METRICS.length
+          : (currentIndex - 1 + METRICS.length) % METRICS.length;
+      const nextMetric = METRICS[nextIndex];
+      setActiveMetric(nextMetric);
+      document.getElementById(`trend-tab-${nextMetric}`)?.focus();
+    }
+  };
 
   const points = useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
@@ -119,12 +134,14 @@ export function WeeklyTrendChart({
         <div
           role="tablist"
           aria-label="Pilihan metrik trend operasi mingguan"
+          onKeyDown={handleMetricKeyDown}
           className="flex w-full sm:w-auto sm:inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg gap-1"
         >
           <button
             type="button"
             role="tab"
             id="trend-tab-payroll"
+            tabIndex={activeMetric === "payroll" ? 0 : -1}
             aria-selected={activeMetric === "payroll"}
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("payroll")}
@@ -142,6 +159,7 @@ export function WeeklyTrendChart({
             type="button"
             role="tab"
             id="trend-tab-attendance"
+            tabIndex={activeMetric === "attendance" ? 0 : -1}
             aria-selected={activeMetric === "attendance"}
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("attendance")}
@@ -159,6 +177,7 @@ export function WeeklyTrendChart({
             type="button"
             role="tab"
             id="trend-tab-combined"
+            tabIndex={activeMetric === "combined" ? 0 : -1}
             aria-selected={activeMetric === "combined"}
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("combined")}
@@ -183,6 +202,9 @@ export function WeeklyTrendChart({
         </div>
       ) : (
         <div id="weekly-trend-chart-canvas" role="tabpanel" aria-labelledby={`trend-tab-${activeMetric}`}>
+          <p className="sr-only">
+            Carta trend operasi 7 hari: jumlah liabiliti gaji {formatCurrency(totalWeekPayroll)}, purata kehadiran {avgAttendance} orang staf.
+          </p>
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[220px] w-full"
