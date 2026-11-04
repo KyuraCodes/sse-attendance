@@ -55,7 +55,7 @@ export function MetricCard({
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">
           {isLive && (
-            <span className="relative flex h-2 w-2 shrink-0" title="Live update" aria-label="Live metric updating in real-time">
+            <span className="relative flex h-2 w-2 shrink-0" title="Kemas kini masa nyata" aria-label="Metrik dikemas kini secara masa nyata">
               <span className="animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>

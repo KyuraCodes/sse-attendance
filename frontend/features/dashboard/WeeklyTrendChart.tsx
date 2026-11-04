@@ -97,16 +97,16 @@ export function WeeklyTrendChart({
               <TrendUp size={16} weight="bold" aria-hidden="true" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              7-Day Operational Trends
+              Trend Operasi 7 Hari
             </h3>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             {activeMetric === "payroll" &&
-              `Total 7-day payroll liability: ${formatCurrency(totalWeekPayroll)}`}
+              `Jumlah liabiliti gaji 7 hari: ${formatCurrency(totalWeekPayroll)}`}
             {activeMetric === "attendance" &&
-              `Average daily presence: ${avgAttendance} staff`}
+              `Purata kehadiran harian: ${avgAttendance} staf`}
             {activeMetric === "combined" &&
-              `Overview: ${formatCurrency(totalWeekPayroll)} total | ${avgAttendance} staff avg`}
+              `Ringkasan: ${formatCurrency(totalWeekPayroll)} gaji | ${avgAttendance} staf purata`}
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export function WeeklyTrendChart({
             )}
           >
             <Money size={14} weight="bold" aria-hidden="true" />
-            <span>Payroll</span>
+            <span>Kos Gaji</span>
           </button>
           <button
             type="button"
@@ -148,7 +148,7 @@ export function WeeklyTrendChart({
             )}
           >
             <Users size={14} weight="bold" aria-hidden="true" />
-            <span>Attendance</span>
+            <span>Kehadiran</span>
           </button>
           <button
             type="button"
@@ -165,7 +165,7 @@ export function WeeklyTrendChart({
             )}
           >
             <ChartBar size={14} weight="bold" aria-hidden="true" />
-            <span>Combined</span>
+            <span>Gabungan</span>
           </button>
         </div>
       </div>
@@ -174,7 +174,7 @@ export function WeeklyTrendChart({
       {points.length === 0 ? (
         <div role="status" aria-live="polite" className="h-56 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-xs gap-2">
           <CalendarBlank size={28} weight="duotone" aria-hidden="true" />
-          <span>No operational trend data available for the past 7 days</span>
+          <span>Tiada data trend operasi bagi 7 hari yang lepas</span>
         </div>
       ) : (
         <div id="weekly-trend-chart-canvas" role="tabpanel" aria-labelledby={`trend-tab-${activeMetric}`}>

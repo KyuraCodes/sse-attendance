@@ -44,9 +44,9 @@ export function RecentActivityTable({
   const formatPaymentMethod = (method: string) => {
     switch (method?.toUpperCase()) {
       case "CASH":
-        return "Cash";
+        return "Tunai";
       case "BANK_TRANSFER":
-        return "Bank Transfer";
+        return "Pindahan Bank";
       case "DUITNOW":
         return "DuitNow";
       default:
@@ -133,7 +133,7 @@ export function RecentActivityTable({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Work Records Table Card */}
+        {/* Rekod Kerja Terkini Table Card */}
         {(activeTab === "all" || activeTab === "work") && (
           <div
             id="panel-recent-work"
@@ -152,7 +152,7 @@ export function RecentActivityTable({
                     Recent Work Records
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Latest daily attendance logs
+                    Log kehadiran dan kerja harian terkini
                   </p>
                 </div>
               </div>
@@ -161,7 +161,7 @@ export function RecentActivityTable({
                 href="/work-records"
                 className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
               >
-                <span>View all</span>
+                <span>Lihat semua</span>
                 <ArrowRight size={13} weight="bold" aria-hidden="true" />
               </Link>
             </div>
@@ -170,20 +170,20 @@ export function RecentActivityTable({
             <div className="flex-1 overflow-x-auto">
               {workRecords.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
-                  No work records logged for this period
+                  Tiada rekod kerja direkodkan bagi tempoh ini
                 </div>
               ) : (
                 <table aria-label="Recent daily attendance and work records" className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       <th scope="col" className="px-4 py-2.5">
-                        Date
+                        Tarikh
                       </th>
                       <th scope="col" className="px-4 py-2.5">
-                        Employee
+                        Pekerja
                       </th>
                       <th scope="col" className="px-4 py-2.5 text-right">
-                        Amount
+                        Amaun
                       </th>
                       <th scope="col" className="px-4 py-2.5 text-right">
                         Status
@@ -238,7 +238,7 @@ export function RecentActivityTable({
           </div>
         )}
 
-        {/* Recent Payments Table Card */}
+        {/* Bayaran Gaji Terkini Table Card */}
         {(activeTab === "all" || activeTab === "payments") && (
           <div
             id="panel-recent-payments"
@@ -257,7 +257,7 @@ export function RecentActivityTable({
                     Recent Payments
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Latest salary disbursement transactions
+                    Transaksi pengeluaran gaji terkini
                   </p>
                 </div>
               </div>
@@ -275,20 +275,20 @@ export function RecentActivityTable({
             <div className="flex-1 overflow-x-auto">
               {payments.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
-                  No disbursement payments recorded yet
+                  Tiada rekod pembayaran gaji setakat ini
                 </div>
               ) : (
                 <table aria-label="Recent salary disbursement payments" className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       <th scope="col" className="px-4 py-2.5">
-                        Code
+                        Kod
                       </th>
                       <th scope="col" className="px-4 py-2.5">
                         Employee
                       </th>
                       <th scope="col" className="px-4 py-2.5">
-                        Method
+                        Kaedah
                       </th>
                       <th scope="col" className="px-4 py-2.5 text-right">
                         Amount

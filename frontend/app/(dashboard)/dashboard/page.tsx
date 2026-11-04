@@ -42,7 +42,7 @@ export default function DashboardPage() {
       const message =
         err instanceof Error
           ? err.message
-          : "Failed to load dashboard data. Please check your network connection.";
+          : "Gagal memuatkan data papan pemuka. Sila periksa sambungan internet anda.";
       setError(message);
     } finally {
       setIsLoading(false);
@@ -67,10 +67,10 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            Executive Overview
+            Ringkasan Operasi Eksekutif
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            Real-time daily operations, attendance metrics and payroll liabilities
+            Metrik masa nyata operasi harian, kehadiran pekerja, dan tanggungan gaji
           </p>
         </div>
 
@@ -80,9 +80,9 @@ export default function DashboardPage() {
             type="button"
             onClick={() => loadDashboardData(true)}
             disabled={isLoading || isRefreshing}
-            aria-label="Refresh dashboard data"
+            aria-label="Muat semula data papan pemuka"
             className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
-            title="Refresh metrics"
+            title="Muat semula data metrik"
           >
             <ArrowClockwise
               size={18}
@@ -94,16 +94,16 @@ export default function DashboardPage() {
           <Link href="/work-records" className="flex-1 sm:flex-initial">
             <Button variant="outline" size="sm" className="w-full shadow-2xs whitespace-nowrap">
               <Plus size={15} weight="bold" aria-hidden="true" />
-              <span className="hidden xs:inline">Record Attendance</span>
-              <span className="xs:hidden">Attendance</span>
+              <span className="hidden xs:inline">Rekod Kehadiran</span>
+              <span className="xs:hidden">Kehadiran</span>
             </Button>
           </Link>
 
           <Link href="/payments" className="flex-1 sm:flex-initial">
             <Button variant="primary" size="sm" className="w-full shadow-2xs whitespace-nowrap">
               <CreditCard size={15} weight="bold" aria-hidden="true" />
-              <span className="hidden xs:inline">Disburse Salary</span>
-              <span className="xs:hidden">Disburse</span>
+              <span className="hidden xs:inline">Bayar Gaji</span>
+              <span className="xs:hidden">Bayar</span>
             </Button>
           </Link>
         </div>
@@ -118,7 +118,7 @@ export default function DashboardPage() {
           <div className="flex items-start gap-2.5">
             <WarningCircle size={20} weight="bold" className="shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" aria-hidden="true" />
             <div>
-              <p className="font-semibold text-xs sm:text-sm">Error Loading Dashboard</p>
+              <p className="font-semibold text-xs sm:text-sm">Ralat Memuatkan Papan Pemuka</p>
               <p className="text-xs text-rose-700 dark:text-rose-400 mt-0.5">{error}</p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
             onClick={() => loadDashboardData()}
             className="shrink-0 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60"
           >
-            Retry
+            Cuba Semula
           </Button>
         </div>
       )}
@@ -137,26 +137,26 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Metric 1: Active Employees */}
         <MetricCard
-          title="Active Employees"
+          title="Pekerja Aktif"
           value={isLoading ? "-" : activeEmployees}
-          subtitle="Total workforce available"
+          subtitle="Jumlah tenaga kerja sedia ada"
           icon={Users}
           iconColor="text-blue-600 dark:text-blue-400"
           iconBg="bg-blue-50 dark:bg-blue-950/50"
-          badge={`${activeEmployees} staff`}
+          badge={`${activeEmployees} staf`}
           badgeVariant="slate"
           isLoading={isLoading}
         />
 
         {/* Metric 2: Working Today */}
         <MetricCard
-          title="Working Today"
+          title="Bekerja Hari Ini"
           value={isLoading ? "-" : workingToday}
-          subtitle="Present for current shift"
+          subtitle="Hadir bagi syif kerja semasa"
           icon={CalendarCheck}
           iconColor="text-emerald-600 dark:text-emerald-400"
           iconBg="bg-emerald-50 dark:bg-emerald-950/50"
-          badge={isLoading ? undefined : `${attendanceRate}%`}
+          badge={isLoading ? undefined : `${attendanceRate}% hadir`}
           badgeVariant="emerald"
           isLoading={isLoading}
           isLive={true}
@@ -164,9 +164,9 @@ export default function DashboardPage() {
 
         {/* Metric 3: Today's Payroll */}
         <MetricCard
-          title="Today's Payroll"
+          title="Gaji Hari Ini"
           value={isLoading ? "-" : formatCurrency(summary?.todayPayroll)}
-          subtitle="Earned wages logged today"
+          subtitle="Upah terakru direkodkan hari ini"
           icon={Money}
           iconColor="text-indigo-600 dark:text-indigo-400"
           iconBg="bg-indigo-50 dark:bg-indigo-950/50"
@@ -176,9 +176,9 @@ export default function DashboardPage() {
 
         {/* Metric 4: Outstanding Salary */}
         <MetricCard
-          title="Outstanding Salary"
+          title="Baki Tertunggak"
           value={isLoading ? "-" : formatCurrency(summary?.outstandingSalary)}
-          subtitle="Unpaid and stored liability"
+          subtitle="Tanggungan belum lunas & tabung"
           icon={Wallet}
           iconColor="text-amber-600 dark:text-amber-400"
           iconBg="bg-amber-50 dark:bg-amber-950/50"
@@ -186,8 +186,8 @@ export default function DashboardPage() {
             isLoading
               ? undefined
               : (summary?.outstandingSalary || 0) > 0
-              ? "Pending"
-              : "Settled"
+              ? "Belum Selesai"
+              : "Selesai"
           }
           badgeVariant={(summary?.outstandingSalary || 0) > 0 ? "amber" : "emerald"}
           isLoading={isLoading}

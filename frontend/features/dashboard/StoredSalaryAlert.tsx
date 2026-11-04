@@ -49,13 +49,13 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
           </div>
           <div>
             <h2 className="text-sm font-bold text-amber-900 dark:text-amber-200 flex items-center gap-2">
-              Stored Salary Holding Notice
+              Notis Tabung Simpanan Gaji
               <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-200/80 text-amber-900 dark:bg-amber-900/80 dark:text-amber-200">
-                {alerts.length} {alerts.length === 1 ? "Employee" : "Employees"}
+                {alerts.length} Pekerja
               </span>
             </h2>
             <p className="text-xs text-amber-900/90 dark:text-amber-200/90 mt-0.5">
-              Accumulated wages requested as held savings. Total held:{" "}
+              Jumlah upah yang diminta disimpan oleh pekerja. Jumlah simpanan tabung:{" "}
               <strong className="font-mono tabular-nums text-amber-950 dark:text-amber-100">
                 {formatCurrency(totalHeld)}
               </strong>
@@ -67,7 +67,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
           href="/work-records"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-amber-100 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200/80 dark:hover:bg-amber-800/60 px-3 py-1.5 rounded-lg transition-colors shrink-0"
         >
-          <span>View Work Records</span>
+          <span>Lihat Rekod Kerja</span>
           <ArrowRight size={14} weight="bold" aria-hidden="true" />
         </Link>
       </div>
@@ -95,10 +95,10 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
                 <div className="flex items-center gap-2 mt-1 text-[11px] text-amber-800 dark:text-amber-300">
                   <span className="flex items-center gap-1">
                     <Wallet size={13} weight="bold" aria-hidden="true" />
-                    <span>{alert.storedCount} records</span>
+                    <span>{alert.storedCount} rekod</span>
                   </span>
                   <span className="text-slate-300 dark:text-slate-600">|</span>
-                  <span>{days} {days === 1 ? "day" : "days"} stored</span>
+                  <span>{days} hari disimpan</span>
                 </div>
               </div>
 
@@ -107,7 +107,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
                   {formatCurrency(amount)}
                 </div>
                 <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-                  Since {formatDate(alert.oldestStoredDate)}
+                  Sejak {formatDate(alert.oldestStoredDate)}
                 </div>
               </div>
             </div>
