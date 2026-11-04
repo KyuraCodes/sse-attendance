@@ -90,7 +90,7 @@ export function RecentActivityTable({
           aria-controls="panel-recent-work panel-recent-payments"
           onClick={() => setActiveTab("all")}
           className={cn(
-            "flex-1 min-h-[38px] py-2 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer",
+            "flex-1 min-h-[44px] sm:min-h-[36px] py-2 px-2.5 text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer",
             activeTab === "all"
               ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
@@ -159,7 +159,7 @@ export function RecentActivityTable({
 
               <Link
                 href="/work-records"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 active:scale-[0.97] transition-all p-1 rounded-md focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 <span>Lihat semua</span>
                 <ArrowRight size={13} weight="bold" aria-hidden="true" />
@@ -198,7 +198,7 @@ export function RecentActivityTable({
                       return (
                         <tr
                           key={record.id}
-                          className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                          className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                         >
                           <td className="px-4 py-3 font-mono tabular-nums text-slate-600 dark:text-slate-300 whitespace-nowrap">
                             {formatDate(record.workDate)}
@@ -264,7 +264,7 @@ export function RecentActivityTable({
 
               <Link
                 href="/payments"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 active:scale-[0.97] transition-all p-1 rounded-md focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 <span>View all</span>
                 <ArrowRight size={13} weight="bold" aria-hidden="true" />
@@ -299,7 +299,7 @@ export function RecentActivityTable({
                     {payments.map((pmt) => (
                       <tr
                         key={pmt.id}
-                        className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                        className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                       >
                         <td className="px-4 py-3 font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
                           <span className="font-semibold text-slate-900 dark:text-slate-100">

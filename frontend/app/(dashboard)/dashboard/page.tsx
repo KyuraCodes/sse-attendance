@@ -81,7 +81,7 @@ export default function DashboardPage() {
             onClick={() => loadDashboardData(true)}
             disabled={isLoading || isRefreshing}
             aria-label="Muat semula data papan pemuka"
-            className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.97] transition-all shadow-2xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 disabled:opacity-50 shrink-0"
             title="Muat semula data metrik"
           >
             <ArrowClockwise
@@ -92,7 +92,7 @@ export default function DashboardPage() {
           </button>
 
           <Link href="/work-records" className="flex-1 sm:flex-initial">
-            <Button variant="outline" size="sm" className="w-full shadow-2xs whitespace-nowrap">
+            <Button variant="outline" size="sm" className="w-full min-h-[44px] sm:min-h-[38px] shadow-2xs whitespace-nowrap active:scale-[0.98] transition-transform">
               <Plus size={15} weight="bold" aria-hidden="true" />
               <span className="hidden xs:inline">Rekod Kehadiran</span>
               <span className="xs:hidden">Kehadiran</span>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
           </Link>
 
           <Link href="/payments" className="flex-1 sm:flex-initial">
-            <Button variant="primary" size="sm" className="w-full shadow-2xs whitespace-nowrap">
+            <Button variant="primary" size="sm" className="w-full min-h-[44px] sm:min-h-[38px] shadow-2xs whitespace-nowrap active:scale-[0.98] transition-transform">
               <CreditCard size={15} weight="bold" aria-hidden="true" />
               <span className="hidden xs:inline">Bayar Gaji</span>
               <span className="xs:hidden">Bayar</span>
@@ -141,8 +141,8 @@ export default function DashboardPage() {
           value={isLoading ? "-" : activeEmployees}
           subtitle="Jumlah tenaga kerja sedia ada"
           icon={Users}
-          iconColor="text-blue-600 dark:text-blue-400"
-          iconBg="bg-blue-50 dark:bg-blue-950/50"
+          iconColor="text-sky-600 dark:text-sky-400"
+          iconBg="bg-sky-50 dark:bg-sky-950/50"
           badge={`${activeEmployees} staf`}
           badgeVariant="slate"
           isLoading={isLoading}
@@ -168,8 +168,8 @@ export default function DashboardPage() {
           value={isLoading ? "-" : formatCurrency(summary?.todayPayroll)}
           subtitle="Upah terakru direkodkan hari ini"
           icon={Money}
-          iconColor="text-indigo-600 dark:text-indigo-400"
-          iconBg="bg-indigo-50 dark:bg-indigo-950/50"
+          iconColor="text-emerald-700 dark:text-emerald-400"
+          iconBg="bg-emerald-50/80 dark:bg-emerald-950/50"
           isLoading={isLoading}
           isLive={true}
         />

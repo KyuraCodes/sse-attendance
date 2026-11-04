@@ -65,7 +65,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
 
         <Link
           href="/work-records"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-amber-100 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200/80 dark:hover:bg-amber-800/60 px-3 py-1.5 rounded-lg transition-colors shrink-0"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-amber-100 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200/80 dark:hover:bg-amber-800/60 px-3.5 py-2 min-h-[44px] sm:min-h-[36px] flex items-center rounded-lg transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0"
         >
           <span>Lihat Rekod Kerja</span>
           <ArrowRight size={14} weight="bold" aria-hidden="true" />
@@ -81,7 +81,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
           return (
             <div
               key={alert.employeeId}
-              className="bg-white/80 dark:bg-slate-900/80 rounded-lg border border-amber-200/80 dark:border-amber-800/60 p-3 flex items-center justify-between gap-3 shadow-2xs"
+              className="bg-white/80 dark:bg-slate-900/80 rounded-lg border border-amber-200/80 dark:border-amber-800/60 p-3 flex items-center justify-between gap-3 shadow-2xs hover:border-amber-300 dark:hover:border-amber-700/80 transition-all duration-150"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">

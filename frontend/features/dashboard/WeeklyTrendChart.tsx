@@ -35,11 +35,11 @@ type MetricMode = "payroll" | "attendance" | "combined";
 const chartConfig = {
   payroll: {
     label: "Kos Gaji",
-    color: "#10b981",
+    color: "#059669",
   },
   workers: {
     label: "Kehadiran",
-    color: "#3b82f6",
+    color: "#0284c7",
   },
 } satisfies ChartConfig;
 
@@ -124,7 +124,7 @@ export function WeeklyTrendChart({
             aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("payroll")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-3 py-1.5 min-h-[40px] sm:min-h-[34px] text-xs font-semibold rounded-md transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer",
               activeMetric === "payroll"
                 ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
@@ -143,7 +143,7 @@ export function WeeklyTrendChart({
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
               activeMetric === "attendance"
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-2xs font-bold"
+                ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
@@ -240,7 +240,7 @@ export function WeeklyTrendChart({
             {/* shadcn ui Chart Tooltip per https://ui.shadcn.com/charts/tooltip#charts */}
             <ChartTooltip
               cursor={{
-                stroke: "rgba(148, 163, 184, 0.35)",
+                stroke: "rgba(100, 116, 139, 0.25)",
                 strokeWidth: 1,
                 strokeDasharray: "3 3",
               }}
