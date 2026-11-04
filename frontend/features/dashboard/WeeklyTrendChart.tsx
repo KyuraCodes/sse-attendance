@@ -94,7 +94,7 @@ export function WeeklyTrendChart({
         <div>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <TrendUp size={16} weight="bold" />
+              <TrendUp size={16} weight="bold" aria-hidden="true" />
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
               7-Day Operational Trends
@@ -111,44 +111,60 @@ export function WeeklyTrendChart({
         </div>
 
         {/* Metric Selector Buttons */}
-        <div className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg self-start sm:self-auto gap-1">
+        <div
+          role="tablist"
+          aria-label="Pilihan metrik trend operasi mingguan"
+          className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg self-start sm:self-auto gap-1"
+        >
           <button
             type="button"
+            role="tab"
+            id="trend-tab-payroll"
+            aria-selected={activeMetric === "payroll"}
+            aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("payroll")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
               activeMetric === "payroll"
                 ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            <Money size={14} weight="bold" />
+            <Money size={14} weight="bold" aria-hidden="true" />
             <span>Payroll</span>
           </button>
           <button
             type="button"
+            role="tab"
+            id="trend-tab-attendance"
+            aria-selected={activeMetric === "attendance"}
+            aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("attendance")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
               activeMetric === "attendance"
                 ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            <Users size={14} weight="bold" />
+            <Users size={14} weight="bold" aria-hidden="true" />
             <span>Attendance</span>
           </button>
           <button
             type="button"
+            role="tab"
+            id="trend-tab-combined"
+            aria-selected={activeMetric === "combined"}
+            aria-controls="weekly-trend-chart-canvas"
             onClick={() => setActiveMetric("combined")}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer",
+              "flex items-center gap-1.5 px-3 py-1.5 min-h-[34px] text-xs font-semibold rounded-md transition-all cursor-pointer",
               activeMetric === "combined"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs font-bold"
                 : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
             )}
           >
-            <ChartBar size={14} weight="bold" />
+            <ChartBar size={14} weight="bold" aria-hidden="true" />
             <span>Combined</span>
           </button>
         </div>
@@ -156,11 +172,12 @@ export function WeeklyTrendChart({
 
       {/* Chart Canvas Area */}
       {points.length === 0 ? (
-        <div className="h-56 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-xs gap-2">
-          <CalendarBlank size={28} weight="duotone" />
+        <div role="status" aria-live="polite" className="h-56 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-xs gap-2">
+          <CalendarBlank size={28} weight="duotone" aria-hidden="true" />
           <span>No operational trend data available for the past 7 days</span>
         </div>
       ) : (
+        <div id="weekly-trend-chart-canvas" role="tabpanel" aria-labelledby={`trend-tab-${activeMetric}`}>
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[220px] w-full"
@@ -383,6 +400,7 @@ export function WeeklyTrendChart({
             )}
           </ComposedChart>
         </ChartContainer>
+        </div>
       )}
     </div>
   );

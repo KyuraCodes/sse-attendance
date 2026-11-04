@@ -31,13 +31,13 @@ export function RecentActivityTable({
   const getPaymentMethodIcon = (method: string) => {
     switch (method?.toUpperCase()) {
       case "CASH":
-        return <Money size={14} weight="bold" className="text-emerald-600 dark:text-emerald-400" />;
+        return <Money size={14} weight="bold" className="text-emerald-600 dark:text-emerald-400" aria-hidden="true" />;
       case "BANK_TRANSFER":
-        return <Bank size={14} weight="bold" className="text-sky-600 dark:text-sky-400" />;
+        return <Bank size={14} weight="bold" className="text-sky-600 dark:text-sky-400" aria-hidden="true" />;
       case "DUITNOW":
-        return <DeviceMobile size={14} weight="bold" className="text-pink-600 dark:text-pink-400" />;
+        return <DeviceMobile size={14} weight="bold" className="text-pink-600 dark:text-pink-400" aria-hidden="true" />;
       default:
-        return <CreditCard size={14} weight="bold" className="text-slate-500" />;
+        return <CreditCard size={14} weight="bold" className="text-slate-500" aria-hidden="true" />;
     }
   };
 
@@ -77,12 +77,20 @@ export function RecentActivityTable({
   return (
     <div className="space-y-6">
       {/* Mobile/Responsive View Toggle */}
-      <div className="flex sm:hidden items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+      <div
+        role="tablist"
+        aria-label="Pilihan paparan aktiviti terkini"
+        className="flex sm:hidden items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-lg gap-1"
+      >
         <button
           type="button"
+          role="tab"
+          id="tab-recent-all"
+          aria-selected={activeTab === "all"}
+          aria-controls="panel-recent-work panel-recent-payments"
           onClick={() => setActiveTab("all")}
           className={cn(
-            "flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors",
+            "flex-1 min-h-[38px] py-2 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer",
             activeTab === "all"
               ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
@@ -92,9 +100,13 @@ export function RecentActivityTable({
         </button>
         <button
           type="button"
+          role="tab"
+          id="tab-recent-work"
+          aria-selected={activeTab === "work"}
+          aria-controls="panel-recent-work"
           onClick={() => setActiveTab("work")}
           className={cn(
-            "flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors",
+            "flex-1 min-h-[38px] py-2 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer",
             activeTab === "work"
               ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
@@ -104,9 +116,13 @@ export function RecentActivityTable({
         </button>
         <button
           type="button"
+          role="tab"
+          id="tab-recent-payments"
+          aria-selected={activeTab === "payments"}
+          aria-controls="panel-recent-payments"
           onClick={() => setActiveTab("payments")}
           className={cn(
-            "flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors",
+            "flex-1 min-h-[38px] py-2 px-2 text-xs font-semibold rounded-md transition-colors cursor-pointer",
             activeTab === "payments"
               ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
@@ -119,12 +135,17 @@ export function RecentActivityTable({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Work Records Table Card */}
         {(activeTab === "all" || activeTab === "work") && (
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col overflow-hidden">
+          <div
+            id="panel-recent-work"
+            role="region"
+            aria-label="Recent Work Records"
+            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col overflow-hidden"
+          >
             {/* Header */}
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                  <CalendarCheck size={18} weight="duotone" />
+                  <CalendarCheck size={18} weight="duotone" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -141,7 +162,7 @@ export function RecentActivityTable({
                 className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
               >
                 <span>View all</span>
-                <ArrowRight size={13} weight="bold" />
+                <ArrowRight size={13} weight="bold" aria-hidden="true" />
               </Link>
             </div>
 
@@ -152,7 +173,7 @@ export function RecentActivityTable({
                   No work records logged for this period
                 </div>
               ) : (
-                <table className="w-full text-left text-xs">
+                <table aria-label="Recent daily attendance and work records" className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       <th scope="col" className="px-4 py-2.5">
@@ -183,7 +204,7 @@ export function RecentActivityTable({
                             {formatDate(record.workDate)}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[140px] sm:max-w-[180px]">
+                            <div className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[140px] sm:max-w-[180px]" title={record.employeeName}>
                               {record.employeeName}
                             </div>
                             <div className="font-mono text-[10px] text-slate-400 dark:text-slate-500">
@@ -219,12 +240,17 @@ export function RecentActivityTable({
 
         {/* Recent Payments Table Card */}
         {(activeTab === "all" || activeTab === "payments") && (
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col overflow-hidden">
+          <div
+            id="panel-recent-payments"
+            role="region"
+            aria-label="Recent Payments"
+            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col overflow-hidden"
+          >
             {/* Header */}
             <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800 text-sky-600 dark:text-sky-400 flex items-center justify-center">
-                  <Money size={18} weight="duotone" />
+                  <Money size={18} weight="duotone" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -241,7 +267,7 @@ export function RecentActivityTable({
                 className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
               >
                 <span>View all</span>
-                <ArrowRight size={13} weight="bold" />
+                <ArrowRight size={13} weight="bold" aria-hidden="true" />
               </Link>
             </div>
 
@@ -252,7 +278,7 @@ export function RecentActivityTable({
                   No disbursement payments recorded yet
                 </div>
               ) : (
-                <table className="w-full text-left text-xs">
+                <table aria-label="Recent salary disbursement payments" className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       <th scope="col" className="px-4 py-2.5">
@@ -284,7 +310,7 @@ export function RecentActivityTable({
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[140px] sm:max-w-[180px]">
+                          <div className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[140px] sm:max-w-[180px]" title={pmt.employeeName}>
                             {pmt.employeeName}
                           </div>
                           <div className="font-mono text-[10px] text-slate-400 dark:text-slate-500">

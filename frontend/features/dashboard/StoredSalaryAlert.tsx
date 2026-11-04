@@ -45,7 +45,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-amber-200/60 dark:border-amber-800/50">
         <div className="flex items-start sm:items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0">
-            <Warning size={20} weight="fill" />
+            <Warning size={20} weight="fill" aria-hidden="true" />
           </div>
           <div>
             <h2 className="text-sm font-bold text-amber-900 dark:text-amber-200 flex items-center gap-2">
@@ -54,7 +54,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
                 {alerts.length} {alerts.length === 1 ? "Employee" : "Employees"}
               </span>
             </h2>
-            <p className="text-xs text-amber-800/80 dark:text-amber-300/80 mt-0.5">
+            <p className="text-xs text-amber-900/90 dark:text-amber-200/90 mt-0.5">
               Accumulated wages requested as held savings. Total held:{" "}
               <strong className="font-mono tabular-nums text-amber-950 dark:text-amber-100">
                 {formatCurrency(totalHeld)}
@@ -68,7 +68,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-amber-100 bg-amber-100 dark:bg-amber-900/40 hover:bg-amber-200/80 dark:hover:bg-amber-800/60 px-3 py-1.5 rounded-lg transition-colors shrink-0"
         >
           <span>View Work Records</span>
-          <ArrowRight size={14} weight="bold" />
+          <ArrowRight size={14} weight="bold" aria-hidden="true" />
         </Link>
       </div>
 
@@ -85,7 +85,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate" title={alert.employeeName}>
                     {alert.employeeName}
                   </span>
                   <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
@@ -94,7 +94,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
                 </div>
                 <div className="flex items-center gap-2 mt-1 text-[11px] text-amber-800 dark:text-amber-300">
                   <span className="flex items-center gap-1">
-                    <Wallet size={13} weight="bold" />
+                    <Wallet size={13} weight="bold" aria-hidden="true" />
                     <span>{alert.storedCount} records</span>
                   </span>
                   <span className="text-slate-300 dark:text-slate-600">|</span>

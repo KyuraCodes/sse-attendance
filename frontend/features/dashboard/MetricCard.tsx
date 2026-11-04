@@ -55,8 +55,8 @@ export function MetricCard({
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">
           {isLive && (
-            <span className="relative flex h-2 w-2 shrink-0" title="Live update">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative flex h-2 w-2 shrink-0" title="Live update" aria-label="Live metric updating in real-time">
+              <span className="animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
           )}
@@ -70,12 +70,12 @@ export function MetricCard({
             iconBg
           )}
         >
-          <Icon size={20} weight="duotone" className={iconColor} />
+          <Icon size={20} weight="duotone" className={iconColor} aria-hidden="true" />
         </div>
       </div>
 
       <div className="flex items-baseline gap-2 mb-1 flex-wrap">
-        <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono tabular-nums">
+        <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono tabular-nums break-words">
           {value}
         </div>
         {badge && (
@@ -91,7 +91,7 @@ export function MetricCard({
       </div>
 
       {subtitle && (
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 break-words">
           {subtitle}
         </p>
       )}

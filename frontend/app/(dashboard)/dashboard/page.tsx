@@ -81,19 +81,19 @@ export default function DashboardPage() {
             onClick={() => loadDashboardData(true)}
             disabled={isLoading || isRefreshing}
             aria-label="Refresh dashboard data"
-            className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
+            className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shrink-0"
             title="Refresh metrics"
           >
             <ArrowClockwise
               size={18}
               weight="bold"
-              className={isRefreshing ? "animate-spin text-emerald-600" : ""}
+              className={isRefreshing ? "animate-spin motion-reduce:animate-none text-emerald-600" : ""} aria-hidden="true"
             />
           </button>
 
           <Link href="/work-records" className="flex-1 sm:flex-initial">
             <Button variant="outline" size="sm" className="w-full shadow-2xs whitespace-nowrap">
-              <Plus size={15} weight="bold" />
+              <Plus size={15} weight="bold" aria-hidden="true" />
               <span className="hidden xs:inline">Record Attendance</span>
               <span className="xs:hidden">Attendance</span>
             </Button>
@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
           <Link href="/payments" className="flex-1 sm:flex-initial">
             <Button variant="primary" size="sm" className="w-full shadow-2xs whitespace-nowrap">
-              <CreditCard size={15} weight="bold" />
+              <CreditCard size={15} weight="bold" aria-hidden="true" />
               <span className="hidden xs:inline">Disburse Salary</span>
               <span className="xs:hidden">Disburse</span>
             </Button>
@@ -112,11 +112,11 @@ export default function DashboardPage() {
       {/* Error Banner */}
       {error && (
         <div
-          role="alert"
+          role="alert" aria-live="assertive"
           className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300 flex items-start justify-between gap-3 text-sm"
         >
           <div className="flex items-start gap-2.5">
-            <WarningCircle size={20} weight="bold" className="shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
+            <WarningCircle size={20} weight="bold" className="shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" aria-hidden="true" />
             <div>
               <p className="font-semibold text-xs sm:text-sm">Error Loading Dashboard</p>
               <p className="text-xs text-rose-700 dark:text-rose-400 mt-0.5">{error}</p>
