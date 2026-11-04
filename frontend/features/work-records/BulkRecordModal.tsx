@@ -128,7 +128,7 @@ export function BulkRecordModal({
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to load active employees. Please try again.";
+          : "Gagal memuatkan senarai pekerja aktif. Sila cuba lagi.";
       setErrorMessage(msg);
     } finally {
       setIsLoadingEmployees(false);
@@ -265,7 +265,7 @@ export function BulkRecordModal({
       onSuccess(selectedCount, totalAmount);
       onClose();
     } catch (err: unknown) {
-      let msg = "Failed to record bulk work. Please try again.";
+      let msg = "Gagal merekodkan kehadiran pukal. Sila semak input dan cuba lagi.";
       if (err instanceof Error) {
         msg = err.message;
       }
@@ -305,10 +305,10 @@ export function BulkRecordModal({
                 id="bulk-record-modal-title"
                 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
               >
-                Record Work (Bulk)
+                Rekod Kerja (Pukal)
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Check off active workers present on the selected date
+                Tandakan kehadiran pekerja aktif yang hadir pada tarikh yang dipilih
               </p>
             </div>
           </div>
@@ -316,7 +316,7 @@ export function BulkRecordModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            aria-label="Close dialog"
+            aria-label="Tutup tetingkap"
             className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
@@ -340,7 +340,7 @@ export function BulkRecordModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Work Date <span className="text-rose-500">*</span>
+                  Tarikh Bekerja <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Input
@@ -362,11 +362,11 @@ export function BulkRecordModal({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  General Notes (Optional)
+                  Catatan Tambahan (Pilihan)
                 </label>
                 <Input
                   type="text"
-                  placeholder="e.g. Regular site work"
+                  placeholder="cth. Kerja tapak projek biasa"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   disabled={isSubmitting}
@@ -380,11 +380,11 @@ export function BulkRecordModal({
               <div className="flex items-center gap-2">
                 <CurrencyCircleDollar size={22} weight="duotone" className="text-emerald-700 dark:text-emerald-400" />
                 <span className="text-xs sm:text-sm font-medium text-emerald-900 dark:text-emerald-200">
-                  Selected: <strong className="font-bold text-emerald-800 dark:text-emerald-300">{selectedCount}</strong> workers
+                  Dipilih: <strong className="font-bold text-emerald-800 dark:text-emerald-300">{selectedCount}</strong> pekerja
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-xs text-emerald-700 dark:text-emerald-400 mr-2">Total Amount:</span>
+                <span className="text-xs text-emerald-700 dark:text-emerald-400 mr-2">Jumlah Upah:</span>
                 <span className="text-base sm:text-lg font-bold font-mono text-emerald-800 dark:text-emerald-300 tabular-nums">
                   {formatCurrency(totalAmount)}
                 </span>
@@ -396,7 +396,7 @@ export function BulkRecordModal({
               <div className="relative flex-1">
                 <Input
                   type="text"
-                  placeholder="Search worker by name or code..."
+                  placeholder="Cari nama atau kod pekerja..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   disabled={isSubmitting}
@@ -418,7 +418,7 @@ export function BulkRecordModal({
                   className="whitespace-nowrap"
                   leftIcon={allFilteredSelected ? <Square size={14} /> : <CheckSquare size={14} />}
                 >
-                  {allFilteredSelected ? "Deselect All" : "Select All"}
+                  {allFilteredSelected ? "Nyahpilih Semua" : "Pilih Semua"}
                 </Button>
               </div>
             </div>
@@ -428,13 +428,13 @@ export function BulkRecordModal({
               {isLoadingEmployees ? (
                 <div className="py-12 text-center text-slate-500 flex flex-col items-center justify-center gap-2">
                   <CircleNotch size={24} className="animate-spin text-emerald-600" />
-                  <span className="text-xs">Loading active employees...</span>
+                  <span className="text-xs">Memuatkan senarai pekerja aktif...</span>
                 </div>
               ) : filteredEmployees.length === 0 ? (
                 <div className="py-10 text-center text-slate-500 text-xs">
                   {employees.length === 0
-                    ? "No active employees found in system."
-                    : "No workers match your search."}
+                    ? "Tiada pekerja aktif dijumpai dalam sistem."
+                    : "Tiada pekerja yang sepadan dengan carian."}
                 </div>
               ) : (
                 <div className="max-h-64 overflow-y-auto divide-y divide-slate-200/70 dark:divide-slate-800/70">
@@ -585,7 +585,7 @@ export function BulkRecordModal({
                               ) : emp.rateType === "MONTHLY" ? (
                                 "Prorata (1/26)"
                               ) : (
-                                "Daily Rate"
+                                "Kadar Harian"
                               )}
                             </div>
                           </div>
@@ -601,7 +601,7 @@ export function BulkRecordModal({
           {/* Footer */}
           <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
             <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
-              <span>{selectedCount} of {employees.length} workers selected</span>
+              <span>{selectedCount} daripada {employees.length} pekerja dipilih</span>
               {totalOtAmount > 0 && (
                 <span className="text-amber-600 dark:text-amber-400 font-medium">
                   (termasuk {formatCurrency(totalOtAmount)} OT)
@@ -617,7 +617,7 @@ export function BulkRecordModal({
                 disabled={isSubmitting}
                 className="w-full sm:w-auto"
               >
-                Cancel
+                Batal
               </Button>
               <Button
                 type="submit"
@@ -627,7 +627,7 @@ export function BulkRecordModal({
                 disabled={selectedCount === 0 || isSubmitting}
                 className="w-full sm:w-auto text-xs sm:text-sm"
               >
-                Record {selectedCount} Workers ({formatCurrency(totalAmount)})
+                Simpan Rekod {selectedCount} Pekerja ({formatCurrency(totalAmount)})
               </Button>
             </div>
           </div>

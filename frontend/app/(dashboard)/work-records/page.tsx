@@ -92,7 +92,7 @@ export default function WorkRecordsPage() {
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to load work records. Please check your connection.";
+          : "Gagal memuatkan rekod kerja. Sila semak sambungan internet anda.";
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -170,7 +170,7 @@ export default function WorkRecordsPage() {
   const handleBulkSuccess = (count: number, amount: number) => {
     setFeedbackMessage({
       type: "success",
-      text: `Successfully recorded work for ${count} workers (${formatCurrency(amount)}).`,
+      text: `Berjaya merekodkan kehadiran untuk ${count} pekerja (${formatCurrency(amount)}).`,
     });
     loadRecords();
   };
@@ -178,7 +178,7 @@ export default function WorkRecordsPage() {
   const handleDailySuccess = (record: WorkRecord) => {
     setFeedbackMessage({
       type: "success",
-      text: `Work record recorded for ${record.employeeName} (${formatCurrency(record.amount)}).`,
+      text: `Rekod kerja untuk ${record.employeeName} (${formatCurrency(record.amount)}) berjaya disimpan.`,
     });
     loadRecords();
   };
@@ -186,7 +186,7 @@ export default function WorkRecordsPage() {
   const handleStoreSuccess = (record: WorkRecord) => {
     setFeedbackMessage({
       type: "success",
-      text: `Salary for ${record.employeeName} (${formatDate(record.workDate)}) marked as STORED.`,
+      text: `Gaji untuk ${record.employeeName} (${formatDate(record.workDate)}) ditandakan sebagai SIMPAN GAJI.`,
     });
     loadRecords();
   };
@@ -194,18 +194,18 @@ export default function WorkRecordsPage() {
   const handleVoidSuccess = (record: WorkRecord) => {
     setFeedbackMessage({
       type: "success",
-      text: `Work record for ${record.employeeName} on ${formatDate(record.workDate)} has been VOIDED.`,
+      text: `Rekod kerja untuk ${record.employeeName} pada ${formatDate(record.workDate)} telah dibatalkan (VOID).`,
     });
     loadRecords();
   };
 
   const statusOptions: { label: string; value: WorkRecordFilterStatus }[] = [
-    { label: "All Statuses", value: "ALL" },
-    { label: "UNPAID", value: "UNPAID" },
-    { label: "STORED", value: "STORED" },
-    { label: "PARTIAL", value: "PARTIALLY_PAID" },
-    { label: "PAID", value: "PAID" },
-    { label: "VOID", value: "VOID" },
+    { label: "Semua", value: "ALL" },
+    { label: "Belum Bayar", value: "UNPAID" },
+    { label: "Simpan Gaji", value: "STORED" },
+    { label: "Separa Bayar", value: "PARTIALLY_PAID" },
+    { label: "Selesai Bayar", value: "PAID" },
+    { label: "Dibatalkan", value: "VOID" },
   ];
 
   return (
@@ -246,10 +246,10 @@ export default function WorkRecordsPage() {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                Work Records
+                Rekod Kerja
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Record worker attendance, calculate daily wages, and manage stored salaries
+                Catat kehadiran harian, kiraan upah kerja, dan urus simpanan gaji pekerja
               </p>
             </div>
           </div>
@@ -264,7 +264,7 @@ export default function WorkRecordsPage() {
             leftIcon={<Plus size={16} weight="bold" />}
             className="justify-center whitespace-nowrap"
           >
-            Single Record
+            Rekod Harian
           </Button>
 
           <Button
@@ -274,7 +274,7 @@ export default function WorkRecordsPage() {
             leftIcon={<UsersThree size={18} weight="bold" />}
             className="justify-center whitespace-nowrap shadow-sm"
           >
-            Record Work (Bulk)
+            Rekod Kerja (Pukal)
           </Button>
         </div>
       </div>
@@ -283,53 +283,53 @@ export default function WorkRecordsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Total Records</span>
+            <span>Jumlah Rekod</span>
             <CalendarBlank size={18} weight="duotone" className="text-slate-400" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
             {metrics.totalCount}
           </div>
           <div className="text-2xs text-slate-400 mt-1 font-mono truncate">
-            {formatCurrency(metrics.totalAmount)} gross
+            {formatCurrency(metrics.totalAmount)} kasar
           </div>
         </div>
 
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Unpaid Records</span>
+            <span>Belum Bayar</span>
             <Clock size={18} weight="duotone" className="text-amber-500" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
             {metrics.unpaidCount}
           </div>
           <div className="text-2xs text-amber-700/80 dark:text-amber-400/80 mt-1 font-mono truncate">
-            {formatCurrency(metrics.unpaidAmount)} payable
+            {formatCurrency(metrics.unpaidAmount)} perlu bayar
           </div>
         </div>
 
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Stored Salary</span>
+            <span>Simpan Gaji</span>
             <Archive size={18} weight="duotone" className="text-indigo-500" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-indigo-600 dark:text-indigo-400 tabular-nums">
             {metrics.storedCount}
           </div>
           <div className="text-2xs text-indigo-700/80 dark:text-indigo-400/80 mt-1 font-mono truncate">
-            {formatCurrency(metrics.storedAmount)} stored
+            {formatCurrency(metrics.storedAmount)} disimpan
           </div>
         </div>
 
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Fully Paid</span>
+            <span>Selesai Bayar</span>
             <CheckCircle size={18} weight="duotone" className="text-emerald-500" />
           </div>
           <div className="mt-2 text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
             {metrics.paidCount}
           </div>
           <div className="text-2xs text-slate-400 mt-1 font-mono">
-            Settled records
+            Telah diselesaikan
           </div>
         </div>
       </div>
@@ -367,7 +367,7 @@ export default function WorkRecordsPage() {
                   : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
               )}
             >
-              Today
+              Hari Ini
             </button>
 
             <button
@@ -380,7 +380,7 @@ export default function WorkRecordsPage() {
                   : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
               )}
             >
-              Yesterday
+              Semalam
             </button>
 
             {selectedDate && (
@@ -388,9 +388,9 @@ export default function WorkRecordsPage() {
                 type="button"
                 onClick={() => setSelectedDate("")}
                 className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
-                title="View all recorded dates"
+                title="Papar semua tarikh rekod"
               >
-                All Dates
+                Semua Tarikh
               </button>
             )}
           </div>
@@ -400,7 +400,7 @@ export default function WorkRecordsPage() {
             <div className="relative w-full">
               <Input
                 type="text"
-                placeholder="Search worker or code..."
+                placeholder="Cari nama atau kod pekerja..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-9 text-xs"
@@ -426,7 +426,7 @@ export default function WorkRecordsPage() {
               onClick={loadRecords}
               isLoading={isLoading}
               className="h-9 whitespace-nowrap shrink-0"
-              title="Refresh records"
+              title="Muat semula rekod"
             >
               <ArrowClockwise size={16} />
             </Button>
@@ -473,7 +473,7 @@ export default function WorkRecordsPage() {
             onClick={loadRecords}
             className="whitespace-nowrap"
           >
-            Retry
+            Cuba Lagi
           </Button>
         </div>
       )}

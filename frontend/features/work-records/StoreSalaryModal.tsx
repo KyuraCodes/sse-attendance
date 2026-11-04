@@ -61,7 +61,7 @@ export function StoreSalaryModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!note.trim()) {
-      setErrorMessage("Please enter a note explaining why this salary is stored.");
+      setErrorMessage("Sila masukkan catatan sebab gaji ini disimpan.");
       return;
     }
 
@@ -76,7 +76,7 @@ export function StoreSalaryModal({
       onSuccess(updated);
       onClose();
     } catch (err: unknown) {
-      let msg = "Failed to mark salary as stored. Please try again.";
+      let msg = "Gagal menandakan rekod sebagai simpan gaji. Sila cuba lagi.";
       if (err instanceof Error) {
         msg = err.message;
       }
@@ -114,10 +114,10 @@ export function StoreSalaryModal({
                 id="store-salary-modal-title"
                 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
               >
-                Store Salary (Simpan Gaji)
+                Simpan Gaji Pekerja
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Mark work record as STORED per employee request
+                Tandakan rekod upah sebagai SIMPAN GAJI atas permintaan pekerja
               </p>
             </div>
           </div>
@@ -125,7 +125,7 @@ export function StoreSalaryModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            aria-label="Close dialog"
+            aria-label="Tutup tetingkap"
             className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
@@ -167,10 +167,10 @@ export function StoreSalaryModal({
               <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
                 <div className="flex items-center gap-1.5">
                   <CalendarBlank size={16} />
-                  <span>Work Date: <strong>{formatDate(record.workDate)}</strong></span>
+                  <span>Tarikh Bekerja: <strong>{formatDate(record.workDate)}</strong></span>
                 </div>
                 <div>
-                  Daily Rate: <span className="font-mono">{formatCurrency(record.dailyRate)}</span>
+                  Kadar Upah: <span className="font-mono">{formatCurrency(record.dailyRate)}</span>
                 </div>
               </div>
             </div>
@@ -178,7 +178,7 @@ export function StoreSalaryModal({
             {/* Stored Note Presets */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Reason / Note <span className="text-rose-500">*</span>
+                Sebab / Catatan Simpan Gaji <span className="text-rose-500">*</span>
               </label>
 
               <div className="flex flex-wrap gap-1.5 mb-2">
@@ -203,7 +203,7 @@ export function StoreSalaryModal({
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Enter note or reason for storing salary..."
+                placeholder="Masukkan catatan atau sebab gaji disimpan..."
                 rows={3}
                 disabled={isSubmitting}
                 required
@@ -220,7 +220,7 @@ export function StoreSalaryModal({
             <div className="flex items-start gap-2.5 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/50 rounded-xl text-amber-800 dark:text-amber-300 text-xs">
               <Info size={18} weight="fill" className="shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
               <div>
-                <strong>PRD Rule (BR-008):</strong> Stored salary remains counted as an outstanding obligation owed to the worker until payment is disbursed.
+                <strong>Peraturan PRD:</strong> Gaji yang disimpan kekal dikira sebagai tanggungan yang perlu dibayar kepada pekerja sehingga baucar pembayaran dikeluarkan.
               </div>
             </div>
           </div>
@@ -235,7 +235,7 @@ export function StoreSalaryModal({
               disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
-              Cancel
+              Batal
             </Button>
             <Button
               type="submit"
@@ -245,7 +245,7 @@ export function StoreSalaryModal({
               disabled={!note.trim() || isSubmitting}
               className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 focus-visible:ring-indigo-500"
             >
-              Mark as STORED
+              Sahkan Simpan Gaji
             </Button>
           </div>
         </form>

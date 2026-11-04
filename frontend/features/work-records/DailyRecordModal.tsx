@@ -70,7 +70,7 @@ export function DailyRecordModal({
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to load active employees.";
+          : "Gagal memuatkan senarai pekerja aktif. Sila cuba lagi.";
       setErrorMessage(msg);
     } finally {
       setIsLoadingEmployees(false);
@@ -238,7 +238,7 @@ export function DailyRecordModal({
       onSuccess(created);
       onClose();
     } catch (err: unknown) {
-      let msg = "Failed to create work record. Please try again.";
+      let msg = "Gagal menyimpan rekod kerja. Sila cuba lagi.";
       if (err instanceof Error) {
         msg = err.message;
       }
@@ -274,10 +274,10 @@ export function DailyRecordModal({
                 id="daily-record-modal-title"
                 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
               >
-                Record Daily Work
+                Rekod Kerja Harian
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Create a single daily attendance and salary record
+                Catat kehadiran dan pengiraan upah harian untuk pekerja individu
               </p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export function DailyRecordModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            aria-label="Close dialog"
+            aria-label="Tutup tetingkap"
             className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
@@ -308,7 +308,7 @@ export function DailyRecordModal({
             {/* Date input */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Work Date <span className="text-rose-500">*</span>
+                Tarikh Bekerja <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
                 <Input
@@ -331,12 +331,12 @@ export function DailyRecordModal({
             {/* Employee Selector */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Employee <span className="text-rose-500">*</span>
+                Pilih Pekerja <span className="text-rose-500">*</span>
               </label>
               {isLoadingEmployees ? (
                 <div className="flex items-center gap-2 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-500">
                   <CircleNotch size={16} className="animate-spin text-emerald-600" />
-                  Loading active employees...
+                  Memuatkan senarai pekerja aktif...
                 </div>
               ) : (
                 <div className="relative">
@@ -353,7 +353,7 @@ export function DailyRecordModal({
                     )}
                   >
                     <option value="" disabled>
-                      Select an active worker...
+                      Pilih pekerja aktif...
                     </option>
                     {employees.map((emp) => (
                       <option key={emp.id} value={emp.id}>
@@ -519,7 +519,7 @@ export function DailyRecordModal({
                     <CurrencyCircleDollar size={24} weight="duotone" className="text-emerald-600 dark:text-emerald-400" />
                     <div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                        <span>Standard Rate</span>
+                        <span>Kadar Asas</span>
                         <span
                           className={cn(
                             "inline-flex items-center px-1.5 py-0.2 rounded text-2xs font-semibold border",
@@ -536,7 +536,7 @@ export function DailyRecordModal({
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
-                      {hasOt ? "Jumlah Keseluruhan (Termasuk OT)" : "Calculated Amount"}
+                      {hasOt ? "Jumlah Keseluruhan (Termasuk OT)" : "Jumlah Upah Harian"}
                     </div>
                     <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
                       {formatCurrency(totalAmountWithOt)}
@@ -556,12 +556,12 @@ export function DailyRecordModal({
             {/* Notes input */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Notes (Optional)
+                Catatan / Nota (Pilihan)
               </label>
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder="e.g. Overtime or site note"
+                  placeholder="cth. Lokasi tapak atau maklumat tambahan"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   disabled={isSubmitting}
@@ -581,7 +581,7 @@ export function DailyRecordModal({
               disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
-              Cancel
+              Batal
             </Button>
             <Button
               type="submit"
@@ -591,7 +591,7 @@ export function DailyRecordModal({
               disabled={!employeeId || isSubmitting}
               className="w-full sm:w-auto"
             >
-              Record Work
+              Simpan Rekod
             </Button>
           </div>
         </form>

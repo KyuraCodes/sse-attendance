@@ -67,7 +67,7 @@ export function VoidRecordModal({
       onSuccess(updated);
       onClose();
     } catch (err: unknown) {
-      let msg = "Failed to void work record. Please try again.";
+      let msg = "Gagal membatalkan rekod kerja. Sila cuba lagi.";
       if (err instanceof Error) {
         msg = err.message;
       }
@@ -99,10 +99,10 @@ export function VoidRecordModal({
                 id="void-record-modal-title"
                 className="text-base font-semibold text-slate-900 dark:text-slate-100"
               >
-                Void Work Record
+                Batalkan Rekod Kerja
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Cancel this attendance and wage entry
+                Batalkan rekod kehadiran dan upah ini daripada sistem
               </p>
             </div>
           </div>
@@ -110,7 +110,7 @@ export function VoidRecordModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            aria-label="Close dialog"
+            aria-label="Tutup tetingkap"
             className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
@@ -131,7 +131,7 @@ export function VoidRecordModal({
             )}
 
             <p className="text-xs text-slate-600 dark:text-slate-300">
-              Are you sure you want to void this work record? This will mark it as VOID in audit logs and exclude it from payable salary.
+              Adakah anda pasti ingin membatalkan rekod kerja ini? Rekod ini akan ditandakan sebagai BATAL (VOID) dalam log audit dan dikecualikan daripada bayaran gaji.
             </p>
 
             {/* Target Record Details */}
@@ -148,22 +148,22 @@ export function VoidRecordModal({
               </div>
               <div className="flex items-center gap-1.5 text-2xs text-slate-500 dark:text-slate-400">
                 <CalendarBlank size={14} />
-                <span>Date: {formatDate(record.workDate)}</span>
+                <span>Tarikh: {formatDate(record.workDate)}</span>
                 <span className="mx-1">•</span>
-                <span>Current Status: {record.status}</span>
+                <span>Status Semasa: {record.status}</span>
               </div>
             </div>
 
             {/* Reason */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Reason for Voiding
+                Sebab Pembatalan
               </label>
               <input
                 type="text"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder="e.g. Salah rekod kehadiran"
+                placeholder="cth. Salah rekod kehadiran atau pertindihan nama"
                 maxLength={255}
                 disabled={isSubmitting}
                 className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500"
@@ -181,7 +181,7 @@ export function VoidRecordModal({
               disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
-              Cancel
+              Batal
             </Button>
             <Button
               type="submit"
@@ -191,7 +191,7 @@ export function VoidRecordModal({
               disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
-              Confirm Void
+              Sahkan Pembatalan
             </Button>
           </div>
         </form>

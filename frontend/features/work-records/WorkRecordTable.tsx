@@ -46,14 +46,14 @@ export function WorkRecordTable({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Code</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rate</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tarikh</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jumlah Upah</th>
                 <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Catatan</th>
+                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -99,12 +99,12 @@ export function WorkRecordTable({
           <CalendarBlank size={28} weight="duotone" />
         </div>
         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-          {hasFilter ? "No matching work records found" : "No work records recorded yet"}
+          {hasFilter ? "Tiada rekod kerja yang sepadan" : "Tiada rekod kerja dicatat setakat ini"}
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
           {hasFilter
-            ? "Try changing your date or status filters to view other records."
-            : "Get started by recording daily work for today either in bulk or individually."}
+            ? "Cuba tukar penapis tarikh atau status untuk melihat rekod lain."
+            : "Mulakan dengan merekod kehadiran dan upah harian secara pukal atau individu."}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           {onBulkClick && (
@@ -114,7 +114,7 @@ export function WorkRecordTable({
               onClick={onBulkClick}
               className="whitespace-nowrap"
             >
-              Record Work (Bulk)
+              Rekod Kerja (Pukal)
             </Button>
           )}
           {onSingleClick && (
@@ -124,7 +124,7 @@ export function WorkRecordTable({
               onClick={onSingleClick}
               className="whitespace-nowrap"
             >
-              Single Record
+              Rekod Harian
             </Button>
           )}
         </div>
@@ -138,35 +138,35 @@ export function WorkRecordTable({
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60">
             <Clock size={12} weight="bold" />
-            UNPAID
+            BELUM BAYAR
           </span>
         );
       case "STORED":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60">
             <Archive size={12} weight="bold" />
-            STORED
+            SIMPAN GAJI
           </span>
         );
       case "PARTIALLY_PAID":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/60">
             <Money size={12} weight="bold" />
-            PARTIAL
+            SEPARA BAYAR
           </span>
         );
       case "PAID":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60">
             <CheckCircle size={12} weight="bold" />
-            PAID
+            SELESAI BAYAR
           </span>
         );
       case "VOID":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 line-through">
             <Prohibit size={12} weight="bold" />
-            VOID
+            BATAL
           </span>
         );
       default:
@@ -246,7 +246,7 @@ export function WorkRecordTable({
               {/* Financial detail strip */}
               <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 text-xs">
                 <div>
-                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Rate</span>
+                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Kadar Upah</span>
                   <div className="flex items-baseline gap-1">
                     <span className="font-mono font-medium text-slate-700 dark:text-slate-300 tabular-nums">
                       {formatCurrency(record.dailyRate)}
@@ -262,7 +262,7 @@ export function WorkRecordTable({
                   )}
                 </div>
                 <div>
-                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Calculated Amount</span>
+                  <span className="text-slate-500 dark:text-slate-400 block text-2xs">Jumlah Upah</span>
                   <span className="font-mono font-bold text-slate-900 dark:text-slate-100 tabular-nums block">
                     {formatCurrency(record.amount)}
                   </span>
@@ -276,7 +276,7 @@ export function WorkRecordTable({
 
               {record.notes && (
                 <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50/70 dark:bg-slate-800/30 px-2.5 py-1.5 rounded-md border border-slate-100 dark:border-slate-800/60">
-                  <span className="font-medium text-slate-500 dark:text-slate-400 mr-1">Notes:</span>
+                  <span className="font-medium text-slate-500 dark:text-slate-400 mr-1">Catatan:</span>
                   {otInfo ? (otInfo.cleanNotes || `OT ${otInfo.otHours}j @ RM${otInfo.otRate.toFixed(2)}/j`) : record.notes}
                 </div>
               )}
@@ -290,7 +290,7 @@ export function WorkRecordTable({
                       title="Rekod telah dibayar dan terkunci"
                     >
                       <LockSimple size={12} weight="bold" />
-                      Terkunci (PAID)
+                      Terkunci (Selesai Bayar)
                     </span>
                   )}
 
@@ -303,7 +303,7 @@ export function WorkRecordTable({
                       leftIcon={<PencilSimple size={14} />}
                       title="Sunting rekod kerja"
                     >
-                      Edit
+                      Sunting
                     </Button>
                   )}
 
@@ -315,7 +315,7 @@ export function WorkRecordTable({
                       className="flex-1 sm:flex-initial text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40 text-xs justify-center h-10"
                       leftIcon={<Archive size={14} />}
                     >
-                      Store Salary
+                      Simpan Gaji
                     </Button>
                   )}
 
@@ -325,9 +325,9 @@ export function WorkRecordTable({
                       size="sm"
                       onClick={() => onVoidRecord(record)}
                       className="text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs h-10"
-                      title="Void this work record"
+                      title="Batalkan rekod kerja ini"
                     >
-                      Void
+                      Batal
                     </Button>
                   )}
                 </div>
@@ -343,14 +343,14 @@ export function WorkRecordTable({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-900/75">
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Code</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Employee Name</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Rate</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Amount</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tarikh</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Jumlah Upah</th>
                 <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Catatan</th>
+                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/80">
@@ -435,7 +435,7 @@ export function WorkRecordTable({
                             title="Rekod telah dibayar dan terkunci"
                           >
                             <LockSimple size={12} weight="bold" />
-                            Terkunci (PAID)
+                            Terkunci (Selesai Bayar)
                           </span>
                         )}
 
@@ -448,7 +448,7 @@ export function WorkRecordTable({
                             leftIcon={<PencilSimple size={14} />}
                             title="Sunting rekod kerja ini"
                           >
-                            Edit
+                            Sunting
                           </Button>
                         )}
 
@@ -460,7 +460,7 @@ export function WorkRecordTable({
                             className="whitespace-nowrap text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40"
                             leftIcon={<Archive size={14} />}
                           >
-                            Store Salary
+                            Simpan Gaji
                           </Button>
                         )}
 
@@ -470,9 +470,9 @@ export function WorkRecordTable({
                             size="sm"
                             onClick={() => onVoidRecord(record)}
                             className="whitespace-nowrap text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
-                            title="Void this work record"
+                            title="Batalkan rekod kerja ini"
                           >
-                            Void
+                            Batal
                           </Button>
                         )}
 
