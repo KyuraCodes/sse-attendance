@@ -30,10 +30,10 @@ const MOBILE_TAB_IDLE = "text-slate-500 hover:text-slate-900 dark:hover:text-sla
 // "Lihat semua" link: 44px tap area on touch, compact on mouse/trackpad.
 // Negative margin keeps the label visually aligned with the card edge.
 const VIEW_ALL_LINK =
-  "inline-flex items-center gap-1 -mr-2 px-2 min-h-[44px] sm:pointer-fine:min-h-[32px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 active:scale-[0.97] transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500";
+  "inline-flex items-center gap-1 -mr-2 px-2 min-h-[44px] sm:pointer-fine:min-h-[32px] shrink-0 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 active:scale-[0.97] transition-all rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500";
 
 const TABLE_HEAD_ROW =
-  "border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500";
+  "border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400";
 
 export function RecentActivityTable({
   workRecords,
@@ -41,6 +41,8 @@ export function RecentActivityTable({
   isLoading = false,
 }: RecentActivityTableProps) {
   const [activeTab, setActiveTab] = useState<"all" | "work" | "payments">("all");
+  const records = Array.isArray(workRecords) ? workRecords : [];
+  const paymentList = Array.isArray(payments) ? payments : [];
 
   const getPaymentMethodIcon = (method: string) => {
     switch (method?.toUpperCase()) {
@@ -74,7 +76,7 @@ export function RecentActivityTable({
         {[1, 2].map((i) => (
           <div
             key={i}
-            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs animate-pulse"
+            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs animate-pulse motion-reduce:animate-none"
           >
             <div className="h-5 w-36 bg-slate-200 dark:bg-slate-800 rounded mb-4" />
             <div className="space-y-3">
@@ -166,7 +168,7 @@ export function RecentActivityTable({
 
             {/* Table Content */}
             <div className="flex-1 overflow-x-auto">
-              {workRecords.length === 0 ? (
+              {records.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
                   Tiada rekod kerja direkodkan bagi tempoh ini
                 </div>
@@ -189,7 +191,7 @@ export function RecentActivityTable({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {workRecords.map((record) => {
+                    {records.map((record, index) => {
                       const statusMeta =
                         STATUS_CONFIG[record.status as RecordStatus] || STATUS_CONFIG.UNPAID;
 
@@ -210,7 +212,7 @@ export function RecentActivityTable({
 
                       return (
                         <tr
-                          key={record.id}
+                          key={record.id || `rec-${index}`}
                           className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                         >
                           <td className="hidden @lg:table-cell px-4 py-3 font-mono tabular-nums text-slate-600 dark:text-slate-300 whitespace-nowrap">
@@ -281,7 +283,7 @@ export function RecentActivityTable({
 
             {/* Table Content */}
             <div className="flex-1 overflow-x-auto">
-              {payments.length === 0 ? (
+              {paymentList.length === 0 ? (
                 <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
                   Tiada rekod pembayaran gaji setakat ini
                 </div>
@@ -304,7 +306,7 @@ export function RecentActivityTable({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                    {payments.map((pmt) => {
+                    {paymentList.map((pmt, index) => {
                       const methodChip = (
                         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
                           {getPaymentMethodIcon(pmt.paymentMethod)}
@@ -314,7 +316,7 @@ export function RecentActivityTable({
 
                       return (
                         <tr
-                          key={pmt.id}
+                          key={pmt.id || `pmt-${index}`}
                           className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                         >
                           <td className="hidden @xl:table-cell px-4 py-3 font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">

@@ -20,6 +20,7 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
     if (!dateString) return 0;
     try {
       const stored = new Date(dateString);
+      if (isNaN(stored.getTime())) return 0;
       const today = new Date();
       // Reset hours to midnight for accurate whole-day difference
       stored.setHours(0, 0, 0, 0);
@@ -31,10 +32,12 @@ export function StoredSalaryAlert({ alerts }: StoredSalaryAlertProps) {
     }
   };
 
-  const totalHeld = alerts.reduce(
-    (sum, a) => sum + (Number(a.totalStoredAmount ?? a.totalAmount) || 0),
-    0
-  );
+  const totalHeld = Array.isArray(alerts)
+    ? alerts.reduce(
+        (sum, a) => sum + (Number(a.totalStoredAmount ?? a.totalAmount) || 0),
+        0
+      )
+    : 0;
 
   return (
     <div

@@ -78,7 +78,7 @@ export function WeeklyTrendChart({
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs animate-pulse">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs animate-pulse motion-reduce:animate-none">
         <div className="flex items-center justify-between mb-4">
           <div className="h-5 w-44 bg-slate-200 dark:bg-slate-800 rounded" />
           <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg" />
@@ -292,8 +292,8 @@ export function WeeklyTrendChart({
                           </div>
                           <span className="font-mono font-bold text-slate-900 dark:text-slate-100 text-xs tabular-nums">
                             {isPayroll
-                              ? formatCurrency(Number(value))
-                              : `${value} staf`}
+                              ? formatCurrency(Number(value) || 0)
+                              : `${value || 0} staf`}
                           </span>
                         </div>
 
@@ -335,7 +335,7 @@ export function WeeklyTrendChart({
                                 </span>
                               </div>
                               <span className="font-mono font-medium text-slate-700 dark:text-slate-300 tabular-nums">
-                                {formatCurrency(itemRow.payroll)}
+                                {formatCurrency(Number(itemRow.payroll) || 0)}
                               </span>
                             </div>
                           )}

@@ -35,7 +35,7 @@ export function MetricCard({
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs animate-pulse">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs animate-pulse motion-reduce:animate-none">
         <div className="flex items-center justify-between mb-3">
           <div className="h-4 w-28 bg-slate-200 dark:bg-slate-800 rounded" />
           <div className="w-10 h-10 bg-slate-200 dark:bg-slate-800 rounded-lg" />
@@ -75,7 +75,7 @@ export function MetricCard({
       </div>
 
       <div className="flex items-baseline gap-2 mb-1 flex-wrap">
-        <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono tabular-nums break-words">
+        <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono tabular-nums break-words min-w-0" title={String(value)}>
           {value}
         </div>
         {badge && (

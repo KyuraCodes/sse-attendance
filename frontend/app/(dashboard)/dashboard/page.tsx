@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import {
   Users,
@@ -26,6 +26,14 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const loadDashboardData = useCallback(async (refresh = false) => {
     if (refresh) {
@@ -37,16 +45,22 @@ export default function DashboardPage() {
 
     try {
       const data = await dashboardService.getDashboardSummary();
-      setSummary(data);
+      if (isMountedRef.current) {
+        setSummary(data);
+      }
     } catch (err) {
       const message =
         err instanceof Error
           ? err.message
           : "Gagal memuatkan data papan pemuka. Sila periksa sambungan internet anda.";
-      setError(message);
+      if (isMountedRef.current) {
+        setError(message);
+      }
     } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
     }
   }, []);
 
