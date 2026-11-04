@@ -268,7 +268,7 @@ export function EditEmployeeModal({
         </div>
 
         {/* Modal Body / Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 overscroll-contain">
           {/* General Error Banner */}
           {errors.general && (
             <div

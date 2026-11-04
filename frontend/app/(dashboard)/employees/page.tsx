@@ -101,6 +101,20 @@ export default function EmployeesPage() {
     }
   }, [feedbackMessage]);
 
+  // Escape key to dismiss delete modal
+  useEffect(() => {
+    if (!deletingEmployee) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !isDeleting) {
+        setDeletingEmployee(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [deletingEmployee, isDeleting]);
+
   // Action handlers
   const handleAddSuccess = (newEmployee: Employee) => {
     setFeedbackMessage({
@@ -369,7 +383,7 @@ export default function EmployeesPage() {
             <span>Semua</span>
             <span
               className={cn(
-                "text-2xs font-mono px-1.5 py-0.2 rounded-full ml-1 font-semibold",
+                "text-2xs font-mono px-1.5 py-0.5 leading-none rounded-full ml-1 font-semibold",
                 statusFilter === "ALL"
                   ? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200"
                   : "bg-slate-200/80 dark:bg-slate-700/60 text-slate-600 dark:text-slate-400"
@@ -395,7 +409,7 @@ export default function EmployeesPage() {
             <span>Aktif</span>
             <span
               className={cn(
-                "text-2xs font-mono px-1.5 py-0.2 rounded-full ml-0.5 font-semibold",
+                "text-2xs font-mono px-1.5 py-0.5 leading-none rounded-full ml-0.5 font-semibold",
                 statusFilter === "ACTIVE"
                   ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
                   : "bg-slate-200/80 dark:bg-slate-700/60 text-slate-600 dark:text-slate-400"
@@ -421,7 +435,7 @@ export default function EmployeesPage() {
             <span>Tidak Aktif</span>
             <span
               className={cn(
-                "text-2xs font-mono px-1.5 py-0.2 rounded-full ml-0.5 font-semibold",
+                "text-2xs font-mono px-1.5 py-0.5 leading-none rounded-full ml-0.5 font-semibold",
                 statusFilter === "INACTIVE"
                   ? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200"
                   : "bg-slate-200/80 dark:bg-slate-700/60 text-slate-600 dark:text-slate-400"
@@ -527,6 +541,7 @@ export default function EmployeesPage() {
                 size="md"
                 onClick={() => setDeletingEmployee(null)}
                 disabled={isDeleting}
+                autoFocus
                 className="w-full sm:w-auto min-h-[44px]"
               >
                 Batal

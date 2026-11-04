@@ -105,7 +105,7 @@ export function EmployeeTable({
   if (employees.length === 0) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-12 text-center shadow-xs">
-        <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mx-auto flex items-center justify-center mb-4">
+        <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mx-auto flex items-center justify-center mb-4 ring-8 ring-slate-50 dark:ring-slate-800/40">
           <Users size={28} weight="duotone" />
         </div>
         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -143,14 +143,14 @@ export function EmployeeTable({
               {/* Header: Avatar, Name, Code, and Status */}
               <div className="flex items-start justify-between gap-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-sm shrink-0 select-none">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-sm shrink-0 select-none border border-emerald-200/60 dark:border-emerald-800/60">
                     {employee.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight truncate">
                       {employee.name}
                     </p>
-                    <span className="inline-block mt-0.5 font-mono text-2xs font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+                    <span className="inline-block mt-0.5 font-mono tabular-nums text-2xs font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
                       {employee.employeeCode}
                     </span>
                   </div>
@@ -183,7 +183,7 @@ export function EmployeeTable({
                     Kadar Upah
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
-                    <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                    <span className="font-mono tabular-nums font-bold text-emerald-700 dark:text-emerald-400 text-sm">
                       {formatCurrency(employee.dailyRate)}
                     </span>
                     <span className="text-slate-500 dark:text-slate-400 font-medium text-xs">
@@ -199,7 +199,7 @@ export function EmployeeTable({
                     </span>
                   </div>
                   {employee.otRate && Number(employee.otRate) > 0 ? (
-                    <span className="text-[10px] font-mono font-semibold text-amber-700 dark:text-amber-400 block mt-0.5">
+                    <span className="text-[10px] font-mono tabular-nums font-semibold text-amber-700 dark:text-amber-400 block mt-0.5">
                       OT: RM {Number(employee.otRate).toFixed(2)}/jam
                     </span>
                   ) : (
@@ -212,14 +212,14 @@ export function EmployeeTable({
                   <span className="text-slate-400 dark:text-slate-500 block text-2xs uppercase tracking-wider">
                     Tarikh Mula
                   </span>
-                  <span className="font-mono text-slate-700 dark:text-slate-300">
+                  <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
                     {formatDate(employee.startDate)}
                   </span>
                 </div>
                 {employee.phone && (
                   <div className="col-span-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between">
                     <span className="text-slate-400 dark:text-slate-500 text-2xs">Telefon:</span>
-                    <span className="font-mono text-slate-700 dark:text-slate-300 font-medium">
+                    <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300 font-medium">
                       {employee.phone}
                     </span>
                   </div>
@@ -330,7 +330,7 @@ export function EmployeeTable({
                   >
                     {/* Code */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+                      <span className="font-mono tabular-nums text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
                         {employee.employeeCode}
                       </span>
                     </td>
@@ -338,7 +338,7 @@ export function EmployeeTable({
                     {/* Name */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-xs shrink-0 select-none">
+                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center font-bold text-xs shrink-0 select-none border border-emerald-200/60 dark:border-emerald-800/60">
                           {employee.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -357,7 +357,7 @@ export function EmployeeTable({
                     {/* Phone */}
                     <td className="py-3.5 px-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">
                       {employee.phone ? (
-                        <span className="font-mono text-xs">{employee.phone}</span>
+                        <span className="font-mono tabular-nums text-xs">{employee.phone}</span>
                       ) : (
                         <span className="text-slate-400 dark:text-slate-600">-</span>
                       )}
@@ -366,7 +366,7 @@ export function EmployeeTable({
                     {/* Rate */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <span className="font-mono tabular-nums text-sm font-semibold text-slate-900 dark:text-slate-100">
                           {formatCurrency(employee.dailyRate)}
                           <span className="text-xs font-normal text-slate-500 dark:text-slate-400 ml-1">
                             / {RATE_UNIT_LABELS[employee.rateType] || "hari"}
@@ -383,7 +383,7 @@ export function EmployeeTable({
                       </div>
                       <div className="mt-1">
                         {employee.otRate && Number(employee.otRate) > 0 ? (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono tabular-nums font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60">
                             OT: RM {Number(employee.otRate).toFixed(2)}/jam
                           </span>
                         ) : (
@@ -396,7 +396,7 @@ export function EmployeeTable({
 
                     {/* Start Date */}
                     <td className="py-3.5 px-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">
-                      <span className="font-mono text-xs">{formatDate(employee.startDate)}</span>
+                      <span className="font-mono tabular-nums text-xs">{formatDate(employee.startDate)}</span>
                     </td>
 
                     {/* Status Badge */}
