@@ -86,7 +86,7 @@ export function WeeklyTrendChart({
   return (
     <div
       role="region"
-      aria-label="Weekly Performance and Trends"
+      aria-label="Prestasi dan Trend Operasi Mingguan"
       className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/90 p-5 shadow-xs"
     >
       {/* Header and Metric Selector */}

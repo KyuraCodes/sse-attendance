@@ -50,7 +50,7 @@ export function RecentActivityTable({
       case "DUITNOW":
         return "DuitNow";
       default:
-        return method || "Other";
+        return method || "Lain-lain";
     }
   };
 
@@ -96,7 +96,7 @@ export function RecentActivityTable({
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
           )}
         >
-          All
+          Semua
         </button>
         <button
           type="button"
@@ -112,7 +112,7 @@ export function RecentActivityTable({
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
           )}
         >
-          Work Records
+          Rekod Kerja
         </button>
         <button
           type="button"
@@ -128,7 +128,7 @@ export function RecentActivityTable({
               : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
           )}
         >
-          Payments
+          Bayaran
         </button>
       </div>
 
@@ -138,7 +138,7 @@ export function RecentActivityTable({
           <div
             id="panel-recent-work"
             role="region"
-            aria-label="Recent Work Records"
+            aria-label="Rekod Kerja Terkini"
             className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col overflow-hidden"
           >
             {/* Header */}
@@ -149,7 +149,7 @@ export function RecentActivityTable({
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                    Recent Work Records
+                    Rekod Kerja Terkini
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Log kehadiran dan kerja harian terkini
@@ -173,7 +173,7 @@ export function RecentActivityTable({
                   Tiada rekod kerja direkodkan bagi tempoh ini
                 </div>
               ) : (
-                <table aria-label="Recent daily attendance and work records" className="w-full text-left text-xs">
+                <table aria-label="Senarai rekod kerja dan kehadiran harian terkini" className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       <th scope="col" className="px-4 py-2.5">
@@ -243,7 +243,7 @@ export function RecentActivityTable({
           <div
             id="panel-recent-payments"
             role="region"
-            aria-label="Recent Payments"
+            aria-label="Bayaran Terkini"
             className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col overflow-hidden"
           >
             {/* Header */}
@@ -254,7 +254,7 @@ export function RecentActivityTable({
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                    Recent Payments
+                    Bayaran Terkini
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Transaksi pengeluaran gaji terkini
@@ -266,7 +266,7 @@ export function RecentActivityTable({
                 href="/payments"
                 className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 active:scale-[0.97] transition-all p-1 rounded-md focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
-                <span>View all</span>
+                <span>Lihat semua</span>
                 <ArrowRight size={13} weight="bold" aria-hidden="true" />
               </Link>
             </div>
@@ -278,20 +278,20 @@ export function RecentActivityTable({
                   Tiada rekod pembayaran gaji setakat ini
                 </div>
               ) : (
-                <table aria-label="Recent salary disbursement payments" className="w-full text-left text-xs">
+                <table aria-label="Senarai rekod transaksi bayaran gaji terkini" className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       <th scope="col" className="px-4 py-2.5">
                         Kod
                       </th>
                       <th scope="col" className="px-4 py-2.5">
-                        Employee
+                        Pekerja
                       </th>
                       <th scope="col" className="px-4 py-2.5">
                         Kaedah
                       </th>
                       <th scope="col" className="px-4 py-2.5 text-right">
-                        Amount
+                        Amaun
                       </th>
                     </tr>
                   </thead>
