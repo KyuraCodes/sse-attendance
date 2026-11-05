@@ -234,7 +234,7 @@ export default function PaymentsPage() {
             type="button"
             onClick={() => setFeedbackMessage(null)}
             aria-label="Tutup pemberitahuan"
-            className="p-1 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-md transition-colors"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1 flex items-center justify-center hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-md transition-colors cursor-pointer"
           >
             <X size={16} />
           </button>
@@ -339,7 +339,7 @@ export default function PaymentsPage() {
                 value={selectedEmployeeId}
                 onChange={(e) => setSelectedEmployeeId(e.target.value)}
                 aria-label="Pilih pekerja untuk ditapis"
-                className="w-full h-9 pl-8 pr-7 rounded-lg border text-xs font-medium transition-colors appearance-none cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full min-h-[44px] sm:min-h-0 sm:h-9 pl-8 pr-7 rounded-lg border text-base sm:text-xs font-medium transition-colors appearance-none cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <option value="">Semua Pekerja</option>
                 {employees.map((emp) => (
@@ -364,7 +364,7 @@ export default function PaymentsPage() {
                   onChange={(e) => setStartDate(e.target.value)}
                   placeholder="Tarikh mula"
                   aria-label="Tapis mengikut tarikh mula"
-                  className="w-full sm:w-auto h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-9 pl-8 pr-2 rounded-lg border text-base sm:text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
                 <CalendarBlank
                   size={15}
@@ -382,7 +382,7 @@ export default function PaymentsPage() {
                   onChange={(e) => setEndDate(e.target.value)}
                   placeholder="Tarikh akhir"
                   aria-label="Tapis mengikut tarikh akhir"
-                  className="w-full sm:w-auto h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-9 pl-8 pr-2 rounded-lg border text-base sm:text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
                 <CalendarBlank
                   size={15}
@@ -397,7 +397,7 @@ export default function PaymentsPage() {
               <button
                 type="button"
                 onClick={handleFilterThisMonth}
-                className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
+                className="min-h-[44px] sm:min-h-0 sm:h-9 px-3.5 sm:px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
               >
                 Bulan Ini
               </button>
@@ -405,7 +405,7 @@ export default function PaymentsPage() {
               <button
                 type="button"
                 onClick={handleFilterToday}
-                className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
+                className="min-h-[44px] sm:min-h-0 sm:h-9 px-3.5 sm:px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
               >
                 Hari Ini
               </button>
@@ -414,7 +414,7 @@ export default function PaymentsPage() {
                 <button
                   type="button"
                   onClick={handleClearDateFilters}
-                  className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
+                  className="min-h-[44px] sm:min-h-0 sm:h-9 px-3.5 sm:px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
                   title="Kosongkan penapis julat tarikh"
                 >
                   Kosongkan Tarikh
@@ -432,18 +432,18 @@ export default function PaymentsPage() {
                 aria-label="Cari rekod pembayaran"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-9 text-xs"
+                className="pl-9 min-h-[44px] sm:min-h-0 sm:h-9 text-base sm:text-xs"
               />
               <MagnifyingGlass
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
                   aria-label="Kosongkan carian"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1 flex items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X size={14} />
                 </button>
@@ -455,7 +455,7 @@ export default function PaymentsPage() {
               size="sm"
               onClick={loadPaymentsAndMetrics}
               isLoading={isLoading}
-              className="h-9 whitespace-nowrap"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-9 whitespace-nowrap shrink-0"
               title="Muat semula senarai bayaran"
             >
               <ArrowClockwise size={16} />

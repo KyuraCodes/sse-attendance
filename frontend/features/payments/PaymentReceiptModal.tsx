@@ -183,7 +183,7 @@ export function PaymentReceiptModal({
         className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto"
       >
         <div
-          className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 my-2 sm:my-8 overflow-hidden flex flex-col max-h-[92dvh]"
+          className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 my-2 sm:my-8 overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header Controls (Hidden on Print) */}
@@ -209,14 +209,14 @@ export function PaymentReceiptModal({
               type="button"
               onClick={onClose}
               aria-label="Tutup dialog resit"
-              className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+              className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
             >
               <X size={20} weight="bold" />
             </button>
           </div>
 
           {/* Modal Content Scroll Area */}
-          <div className="overflow-y-auto p-4 sm:p-6 flex-1 min-w-0">
+          <div className="overflow-y-auto overscroll-y-contain p-4 sm:p-6 flex-1 min-w-0">
             {isLoading && (
               <div className="py-16 flex flex-col items-center justify-center text-slate-500">
                 <CircleNotch size={32} className="animate-spin text-emerald-600 mb-3" />
@@ -335,7 +335,7 @@ export function PaymentReceiptModal({
                     </span>
                   </div>
 
-                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto overscroll-x-contain">
                     <table className="w-full text-left border-collapse text-xs" aria-label="Jadual pecahan rekod kerja diselesaikan">
                       <thead>
                         <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
@@ -431,7 +431,7 @@ export function PaymentReceiptModal({
                     onClick={opt.onClick}
                     disabled={isLoading || !receipt}
                     title={opt.title}
-                    className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-300 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent whitespace-nowrap"
+                    className="inline-flex items-center justify-center gap-1.5 min-h-[44px] sm:min-h-0 sm:h-9 px-3.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-300 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent whitespace-nowrap"
                   >
                     {opt.icon}
                     {opt.label}
@@ -447,7 +447,7 @@ export function PaymentReceiptModal({
                 variant="outline"
                 size="md"
                 onClick={onClose}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-0 justify-center"
               >
                 Tutup
               </Button>
@@ -458,7 +458,7 @@ export function PaymentReceiptModal({
                 onClick={handlePrint}
                 disabled={isLoading || !receipt}
                 leftIcon={<Printer size={16} weight="bold" />}
-                className="w-full sm:w-auto whitespace-nowrap"
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-0 justify-center whitespace-nowrap"
               >
                 Cetak Resit
               </Button>

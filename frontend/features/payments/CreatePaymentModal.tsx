@@ -235,7 +235,7 @@ export function CreatePaymentModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
-        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92dvh] my-2 sm:my-8"
+        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh] my-2 sm:my-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -261,7 +261,7 @@ export function CreatePaymentModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Tutup dialog"
-            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1.5 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
           </button>
@@ -269,7 +269,7 @@ export function CreatePaymentModal({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto overscroll-y-contain flex-1">
             {errorMessage && (
               <div
                 role="alert"
@@ -286,7 +286,7 @@ export function CreatePaymentModal({
                 Pilih Pekerja <span className="text-rose-500">*</span>
               </label>
               {isLoadingData ? (
-                <div className="flex items-center gap-2 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-500">
+                <div className="flex items-center gap-2 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-500 min-h-[44px] sm:min-h-0">
                   <CircleNotch size={16} className="animate-spin text-emerald-600" />
                   Memuatkan senarai pekerja dan baki tertunggak...
                 </div>
@@ -302,7 +302,7 @@ export function CreatePaymentModal({
                     required
                     aria-label="Pilih pekerja untuk dibayar upah"
                     className={cn(
-                      "w-full h-10 px-3 pr-8 rounded-lg border text-sm font-medium transition-colors appearance-none cursor-pointer",
+                      "w-full min-h-[44px] sm:min-h-0 sm:h-10 px-3 pr-8 rounded-lg border text-base sm:text-sm font-medium transition-colors appearance-none cursor-pointer",
                       "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                       "border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent",
                       !employeeId && "text-slate-400 dark:text-slate-500"
@@ -371,7 +371,7 @@ export function CreatePaymentModal({
 
             {/* Amount input with Quick Fill */}
             <div>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Jumlah Bayaran (RM) <span className="text-rose-500">*</span>
                 </label>
@@ -380,7 +380,7 @@ export function CreatePaymentModal({
                     type="button"
                     onClick={handlePayFullBalance}
                     disabled={isSubmitting}
-                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer"
+                    className="min-h-[38px] sm:min-h-0 py-1 px-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer inline-flex items-center"
                   >
                     Bayar Penuh Baki ({formatCurrency(outstandingBalance)})
                   </button>
@@ -399,7 +399,7 @@ export function CreatePaymentModal({
                   disabled={isSubmitting || !employeeId || outstandingBalance <= 0}
                   required
                   error={amountValidation.error || undefined}
-                  className="font-mono text-base font-semibold pl-9"
+                  className="font-mono text-base font-semibold pl-9 min-h-[44px] sm:min-h-0 sm:h-10"
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold font-mono text-slate-400 pointer-events-none">
                   RM
@@ -419,7 +419,7 @@ export function CreatePaymentModal({
 
             {/* Settle-in-Full Option */}
             <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-3 sm:p-3.5 transition-colors">
-              <label className="flex items-start gap-3 cursor-pointer select-none">
+              <label className="flex items-start gap-3 cursor-pointer select-none py-1">
                 <input
                   type="checkbox"
                   id="settleInFull"
@@ -456,7 +456,7 @@ export function CreatePaymentModal({
                     disabled={isSubmitting}
                     required
                     aria-label="Pilih tarikh bayaran"
-                    className="pl-9 text-xs font-medium"
+                    className="pl-9 min-h-[44px] sm:min-h-0 sm:h-10 text-base sm:text-xs font-medium cursor-pointer"
                   />
                   <CalendarBlank
                     size={16}
@@ -477,7 +477,7 @@ export function CreatePaymentModal({
                   disabled={isSubmitting}
                   required
                   aria-label="Pilih kaedah bayaran"
-                  className="w-full h-10 px-3 rounded-lg border text-xs font-medium bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+                  className="w-full min-h-[44px] sm:min-h-0 sm:h-10 px-3 rounded-lg border text-base sm:text-xs font-medium bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                 >
                   <option value="CASH">Tunai (Cash)</option>
                   <option value="BANK_TRANSFER">Pindahan Bank (Bank Transfer)</option>
@@ -499,7 +499,7 @@ export function CreatePaymentModal({
                 onChange={(e) => setReference(e.target.value)}
                 disabled={isSubmitting}
                 maxLength={100}
-                className="text-xs"
+                className="min-h-[44px] sm:min-h-0 sm:h-10 text-base sm:text-xs"
               />
             </div>
 
@@ -515,7 +515,7 @@ export function CreatePaymentModal({
                 onChange={(e) => setNotes(e.target.value)}
                 disabled={isSubmitting}
                 maxLength={255}
-                className="text-xs"
+                className="min-h-[44px] sm:min-h-0 sm:h-10 text-base sm:text-xs"
               />
             </div>
           </div>
@@ -528,7 +528,7 @@ export function CreatePaymentModal({
               size="md"
               onClick={onClose}
               disabled={isSubmitting}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto min-h-[44px] sm:min-h-0 justify-center"
             >
               Batal
             </Button>
@@ -544,7 +544,7 @@ export function CreatePaymentModal({
                 isSubmitting
               }
               rightIcon={<ArrowRight size={16} weight="bold" />}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto min-h-[44px] sm:min-h-0 justify-center"
             >
               Proses Pembayaran
             </Button>

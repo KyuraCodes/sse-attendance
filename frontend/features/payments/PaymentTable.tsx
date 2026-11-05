@@ -31,7 +31,7 @@ export function PaymentTable({
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overscroll-x-contain">
           <table className="w-full text-left border-collapse" aria-label="Jadual rekod pembayaran gaji">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
@@ -203,10 +203,10 @@ export function PaymentTable({
             <div className="flex items-center justify-end pt-1 border-t border-slate-100 dark:border-slate-800">
               <Button
                 variant="outline"
-                size="sm"
+                size="md"
                 onClick={() => onViewReceipt(payment)}
-                leftIcon={<Receipt size={14} weight="bold" />}
-                className="w-full sm:w-auto justify-center text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400 text-xs"
+                leftIcon={<Receipt size={16} weight="bold" />}
+                className="w-full justify-center text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400 min-h-[44px] text-xs font-semibold cursor-pointer"
               >
                 Lihat Resit
               </Button>
@@ -217,7 +217,7 @@ export function PaymentTable({
 
       {/* Desktop Table View (>= md) */}
       <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-        <div className="overflow-x-auto min-w-0">
+        <div className="overflow-x-auto overscroll-x-contain min-w-0">
           <table className="w-full text-left border-collapse" aria-label="Jadual rekod pembayaran gaji">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
