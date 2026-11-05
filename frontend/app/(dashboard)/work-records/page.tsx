@@ -481,7 +481,7 @@ export default function WorkRecordsPage() {
           role="tablist"
           aria-label="Penapis status rekod kerja"
           onKeyDown={handleTabKeyDown}
-          className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto pb-1"
+          className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto pb-1 overscroll-x-contain"
         >
           <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mr-1.5 flex items-center gap-1 shrink-0">
             <Funnel size={14} />

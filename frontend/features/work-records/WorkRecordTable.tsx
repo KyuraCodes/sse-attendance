@@ -42,18 +42,18 @@ export function WorkRecordTable({
   if (isLoading) {
     return (
       <div id="work-records-table" className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto overscroll-x-contain">
+          <table className="w-full text-left border-collapse" aria-label="Jadual rekod kerja">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tarikh</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jumlah Upah</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Catatan</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tarikh</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jumlah Upah</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Catatan</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -339,18 +339,18 @@ export function WorkRecordTable({
 
       {/* Desktop Table View (>= md) */}
       <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden">
-        <div className="overflow-x-auto min-w-0">
+        <div className="overflow-x-auto min-w-0 overscroll-x-contain">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-900/75">
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tarikh</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Jumlah Upah</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Catatan</th>
-                <th className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tarikh</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Kod</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Kadar Upah</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Jumlah Upah</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Catatan</th>
+                <th scope="col" className="py-3 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/80">

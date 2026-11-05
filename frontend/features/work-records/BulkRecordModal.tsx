@@ -350,7 +350,7 @@ export function BulkRecordModal({
 
         {/* Content & Form */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto overscroll-contain flex-1">
             {errorMessage && (
               <div
                 role="alert"
@@ -463,7 +463,7 @@ export function BulkRecordModal({
                     : "Tiada pekerja yang sepadan dengan carian."}
                 </div>
               ) : (
-                <div className="max-h-64 overflow-y-auto divide-y divide-slate-200/70 dark:divide-slate-800/70">
+                <div className="max-h-64 overflow-y-auto overscroll-contain divide-y divide-slate-200/70 dark:divide-slate-800/70">
                   {filteredEmployees.map((emp) => {
                     const isSelected = selectedIds.has(emp.id);
                     const isHourly = emp.rateType === "HOURLY";

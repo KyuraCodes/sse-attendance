@@ -144,7 +144,7 @@ export function VoidRecordModal({
 
         {/* Content */}
         <form onSubmit={handleVoid} className="flex flex-col flex-1 overflow-hidden">
-          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+          <div className="p-4 sm:p-6 space-y-4 overflow-y-auto overscroll-contain flex-1">
             {errorMessage && (
               <div
                 role="alert"
