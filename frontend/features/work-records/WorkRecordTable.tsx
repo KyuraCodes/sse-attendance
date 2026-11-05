@@ -299,7 +299,7 @@ export function WorkRecordTable({
                       variant="ghost"
                       size="sm"
                       onClick={() => onEditRecord(record)}
-                      className="text-slate-600 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 text-xs h-10"
+                      className="text-slate-600 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 text-xs min-h-[44px]"
                       leftIcon={<PencilSimple size={14} />}
                       title="Sunting rekod kerja"
                     >
@@ -312,7 +312,7 @@ export function WorkRecordTable({
                       variant="outline"
                       size="sm"
                       onClick={() => onStoreSalary(record)}
-                      className="flex-1 sm:flex-initial text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40 text-xs justify-center h-10"
+                      className="flex-1 sm:flex-initial text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40 text-xs justify-center min-h-[44px]"
                       leftIcon={<Archive size={14} />}
                     >
                       Simpan Gaji
@@ -324,7 +324,7 @@ export function WorkRecordTable({
                       variant="ghost"
                       size="sm"
                       onClick={() => onVoidRecord(record)}
-                      className="text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs h-10"
+                      className="text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 text-xs min-h-[44px]"
                       title="Batalkan rekod kerja ini"
                     >
                       Batal

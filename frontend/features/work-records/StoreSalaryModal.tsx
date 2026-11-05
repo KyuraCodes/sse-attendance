@@ -100,7 +100,7 @@ export function StoreSalaryModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
-        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92dvh]"
+        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -126,7 +126,7 @@ export function StoreSalaryModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Tutup tetingkap"
-            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1.5 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
           </button>
@@ -189,7 +189,7 @@ export function StoreSalaryModal({
                     onClick={() => setNote(preset)}
                     disabled={isSubmitting}
                     className={cn(
-                      "text-2xs px-2.5 py-1 rounded-md border font-medium transition-colors cursor-pointer",
+                      "text-2xs sm:text-xs min-h-[38px] sm:min-h-0 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-md border font-medium transition-colors cursor-pointer",
                       note === preset
                         ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300"
                         : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
@@ -209,7 +209,7 @@ export function StoreSalaryModal({
                 required
                 maxLength={255}
                 className={cn(
-                  "w-full px-3 py-2 rounded-lg border text-sm transition-colors resize-none",
+                  "w-full px-3 py-2 rounded-lg border text-base sm:text-sm transition-colors resize-none",
                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                   "border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 )}
@@ -233,7 +233,7 @@ export function StoreSalaryModal({
               size="md"
               onClick={onClose}
               disabled={isSubmitting}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto min-h-[44px]"
             >
               Batal
             </Button>
@@ -243,7 +243,7 @@ export function StoreSalaryModal({
               size="md"
               isLoading={isSubmitting}
               disabled={!note.trim() || isSubmitting}
-              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 focus-visible:ring-indigo-500"
+              className="w-full sm:w-auto min-h-[44px] bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 focus-visible:ring-indigo-500"
             >
               Sahkan Simpan Gaji
             </Button>

@@ -291,7 +291,7 @@ export function BulkRecordModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
-        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92dvh]"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -317,7 +317,7 @@ export function BulkRecordModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Tutup tetingkap"
-            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1.5 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
           </button>
@@ -350,7 +350,7 @@ export function BulkRecordModal({
                     max="2099-12-31"
                     disabled={isSubmitting}
                     required
-                    className="w-full pl-9 font-medium"
+                    className="w-full pl-9 font-medium text-base sm:text-sm"
                   />
                   <CalendarBlank
                     size={18}
@@ -371,6 +371,7 @@ export function BulkRecordModal({
                   onChange={(e) => setNotes(e.target.value)}
                   disabled={isSubmitting}
                   maxLength={255}
+                  className="text-base sm:text-sm"
                 />
               </div>
             </div>
@@ -400,7 +401,7 @@ export function BulkRecordModal({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   disabled={isSubmitting}
-                  className="pl-9 text-xs"
+                  className="pl-9 text-base sm:text-xs"
                 />
                 <MagnifyingGlass
                   size={16}
@@ -415,7 +416,7 @@ export function BulkRecordModal({
                   size="sm"
                   onClick={allFilteredSelected ? handleDeselectAll : handleSelectAll}
                   disabled={isSubmitting || filteredEmployees.length === 0}
-                  className="whitespace-nowrap"
+                  className="whitespace-nowrap min-h-[40px] sm:min-h-0"
                   leftIcon={allFilteredSelected ? <Square size={14} /> : <CheckSquare size={14} />}
                 >
                   {allFilteredSelected ? "Nyahpilih Semua" : "Pilih Semua"}
@@ -519,7 +520,7 @@ export function BulkRecordModal({
                                 }}
                                 disabled={isSubmitting || !isSelected}
                                 className={cn(
-                                  "w-14 h-7.5 px-1.5 text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
+                                  "w-14 h-8 sm:h-7.5 px-1.5 text-base sm:text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
                                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                                   "border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500",
                                   (!isSelected || isSubmitting) && "opacity-50 cursor-not-allowed"
@@ -557,7 +558,7 @@ export function BulkRecordModal({
                               }}
                               disabled={isSubmitting || !isSelected}
                               className={cn(
-                                "w-14 h-7.5 px-1.5 text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
+                                "w-14 h-8 sm:h-7.5 px-1.5 text-base sm:text-xs font-mono font-semibold rounded-lg border text-center transition-colors",
                                 "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                                 "border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500",
                                 (otHoursState[emp.id] && parseFloat(otHoursState[emp.id]) > 0) && "border-amber-400 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 font-bold",
@@ -615,7 +616,7 @@ export function BulkRecordModal({
                 size="md"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px]"
               >
                 Batal
               </Button>
@@ -625,7 +626,7 @@ export function BulkRecordModal({
                 size="md"
                 isLoading={isSubmitting}
                 disabled={selectedCount === 0 || isSubmitting}
-                className="w-full sm:w-auto text-xs sm:text-sm"
+                className="w-full sm:w-auto min-h-[44px] text-xs sm:text-sm"
               >
                 Simpan Rekod {selectedCount} Pekerja ({formatCurrency(totalAmount)})
               </Button>

@@ -230,7 +230,8 @@ export default function WorkRecordsPage() {
           <button
             type="button"
             onClick={() => setFeedbackMessage(null)}
-            className="p-1 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-md transition-colors"
+            aria-label="Tutup pemberitahuan"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1 flex items-center justify-center hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-md transition-colors cursor-pointer"
           >
             <X size={16} />
           </button>
@@ -345,7 +346,7 @@ export default function WorkRecordsPage() {
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className={cn(
-                  "w-full sm:w-auto h-9 pl-9 pr-2.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer",
+                  "w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-9 pl-9 pr-2.5 rounded-lg border text-base sm:text-xs font-medium transition-colors cursor-pointer",
                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                   "border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 )}
@@ -361,7 +362,7 @@ export default function WorkRecordsPage() {
               type="button"
               onClick={() => setSelectedDate(getTodayDateString())}
               className={cn(
-                "h-9 px-2.5 sm:px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
+                "min-h-[44px] sm:min-h-0 sm:h-9 px-3.5 sm:px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
                 selectedDate === getTodayDateString()
                   ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 font-semibold"
                   : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
@@ -374,7 +375,7 @@ export default function WorkRecordsPage() {
               type="button"
               onClick={() => setSelectedDate(getYesterdayDateString())}
               className={cn(
-                "h-9 px-2.5 sm:px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
+                "min-h-[44px] sm:min-h-0 sm:h-9 px-3.5 sm:px-3 rounded-lg border text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
                 selectedDate === getYesterdayDateString()
                   ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 font-semibold"
                   : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
@@ -387,7 +388,7 @@ export default function WorkRecordsPage() {
               <button
                 type="button"
                 onClick={() => setSelectedDate("")}
-                className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
+                className="min-h-[44px] sm:min-h-0 sm:h-9 px-3 sm:px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
                 title="Papar semua tarikh rekod"
               >
                 Semua Tarikh
@@ -403,7 +404,7 @@ export default function WorkRecordsPage() {
                 placeholder="Cari nama atau kod pekerja..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-9 text-xs"
+                className="pl-9 min-h-[44px] sm:min-h-0 sm:h-9 text-base sm:text-xs"
               />
               <MagnifyingGlass
                 size={16}
@@ -413,7 +414,8 @@ export default function WorkRecordsPage() {
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  aria-label="Kosongkan carian"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-2 min-h-[40px] min-w-[40px] flex items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X size={14} />
                 </button>
@@ -425,7 +427,7 @@ export default function WorkRecordsPage() {
               size="sm"
               onClick={loadRecords}
               isLoading={isLoading}
-              className="h-9 whitespace-nowrap shrink-0"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-9 whitespace-nowrap shrink-0"
               title="Muat semula rekod"
             >
               <ArrowClockwise size={16} />
@@ -445,7 +447,7 @@ export default function WorkRecordsPage() {
               type="button"
               onClick={() => setStatusFilter(opt.value)}
               className={cn(
-                "px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap cursor-pointer select-none",
+                "min-h-[38px] sm:min-h-0 px-3.5 py-1.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap cursor-pointer select-none",
                 statusFilter === opt.value
                   ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-2xs font-semibold"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"

@@ -199,7 +199,7 @@ export function EditWorkRecordModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
-        className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -229,7 +229,7 @@ export function EditWorkRecordModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg transition-colors cursor-pointer"
+            className="p-2 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:p-1.5 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg transition-colors cursor-pointer"
             aria-label="Tutup"
           >
             <X size={18} weight="bold" />
@@ -282,7 +282,7 @@ export function EditWorkRecordModal({
                 onChange={(e) => setWorkDate(e.target.value)}
                 disabled={isSubmitting || isPaid}
                 required
-                className="font-mono text-xs pl-9"
+                className="font-mono text-base sm:text-xs pl-9 min-h-[44px] sm:min-h-0 sm:h-9"
               />
               <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                 <CalendarBlank size={16} weight="duotone" />
@@ -308,7 +308,7 @@ export function EditWorkRecordModal({
                   disabled={isSubmitting || isPaid}
                   required
                   placeholder="0.00"
-                  className="font-mono text-xs pl-9"
+                  className="font-mono text-base sm:text-xs pl-9 min-h-[44px] sm:min-h-0 sm:h-9"
                 />
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                   <CurrencyCircleDollar size={16} weight="duotone" />
@@ -333,7 +333,7 @@ export function EditWorkRecordModal({
                     disabled={isSubmitting || isPaid}
                     required
                     placeholder="8.0"
-                    className="font-mono text-xs pl-9"
+                    className="font-mono text-base sm:text-xs pl-9 min-h-[44px] sm:min-h-0 sm:h-9"
                   />
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                     <Clock size={16} weight="duotone" />
@@ -364,7 +364,7 @@ export function EditWorkRecordModal({
                   onChange={(e) => setOtHours(e.target.value)}
                   disabled={isSubmitting || isPaid}
                   placeholder="0.0"
-                  className="font-mono text-xs"
+                  className="font-mono text-base sm:text-xs min-h-[44px] sm:min-h-0 sm:h-9"
                 />
               </div>
 
@@ -380,7 +380,7 @@ export function EditWorkRecordModal({
                   onChange={(e) => setOtRate(e.target.value)}
                   disabled={isSubmitting || isPaid}
                   placeholder="0.00"
-                  className="font-mono text-xs"
+                  className="font-mono text-base sm:text-xs min-h-[44px] sm:min-h-0 sm:h-9"
                 />
               </div>
             </div>
@@ -448,7 +448,7 @@ export function EditWorkRecordModal({
               disabled={isSubmitting || isPaid}
               placeholder="Contoh: Kerja lebih masa projek pembaikan paip utama..."
               className={cn(
-                "w-full px-3 py-2 text-xs rounded-xl border transition-colors duration-150 resize-none",
+                "w-full px-3 py-2 text-base sm:text-xs rounded-xl border transition-colors duration-150 resize-none",
                 "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
                 "border-slate-300 dark:border-slate-700",
                 "placeholder:text-slate-400 dark:placeholder:text-slate-500",
@@ -466,6 +466,7 @@ export function EditWorkRecordModal({
               type="button"
               variant="outline"
               size="sm"
+              className="min-h-[44px] sm:min-h-0"
               onClick={onClose}
               disabled={isSubmitting}
             >
@@ -477,6 +478,7 @@ export function EditWorkRecordModal({
               size="sm"
               isLoading={isSubmitting}
               disabled={isSubmitting || isPaid}
+              className="min-h-[44px] sm:min-h-0"
               leftIcon={<PencilSimple size={14} weight="bold" />}
             >
               Simpan Perubahan
