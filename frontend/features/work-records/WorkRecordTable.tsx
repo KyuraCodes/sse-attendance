@@ -41,7 +41,7 @@ export function WorkRecordTable({
 }: WorkRecordTableProps) {
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+      <div id="work-records-table" className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -94,7 +94,7 @@ export function WorkRecordTable({
 
   if (records.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-12 text-center shadow-xs">
+      <div id="work-records-table" className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-12 text-center shadow-xs">
         <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mx-auto flex items-center justify-center mb-4">
           <CalendarBlank size={28} weight="duotone" />
         </div>
@@ -192,7 +192,7 @@ export function WorkRecordTable({
   };
 
   return (
-    <div className="space-y-3">
+    <div id="work-records-table" className="space-y-3">
       {/* Mobile Card Layout (< md) */}
       <div className="block md:hidden space-y-3">
         {records.map((record) => {

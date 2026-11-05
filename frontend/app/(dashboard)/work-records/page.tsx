@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   CalendarCheck,
   Plus,
@@ -70,6 +70,14 @@ export default function WorkRecordsPage() {
     text: string;
   } | null>(null);
 
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   // Debounce search query
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -87,15 +95,21 @@ export default function WorkRecordsPage() {
         date: selectedDate ? selectedDate : undefined,
         status: statusFilter === "ALL" ? undefined : statusFilter,
       });
-      setRecords(data);
+      if (isMountedRef.current) {
+        setRecords(data);
+      }
     } catch (err) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Gagal memuatkan rekod kerja. Sila semak sambungan internet anda.";
-      setError(msg);
+      if (isMountedRef.current) {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : "Gagal memuatkan rekod kerja. Sila semak sambungan internet anda.";
+        setError(msg);
+      }
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   }, [selectedDate, statusFilter]);
 
@@ -208,6 +222,33 @@ export default function WorkRecordsPage() {
     { label: "Dibatalkan", value: "VOID" },
   ];
 
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    const tabs: WorkRecordFilterStatus[] = [
+      "ALL",
+      "UNPAID",
+      "STORED",
+      "PARTIALLY_PAID",
+      "PAID",
+      "VOID",
+    ];
+    const currentIndex = tabs.indexOf(statusFilter);
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % tabs.length;
+      setStatusFilter(tabs[nextIndex]);
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+      setStatusFilter(tabs[prevIndex]);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setStatusFilter(tabs[0]);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setStatusFilter(tabs[tabs.length - 1]);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Toast Feedback Notification */}
@@ -215,7 +256,7 @@ export default function WorkRecordsPage() {
         <div
           role="status"
           className={cn(
-            "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm animate-in slide-in-from-bottom-5 duration-200",
+            "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm animate-in slide-in-from-bottom-5 duration-200 motion-reduce:animate-none",
             feedbackMessage.type === "success"
               ? "bg-emerald-50 dark:bg-emerald-950/90 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200"
               : "bg-rose-50 dark:bg-rose-950/90 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200"
@@ -436,7 +477,12 @@ export default function WorkRecordsPage() {
         </div>
 
         {/* Status Filter Tabs */}
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto pb-1">
+        <div
+          role="tablist"
+          aria-label="Penapis status rekod kerja"
+          onKeyDown={handleTabKeyDown}
+          className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto pb-1"
+        >
           <span className="text-xs font-medium text-slate-400 dark:text-slate-500 mr-1.5 flex items-center gap-1 shrink-0">
             <Funnel size={14} />
             Status:
@@ -445,9 +491,14 @@ export default function WorkRecordsPage() {
             <button
               key={opt.value}
               type="button"
+              role="tab"
+              id={`tab-${opt.value.toLowerCase()}`}
+              aria-selected={statusFilter === opt.value}
+              tabIndex={statusFilter === opt.value ? 0 : -1}
+              aria-controls="work-records-table"
               onClick={() => setStatusFilter(opt.value)}
               className={cn(
-                "min-h-[38px] sm:min-h-0 px-3.5 py-1.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap cursor-pointer select-none",
+                "min-h-[38px] sm:min-h-0 px-3.5 py-1.5 sm:px-3 sm:py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                 statusFilter === opt.value
                   ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-2xs font-semibold"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
