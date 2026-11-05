@@ -143,7 +143,7 @@ export function WorkRecordTable({
         );
       case "STORED":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60">
             <Archive size={12} weight="bold" />
             SIMPAN GAJI
           </span>
@@ -312,7 +312,7 @@ export function WorkRecordTable({
                       variant="outline"
                       size="sm"
                       onClick={() => onStoreSalary(record)}
-                      className="flex-1 sm:flex-initial text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40 text-xs justify-center min-h-[44px]"
+                      className="flex-1 sm:flex-initial text-blue-700 dark:text-blue-300 border-blue-200 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-950/40 text-xs justify-center min-h-[44px]"
                       leftIcon={<Archive size={14} />}
                     >
                       Simpan Gaji
@@ -457,7 +457,7 @@ export function WorkRecordTable({
                             variant="outline"
                             size="sm"
                             onClick={() => onStoreSalary(record)}
-                            className="whitespace-nowrap text-indigo-700 dark:text-indigo-300 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:hover:bg-indigo-950/40"
+                            className="whitespace-nowrap text-blue-700 dark:text-blue-300 border-blue-200 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-950/40"
                             leftIcon={<Archive size={14} />}
                           >
                             Simpan Gaji

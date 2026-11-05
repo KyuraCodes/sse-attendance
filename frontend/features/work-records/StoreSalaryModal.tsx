@@ -131,7 +131,7 @@ export function StoreSalaryModal({
         {/* Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0">
               <Archive size={24} weight="duotone" />
             </div>
             <div>
@@ -216,7 +216,7 @@ export function StoreSalaryModal({
                     className={cn(
                       "text-2xs sm:text-xs min-h-[38px] sm:min-h-0 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-md border font-medium transition-colors cursor-pointer",
                       note === preset
-                        ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300"
+                        ? "bg-blue-50 dark:bg-blue-950/60 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300"
                         : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
                     )}
                   >
@@ -236,7 +236,7 @@ export function StoreSalaryModal({
                 className={cn(
                   "w-full px-3 py-2 rounded-lg border text-base sm:text-sm transition-colors resize-none",
                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
-                  "border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  "border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 )}
               />
             </div>
@@ -268,7 +268,7 @@ export function StoreSalaryModal({
               size="md"
               isLoading={isSubmitting}
               disabled={!note.trim() || isSubmitting}
-              className="w-full sm:w-auto min-h-[44px] bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 focus-visible:ring-indigo-500"
+              className="w-full sm:w-auto min-h-[44px] bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 focus-visible:ring-blue-500"
             >
               Sahkan Simpan Gaji
             </Button>

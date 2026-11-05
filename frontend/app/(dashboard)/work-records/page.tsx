@@ -352,12 +352,12 @@ export default function WorkRecordsPage() {
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Simpan Gaji</span>
-            <Archive size={18} weight="duotone" className="text-indigo-500" />
+            <Archive size={18} weight="duotone" className="text-blue-500 dark:text-blue-400" />
           </div>
-          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-indigo-600 dark:text-indigo-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-blue-600 dark:text-blue-400 tabular-nums">
             {metrics.storedCount}
           </div>
-          <div className="text-2xs text-indigo-700/80 dark:text-indigo-400/80 mt-1 font-mono truncate">
+          <div className="text-2xs text-blue-700/80 dark:text-blue-400/80 mt-1 font-mono truncate">
             {formatCurrency(metrics.storedAmount)} disimpan
           </div>
         </div>
