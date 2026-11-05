@@ -488,6 +488,7 @@ export function BulkRecordModal({
                             checked={isSelected}
                             onChange={() => handleToggleWorker(emp.id)}
                             disabled={isSubmitting}
+                            aria-label={`Pilih kehadiran ${emp.name}`}
                             className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                           />
                           <div>

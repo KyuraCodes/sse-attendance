@@ -367,7 +367,7 @@ export default function WorkRecordsPage() {
             <span>Selesai Bayar</span>
             <CheckCircle size={18} weight="duotone" className="text-emerald-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
+          <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
             {metrics.paidCount}
           </div>
           <div className="text-2xs text-slate-400 mt-1 font-mono">
@@ -386,6 +386,7 @@ export default function WorkRecordsPage() {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
+                aria-label="Pilih tarikh rekod kerja"
                 className={cn(
                   "w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:h-9 pl-9 pr-2.5 rounded-lg border text-base sm:text-xs font-medium transition-colors cursor-pointer",
                   "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
@@ -445,6 +446,7 @@ export default function WorkRecordsPage() {
                 placeholder="Cari nama atau kod pekerja..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Cari nama atau kod pekerja"
                 className="pl-9 min-h-[44px] sm:min-h-0 sm:h-9 text-base sm:text-xs"
               />
               <MagnifyingGlass

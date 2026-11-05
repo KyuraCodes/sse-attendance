@@ -480,6 +480,7 @@ export function DailyRecordModal({
                       }
                     }}
                     disabled={isSubmitting}
+                    aria-label="Tambah Kerja Lebih Masa (Overtime / OT)"
                     className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 dark:border-slate-700"
                   />
                   <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
