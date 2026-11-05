@@ -1,5 +1,12 @@
 export type PaymentMethod = "CASH" | "BANK_TRANSFER" | "DUITNOW" | "OTHER";
 
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  CASH: "Tunai",
+  BANK_TRANSFER: "Pindahan Bank",
+  DUITNOW: "DuitNow",
+  OTHER: "Lain-lain",
+};
+
 export interface PaymentItem {
   id: number;
   paymentId?: number;

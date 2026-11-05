@@ -82,7 +82,7 @@ export function CreatePaymentModal({
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to load employee and balance information.";
+          : "Gagal memuatkan maklumat pekerja dan baki tertunggak.";
       setErrorMessage(msg);
     } finally {
       setIsLoadingData(false);
@@ -135,12 +135,12 @@ export function CreatePaymentModal({
     }
     const parsed = parseFloat(amount);
     if (isNaN(parsed) || parsed <= 0) {
-      return { isValid: false, error: "Payment amount must be greater than RM 0.00" };
+      return { isValid: false, error: "Jumlah bayaran mestilah lebih daripada RM 0.00" };
     }
     if (parsed > outstandingBalance) {
       return {
         isValid: false,
-        error: `Amount exceeds outstanding balance of ${formatCurrency(outstandingBalance)}`,
+        error: `Jumlah bayaran melebihi baki tertunggak sebanyak ${formatCurrency(outstandingBalance)}`,
       };
     }
     return { isValid: true, error: null };
@@ -155,18 +155,18 @@ export function CreatePaymentModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!employeeId) {
-      setErrorMessage("Please select an employee.");
+      setErrorMessage("Sila pilih pekerja terlebih dahulu.");
       return;
     }
 
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setErrorMessage("Please enter a valid amount greater than RM 0.00.");
+      setErrorMessage("Sila masukkan jumlah bayaran sah melebihi RM 0.00.");
       return;
     }
 
     if (parsedAmount > outstandingBalance) {
-      setErrorMessage(`Amount exceeds outstanding balance of ${formatCurrency(outstandingBalance)}.`);
+      setErrorMessage(`Jumlah bayaran melebihi baki tertunggak sebanyak ${formatCurrency(outstandingBalance)}.`);
       return;
     }
 
@@ -195,7 +195,7 @@ export function CreatePaymentModal({
       // Transition to Receipt view
       setCompletedReceipt(receipt);
     } catch (err: unknown) {
-      let msg = "Failed to process payment. Please try again.";
+      let msg = "Gagal memproses pembayaran. Sila cuba sebentar lagi.";
       if (err instanceof Error) {
         msg = err.message;
       }
@@ -249,10 +249,10 @@ export function CreatePaymentModal({
                 id="create-payment-modal-title"
                 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100"
               >
-                Make Payment
+                Buat Pembayaran Upah
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Disburse salary with automatic FIFO work record settlement
+                Agihkan bayaran gaji dengan penyelesaian rekod kerja secara automatik (kaedah FIFO)
               </p>
             </div>
           </div>
@@ -260,7 +260,7 @@ export function CreatePaymentModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            aria-label="Close dialog"
+            aria-label="Tutup dialog"
             className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
           >
             <X size={20} weight="bold" />
@@ -283,12 +283,12 @@ export function CreatePaymentModal({
             {/* Employee Selector */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Select Employee <span className="text-rose-500">*</span>
+                Pilih Pekerja <span className="text-rose-500">*</span>
               </label>
               {isLoadingData ? (
                 <div className="flex items-center gap-2 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-500">
                   <CircleNotch size={16} className="animate-spin text-emerald-600" />
-                  Loading employees and outstanding balances...
+                  Memuatkan senarai pekerja dan baki tertunggak...
                 </div>
               ) : (
                 <div className="relative">
@@ -300,6 +300,7 @@ export function CreatePaymentModal({
                     }}
                     disabled={isSubmitting}
                     required
+                    aria-label="Pilih pekerja untuk dibayar upah"
                     className={cn(
                       "w-full h-10 px-3 pr-8 rounded-lg border text-sm font-medium transition-colors appearance-none cursor-pointer",
                       "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100",
@@ -308,13 +309,13 @@ export function CreatePaymentModal({
                     )}
                   >
                     <option value="" disabled>
-                      Choose an employee...
+                      Pilih pekerja...
                     </option>
                     {employees.map((emp) => {
                       const bal = outstandingMap[emp.id]?.outstandingBalance ?? 0;
                       return (
                         <option key={emp.id} value={emp.id}>
-                          {emp.employeeCode} - {emp.name} (Balance: {formatCurrency(bal)})
+                          {emp.employeeCode} - {emp.name} (Baki: {formatCurrency(bal)})
                         </option>
                       );
                     })}
@@ -338,7 +339,7 @@ export function CreatePaymentModal({
               >
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-slate-600 dark:text-slate-400">
-                    Current Outstanding Balance
+                    Baki Upah Tertunggak Semasa
                   </div>
                   <div className="text-base font-bold font-mono text-emerald-700 dark:text-emerald-400 tabular-nums">
                     {formatCurrency(outstandingBalance)}
@@ -347,14 +348,14 @@ export function CreatePaymentModal({
 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-2xs text-slate-500 dark:text-slate-400">
                   <span>
-                    Unpaid Days:{" "}
+                    Hari Belum Bayar:{" "}
                     <strong className="text-slate-700 dark:text-slate-300">
                       {selectedBalanceInfo?.totalWorkDaysUnpaid ?? 0}
                     </strong>
                   </span>
                   {selectedBalanceInfo && (selectedBalanceInfo.storedAmount ?? 0) > 0 && (
                     <span className="text-amber-700 dark:text-amber-400 font-medium">
-                      Includes {formatCurrency(selectedBalanceInfo.storedAmount)} stored ({selectedBalanceInfo.storedCount ?? 0} days)
+                      Termasuk simpan gaji {formatCurrency(selectedBalanceInfo.storedAmount)} ({selectedBalanceInfo.storedCount ?? 0} hari)
                     </span>
                   )}
                 </div>
@@ -362,7 +363,7 @@ export function CreatePaymentModal({
                 {outstandingBalance === 0 && (
                   <div className="text-xs text-amber-700 dark:text-amber-400 font-medium pt-1 border-t border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
                     <WarningCircle size={14} weight="bold" />
-                    <span>This worker has zero outstanding balance to pay.</span>
+                    <span>Pekerja ini tiada baki upah tertunggak untuk dibayar.</span>
                   </div>
                 )}
               </div>
@@ -372,7 +373,7 @@ export function CreatePaymentModal({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  Payment Amount (RM) <span className="text-rose-500">*</span>
+                  Jumlah Bayaran (RM) <span className="text-rose-500">*</span>
                 </label>
                 {outstandingBalance > 0 && (
                   <button
@@ -381,7 +382,7 @@ export function CreatePaymentModal({
                     disabled={isSubmitting}
                     className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer"
                   >
-                    Pay Full Balance ({formatCurrency(outstandingBalance)})
+                    Bayar Penuh Baki ({formatCurrency(outstandingBalance)})
                   </button>
                 )}
               </div>
@@ -408,7 +409,7 @@ export function CreatePaymentModal({
               {/* Remaining calculation preview */}
               {amountValidation.isValid && numericAmount > 0 && (
                 <div className="mt-1.5 text-2xs text-slate-500 dark:text-slate-400 flex items-center justify-between px-1">
-                  <span>Remaining balance after payment:</span>
+                  <span>Baki tertunggak selepas bayaran:</span>
                   <span className="font-mono font-bold text-slate-700 dark:text-slate-300 tabular-nums">
                     {formatCurrency(remainingAfterPayment)}
                   </span>
@@ -444,7 +445,7 @@ export function CreatePaymentModal({
               {/* Payment Date */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Payment Date <span className="text-rose-500">*</span>
+                  Tarikh Bayaran <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Input
@@ -454,6 +455,7 @@ export function CreatePaymentModal({
                     max="2099-12-31"
                     disabled={isSubmitting}
                     required
+                    aria-label="Pilih tarikh bayaran"
                     className="pl-9 text-xs font-medium"
                   />
                   <CalendarBlank
@@ -467,19 +469,20 @@ export function CreatePaymentModal({
               {/* Payment Method */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Payment Method <span className="text-rose-500">*</span>
+                  Kaedah Bayaran <span className="text-rose-500">*</span>
                 </label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
                   disabled={isSubmitting}
                   required
+                  aria-label="Pilih kaedah bayaran"
                   className="w-full h-10 px-3 rounded-lg border text-xs font-medium bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                 >
-                  <option value="CASH">Cash</option>
-                  <option value="BANK_TRANSFER">Bank Transfer</option>
+                  <option value="CASH">Tunai (Cash)</option>
+                  <option value="BANK_TRANSFER">Pindahan Bank (Bank Transfer)</option>
                   <option value="DUITNOW">DuitNow</option>
-                  <option value="OTHER">Other</option>
+                  <option value="OTHER">Lain-lain (Other)</option>
                 </select>
               </div>
             </div>
@@ -487,11 +490,11 @@ export function CreatePaymentModal({
             {/* Reference */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Reference / Transaction ID (Optional)
+                No. Rujukan / ID Transaksi (Pilihan)
               </label>
               <Input
                 type="text"
-                placeholder="e.g. MBB-Ref-12345 or Cheque No."
+                placeholder="cth. MBB-Ref-12345 atau No. Cek"
                 value={reference}
                 onChange={(e) => setReference(e.target.value)}
                 disabled={isSubmitting}
@@ -503,11 +506,11 @@ export function CreatePaymentModal({
             {/* Notes */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                Notes (Optional)
+                Catatan (Pilihan)
               </label>
               <Input
                 type="text"
-                placeholder="e.g. Mid-month disbursement or worker note"
+                placeholder="cth. Bayaran pendahuluan atau catatan khas pekerja"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 disabled={isSubmitting}
@@ -527,7 +530,7 @@ export function CreatePaymentModal({
               disabled={isSubmitting}
               className="w-full sm:w-auto"
             >
-              Cancel
+              Batal
             </Button>
             <Button
               type="submit"
@@ -543,7 +546,7 @@ export function CreatePaymentModal({
               rightIcon={<ArrowRight size={16} weight="bold" />}
               className="w-full sm:w-auto"
             >
-              Process Payment
+              Proses Pembayaran
             </Button>
           </div>
         </form>

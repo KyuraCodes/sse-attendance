@@ -9,7 +9,7 @@ import {
   Receipt,
   Coins,
 } from "@phosphor-icons/react";
-import { Payment } from "@/types/payment";
+import { Payment, PAYMENT_METHOD_LABELS } from "@/types/payment";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -32,16 +32,16 @@ export function PaymentTable({
     return (
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse" aria-label="Jadual rekod pembayaran gaji">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Code</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Date</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Method</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Action</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod Bayaran</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tarikh Bayaran</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jumlah Bayaran</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kaedah</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rujukan</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -84,12 +84,12 @@ export function PaymentTable({
           <Coins size={28} weight="duotone" />
         </div>
         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-          {hasFilter ? "No matching payment records found" : "No payments processed yet"}
+          {hasFilter ? "Tiada rekod pembayaran yang sepadan" : "Tiada rekod pembayaran dicatat setakat ini"}
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
           {hasFilter
-            ? "Try adjusting your worker or date filters to find previous disbursements."
-            : "Record your first employee payment disbursement to settle outstanding work records."}
+            ? "Cuba ubah penapis pekerja atau julat tarikh untuk melihat rekod pembayaran lain."
+            : "Mulakan dengan merekod pembayaran pertama untuk menyelesaikan rekod kerja pekerja."}
         </p>
         {onMakePayment && (
           <div className="mt-6">
@@ -100,7 +100,7 @@ export function PaymentTable({
               leftIcon={<CreditCard size={16} weight="bold" />}
               className="whitespace-nowrap"
             >
-              Make Payment
+              Buat Pembayaran
             </Button>
           </div>
         )}
@@ -114,14 +114,14 @@ export function PaymentTable({
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
             <Money size={13} weight="bold" />
-            Cash
+            Tunai
           </span>
         );
       case "BANK_TRANSFER":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
             <Bank size={13} weight="bold" />
-            Bank Transfer
+            Pindahan Bank
           </span>
         );
       case "DUITNOW":
@@ -136,7 +136,9 @@ export function PaymentTable({
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
             <CreditCard size={13} weight="bold" />
-            {method || "Other"}
+            {method && method in PAYMENT_METHOD_LABELS
+              ? PAYMENT_METHOD_LABELS[method as keyof typeof PAYMENT_METHOD_LABELS]
+              : "Lain-lain"}
           </span>
         );
     }
@@ -177,7 +179,7 @@ export function PaymentTable({
             {/* Financial & Reference Strip */}
             <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-2xs">Disbursed Amount</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-2xs">Jumlah Bayaran</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="font-mono tabular-nums font-bold text-base text-slate-900 dark:text-slate-100">
                     {formatCurrency(payment.amount)}
@@ -190,7 +192,7 @@ export function PaymentTable({
                 </div>
               </div>
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-2xs">Reference</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-2xs">Rujukan</span>
                 <span className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate block">
                   {payment.reference ? payment.reference : "-"}
                 </span>
@@ -206,7 +208,7 @@ export function PaymentTable({
                 leftIcon={<Receipt size={14} weight="bold" />}
                 className="w-full sm:w-auto justify-center text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400 text-xs"
               >
-                View Receipt
+                Lihat Resit
               </Button>
             </div>
           </div>
@@ -216,16 +218,16 @@ export function PaymentTable({
       {/* Desktop Table View (>= md) */}
       <div className="hidden md:block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
         <div className="overflow-x-auto min-w-0">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse" aria-label="Jadual rekod pembayaran gaji">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/50">
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Code</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Employee</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment Date</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Method</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
-                <th className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Action</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kod Bayaran</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nama Pekerja</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tarikh Bayaran</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jumlah Bayaran</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kaedah</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rujukan</th>
+                <th scope="col" className="py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -274,7 +276,7 @@ export function PaymentTable({
                       leftIcon={<Receipt size={14} weight="bold" />}
                       className="whitespace-nowrap text-slate-700 hover:text-emerald-700 hover:border-emerald-300 dark:text-slate-300 dark:hover:text-emerald-400"
                     >
-                      Receipt
+                      Resit
                     </Button>
                   </td>
                 </tr>

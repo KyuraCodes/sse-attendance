@@ -103,7 +103,7 @@ export default function PaymentsPage() {
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to load payment records. Please check your connection.";
+          : "Gagal memuatkan rekod pembayaran. Sila semak sambungan internet anda.";
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -175,7 +175,7 @@ export default function PaymentsPage() {
   const handlePaymentSuccess = (payment: Payment, receipt: ReceiptDto) => {
     setFeedbackMessage({
       type: "success",
-      text: `Payment ${payment.paymentCode} disbursed to ${payment.employeeName} (${formatCurrency(payment.amount)}).`,
+      text: `Bayaran ${payment.paymentCode} sebanyak ${formatCurrency(payment.amount)} kepada ${payment.employeeName} berjaya direkodkan.`,
     });
     loadPaymentsAndMetrics();
   };
@@ -233,6 +233,7 @@ export default function PaymentsPage() {
           <button
             type="button"
             onClick={() => setFeedbackMessage(null)}
+            aria-label="Tutup pemberitahuan"
             className="p-1 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-md transition-colors"
           >
             <X size={16} />
@@ -249,10 +250,10 @@ export default function PaymentsPage() {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                Payments
+                Pembayaran Gaji
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Disburse employee wages, record partial settlements, and issue official receipts
+                Urus pembayaran upah pekerja, agihan bayaran, dan jana resit rasmi
               </p>
             </div>
           </div>
@@ -267,7 +268,7 @@ export default function PaymentsPage() {
             leftIcon={<Plus size={16} weight="bold" />}
             className="w-full sm:w-auto justify-center shadow-sm"
           >
-            Make Payment
+            Buat Pembayaran
           </Button>
         </div>
       </div>
@@ -276,53 +277,53 @@ export default function PaymentsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Payments Count</span>
+            <span>Jumlah Bayaran</span>
             <Receipt size={18} weight="duotone" className="text-slate-400" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">
             {metrics.totalCount}
           </div>
           <div className="text-2xs text-slate-400 mt-1 font-mono truncate">
-            Disbursement transactions
+            Transaksi pembayaran
           </div>
         </div>
 
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Total Disbursed</span>
+            <span>Jumlah Dibayar</span>
             <Coins size={18} weight="duotone" className="text-emerald-500" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
             {formatCurrency(metrics.totalDisbursed)}
           </div>
           <div className="text-2xs text-emerald-700/80 dark:text-emerald-400/80 mt-1 font-mono truncate">
-            In filtered range
+            Dalam julat penapis
           </div>
         </div>
 
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>This Month</span>
+            <span>Bulan Ini</span>
             <CalendarBlank size={18} weight="duotone" className="text-sky-500" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums">
             {formatCurrency(metrics.thisMonthDisbursed)}
           </div>
           <div className="text-2xs text-sky-700/80 dark:text-sky-400/80 mt-1 font-mono truncate">
-            Month-to-date disbursements
+            Bayaran bulan semasa
           </div>
         </div>
 
         <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Remaining Outstanding</span>
+            <span>Baki Belum Bayar</span>
             <ClockCounterClockwise size={18} weight="duotone" className="text-amber-500" />
           </div>
           <div className="mt-1.5 sm:mt-2 text-xl sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
             {formatCurrency(metrics.totalOutstanding)}
           </div>
           <div className="text-2xs text-amber-700/80 dark:text-amber-400/80 mt-1 font-mono truncate">
-            Unpaid wages & stored salary
+            Upah tertunggak & simpan gaji
           </div>
         </div>
       </div>
@@ -337,9 +338,10 @@ export default function PaymentsPage() {
               <select
                 value={selectedEmployeeId}
                 onChange={(e) => setSelectedEmployeeId(e.target.value)}
+                aria-label="Pilih pekerja untuk ditapis"
                 className="w-full h-9 pl-8 pr-7 rounded-lg border text-xs font-medium transition-colors appearance-none cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
-                <option value="">All Employees</option>
+                <option value="">Semua Pekerja</option>
                 {employees.map((emp) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.employeeCode} - {emp.name}
@@ -360,8 +362,8 @@ export default function PaymentsPage() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  placeholder="From date"
-                  aria-label="Filter from start date"
+                  placeholder="Tarikh mula"
+                  aria-label="Tapis mengikut tarikh mula"
                   className="w-full sm:w-auto h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
                 <CalendarBlank
@@ -371,15 +373,15 @@ export default function PaymentsPage() {
                 />
               </div>
 
-              <span className="text-xs text-slate-400 shrink-0">to</span>
+              <span className="text-xs text-slate-400 shrink-0">hingga</span>
 
               <div className="relative flex-1 sm:flex-none">
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  placeholder="To date"
-                  aria-label="Filter to end date"
+                  placeholder="Tarikh akhir"
+                  aria-label="Tapis mengikut tarikh akhir"
                   className="w-full sm:w-auto h-9 pl-8 pr-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
                 <CalendarBlank
@@ -397,7 +399,7 @@ export default function PaymentsPage() {
                 onClick={handleFilterThisMonth}
                 className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
               >
-                This Month
+                Bulan Ini
               </button>
 
               <button
@@ -405,7 +407,7 @@ export default function PaymentsPage() {
                 onClick={handleFilterToday}
                 className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors whitespace-nowrap cursor-pointer"
               >
-                Today
+                Hari Ini
               </button>
 
               {(startDate || endDate) && (
@@ -413,9 +415,9 @@ export default function PaymentsPage() {
                   type="button"
                   onClick={handleClearDateFilters}
                   className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap cursor-pointer"
-                  title="Clear date range filters"
+                  title="Kosongkan penapis julat tarikh"
                 >
-                  Clear Dates
+                  Kosongkan Tarikh
                 </button>
               )}
             </div>
@@ -426,7 +428,8 @@ export default function PaymentsPage() {
             <div className="relative w-full">
               <Input
                 type="text"
-                placeholder="Search payment code, worker, ref..."
+                placeholder="Cari kod bayaran, nama pekerja, rujukan..."
+                aria-label="Cari rekod pembayaran"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-9 text-xs"
@@ -439,6 +442,7 @@ export default function PaymentsPage() {
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
+                  aria-label="Kosongkan carian"
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X size={14} />
@@ -452,7 +456,7 @@ export default function PaymentsPage() {
               onClick={loadPaymentsAndMetrics}
               isLoading={isLoading}
               className="h-9 whitespace-nowrap"
-              title="Refresh payments list"
+              title="Muat semula senarai bayaran"
             >
               <ArrowClockwise size={16} />
             </Button>
@@ -476,7 +480,7 @@ export default function PaymentsPage() {
             onClick={loadPaymentsAndMetrics}
             className="whitespace-nowrap"
           >
-            Retry
+            Cuba Lagi
           </Button>
         </div>
       )}

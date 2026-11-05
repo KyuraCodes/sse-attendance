@@ -50,7 +50,7 @@ export function PaymentReceiptModal({
       const msg =
         err instanceof Error
           ? err.message
-          : "Failed to load payment receipt.";
+          : "Gagal memuatkan maklumat resit pembayaran.";
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -125,15 +125,15 @@ export function PaymentReceiptModal({
   const formatMethodLabel = (method?: string) => {
     switch (method) {
       case "CASH":
-        return "Cash";
+        return "Tunai (Cash)";
       case "BANK_TRANSFER":
-        return "Bank Transfer";
+        return "Pindahan Bank (Bank Transfer)";
       case "DUITNOW":
         return "DuitNow";
       case "OTHER":
-        return "Other";
+        return "Lain-lain (Other)";
       default:
-        return method || "Cash";
+        return method || "Tunai";
     }
   };
 
@@ -197,10 +197,10 @@ export function PaymentReceiptModal({
                   id="payment-receipt-title"
                   className="text-base sm:text-lg font-semibold leading-tight text-slate-900 dark:text-slate-100 whitespace-nowrap"
                 >
-                  Payment Receipt
+                  Resit Pembayaran
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                  Official settlement receipt for disbursed wages
+                  Resit rasmi bayaran upah & penyelesaian rekod kerja
                 </p>
               </div>
             </div>
@@ -208,7 +208,7 @@ export function PaymentReceiptModal({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close dialog"
+              aria-label="Tutup dialog resit"
               className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
             >
               <X size={20} weight="bold" />
@@ -220,7 +220,7 @@ export function PaymentReceiptModal({
             {isLoading && (
               <div className="py-16 flex flex-col items-center justify-center text-slate-500">
                 <CircleNotch size={32} className="animate-spin text-emerald-600 mb-3" />
-                <p className="text-sm font-medium">Loading receipt details...</p>
+                <p className="text-sm font-medium">Memuatkan maklumat resit pembayaran...</p>
               </div>
             )}
 
@@ -231,7 +231,7 @@ export function PaymentReceiptModal({
               >
                 <WarningCircle size={20} weight="fill" className="shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <div className="font-semibold text-sm">Receipt Error</div>
+                  <div className="font-semibold text-sm">Ralat Resit</div>
                   <div className="text-xs mt-0.5">{error}</div>
                 </div>
               </div>
@@ -253,7 +253,7 @@ export function PaymentReceiptModal({
                       </div>
                       <div>
                         <div className="text-xs uppercase tracking-wider font-bold text-emerald-700 dark:text-emerald-400">
-                          Official Receipt
+                          Resit Rasmi
                         </div>
                         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mt-0.5">
                           {receipt.companyName || COMPANY_NAME}
@@ -277,7 +277,7 @@ export function PaymentReceiptModal({
                         )}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
-                        Date: <span className="font-semibold text-slate-700 dark:text-slate-300">{formatDate(receipt.paymentDate)}</span>
+                        Tarikh: <span className="font-semibold text-slate-700 dark:text-slate-300">{formatDate(receipt.paymentDate)}</span>
                       </div>
                     </div>
                   </div>
@@ -286,24 +286,24 @@ export function PaymentReceiptModal({
                 {/* Metadata Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 text-xs">
                   <div>
-                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5">Paid To:</span>
+                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5">Dibayar Kepada:</span>
                     <div className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                       <User size={15} className="text-slate-400" />
                       <span>{receipt.employeeName}</span>
                     </div>
                     <span className="text-xs font-mono text-slate-500 dark:text-slate-400 ml-5 block">
-                      Code: {receipt.employeeCode}
+                      Kod: {receipt.employeeCode}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5">Payment Method:</span>
+                    <span className="text-slate-500 dark:text-slate-400 block mb-0.5">Kaedah Pembayaran:</span>
                     <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                       <CreditCard size={15} className="text-slate-400" />
                       <span>{formatMethodLabel(receipt.paymentMethod)}</span>
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Reference: <span className="font-mono text-slate-700 dark:text-slate-300">{receipt.reference ? receipt.reference : "-"}</span>
+                      Rujukan: <span className="font-mono text-slate-700 dark:text-slate-300">{receipt.reference ? receipt.reference : "-"}</span>
                     </div>
                   </div>
 
@@ -318,7 +318,7 @@ export function PaymentReceiptModal({
 
                   {receipt.notes && (
                     <div className="sm:col-span-2 pt-2 border-t border-slate-200/80 dark:border-slate-700/60">
-                      <span className="text-slate-500 dark:text-slate-400 block mb-0.5">Notes:</span>
+                      <span className="text-slate-500 dark:text-slate-400 block mb-0.5">Catatan:</span>
                       <p className="text-slate-700 dark:text-slate-300 italic">{receipt.notes}</p>
                     </div>
                   )}
@@ -328,21 +328,21 @@ export function PaymentReceiptModal({
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                      Settled Work Records (FIFO Allocation)
+                      Rekod Kerja Diselesaikan (Kaedah FIFO)
                     </h3>
                     <span className="text-xs text-slate-400 dark:text-slate-500">
-                      {receipt.items?.length || 0} work {receipt.items?.length === 1 ? "record" : "records"} settled
+                      {receipt.items?.length || 0} rekod kerja diselesaikan
                     </span>
                   </div>
 
                   <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
-                    <table className="w-full text-left border-collapse text-xs">
+                    <table className="w-full text-left border-collapse text-xs" aria-label="Jadual pecahan rekod kerja diselesaikan">
                       <thead>
                         <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-                          <th className="py-2.5 px-3 font-semibold">Work Date</th>
-                          <th className="py-2.5 px-3 font-semibold text-right">Daily Rate</th>
-                          <th className="py-2.5 px-3 font-semibold text-right">Amount Applied</th>
-                          <th className="py-2.5 px-3 font-semibold text-center">Settlement Status</th>
+                          <th scope="col" className="py-2.5 px-3 font-semibold">Tarikh Kerja</th>
+                          <th scope="col" className="py-2.5 px-3 font-semibold text-right">Kadar Harian</th>
+                          <th scope="col" className="py-2.5 px-3 font-semibold text-right">Jumlah Diselesaikan</th>
+                          <th scope="col" className="py-2.5 px-3 font-semibold text-center">Status Rekod</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -373,7 +373,7 @@ export function PaymentReceiptModal({
                         ) : (
                           <tr>
                             <td colSpan={4} className="py-4 text-center text-slate-400 dark:text-slate-500 italic">
-                              Payment applied toward outstanding worker balance.
+                              Bayaran diagihkan untuk menyelesaikan baki upah tertunggak.
                             </td>
                           </tr>
                         )}
@@ -386,10 +386,10 @@ export function PaymentReceiptModal({
                 <div className="bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 rounded-xl p-4 flex items-center justify-between">
                   <div>
                     <span className="text-xs uppercase tracking-wider font-semibold text-emerald-800 dark:text-emerald-300">
-                      Total Disbursed Amount
+                      Jumlah Bayaran Upah
                     </span>
                     <p className="text-xs text-emerald-700/80 dark:text-emerald-400/80">
-                      Status: Settlement Completed (PAID)
+                      Status: Pembayaran Selesai (LUNAS)
                     </p>
                   </div>
                   <div className="text-right">
@@ -402,10 +402,10 @@ export function PaymentReceiptModal({
                 {/* Receipt Legal & Audit Footer */}
                 <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-2xs text-slate-400 dark:text-slate-500">
                   <span>
-                    Computer-generated receipt - Sepakat Silaturrahim Enterprise.
+                    Resit janaan komputer - Sepakat Silaturrahim Enterprise.
                   </span>
                   <span className="font-mono">
-                    Receipt ID: {receipt.paymentCode}
+                    No. Resit: {receipt.paymentCode}
                   </span>
                 </div>
               </div>
@@ -449,7 +449,7 @@ export function PaymentReceiptModal({
                 onClick={onClose}
                 className="w-full sm:w-auto"
               >
-                Close
+                Tutup
               </Button>
               <Button
                 type="button"
@@ -460,7 +460,7 @@ export function PaymentReceiptModal({
                 leftIcon={<Printer size={16} weight="bold" />}
                 className="w-full sm:w-auto whitespace-nowrap"
               >
-                Print Receipt
+                Cetak Resit
               </Button>
             </div>
           </div>
