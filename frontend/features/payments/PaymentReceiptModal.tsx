@@ -316,7 +316,7 @@ export function PaymentReceiptModal({
                         )}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
-                        Tarikh: <span className="font-semibold text-slate-700 dark:text-slate-300">{formatDate(receipt.paymentDate)}</span>
+                        Tarikh: <span className="font-semibold font-mono tabular-nums text-slate-700 dark:text-slate-300">{formatDate(receipt.paymentDate)}</span>
                       </div>
                     </div>
                   </div>
@@ -388,13 +388,13 @@ export function PaymentReceiptModal({
                         {receipt.items && receipt.items.length > 0 ? (
                           receipt.items.map((item) => (
                             <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                              <td className="py-2.5 px-3 font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                              <td className="py-2.5 px-3 font-medium font-mono tabular-nums text-slate-900 dark:text-slate-100 whitespace-nowrap">
                                 {formatDate(item.workDate)}
                               </td>
-                              <td className="py-2.5 px-3 text-right font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                              <td className="py-2.5 px-3 text-right font-mono tabular-nums text-slate-600 dark:text-slate-400 whitespace-nowrap">
                                 {formatCurrency(item.dailyRate)}
                               </td>
-                              <td className="py-2.5 px-3 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                              <td className="py-2.5 px-3 text-right font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100 whitespace-nowrap">
                                 {formatCurrency(item.amountApplied)}
                               </td>
                               <td className="py-2.5 px-3 text-center whitespace-nowrap">
@@ -404,7 +404,7 @@ export function PaymentReceiptModal({
                                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
                                     : "bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800"
                                 )}>
-                                  {item.workRecordStatus || "PAID"}
+                                  {item.workRecordStatus === "PAID" ? "LUNAS" : item.workRecordStatus === "PARTIALLY_PAID" ? "SEPARA" : item.workRecordStatus || "LUNAS"}
                                 </span>
                               </td>
                             </tr>
