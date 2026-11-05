@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   CalendarCheck,
   Plus,
@@ -70,14 +70,6 @@ export default function WorkRecordsPage() {
     text: string;
   } | null>(null);
 
-  const isMountedRef = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
   // Debounce search query
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -95,21 +87,15 @@ export default function WorkRecordsPage() {
         date: selectedDate ? selectedDate : undefined,
         status: statusFilter === "ALL" ? undefined : statusFilter,
       });
-      if (isMountedRef.current) {
-        setRecords(data);
-      }
+      setRecords(Array.isArray(data) ? data : []);
     } catch (err) {
-      if (isMountedRef.current) {
-        const msg =
-          err instanceof Error
-            ? err.message
-            : "Gagal memuatkan rekod kerja. Sila semak sambungan internet anda.";
-        setError(msg);
-      }
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Gagal memuatkan rekod kerja. Sila semak sambungan internet anda.";
+      setError(msg);
     } finally {
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
     }
   }, [selectedDate, statusFilter]);
 
