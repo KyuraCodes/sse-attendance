@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   X,
   CreditCard,
@@ -89,6 +89,8 @@ export function CreatePaymentModal({
     }
   }, []);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (isOpen) {
       setEmployeeId(initialEmployeeId ? String(initialEmployeeId) : "");
@@ -104,10 +106,34 @@ export function CreatePaymentModal({
     }
   }, [isOpen, initialEmployeeId, loadInitialData]);
 
+  // Focus trapping and keyboard management
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen && !isSubmitting && !completedReceipt) {
         onClose();
+        return;
+      }
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length > 0) {
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+              e.preventDefault();
+              lastElement.focus();
+            }
+          } else {
+            if (document.activeElement === lastElement) {
+              e.preventDefault();
+              firstElement.focus();
+            }
+          }
+        }
       }
     };
     if (isOpen) {
@@ -115,6 +141,19 @@ export function CreatePaymentModal({
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, isSubmitting, completedReceipt, onClose]);
+
+  // Auto-focus first input on open
+  useEffect(() => {
+    if (isOpen && modalRef.current && !completedReceipt) {
+      const timer = setTimeout(() => {
+        const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
+          'select:not([disabled]), button:not([disabled]), input:not([disabled])'
+        );
+        firstFocusable?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, completedReceipt]);
 
   // Selected employee information and balance
   const selectedEmp = useMemo(() => {
@@ -232,9 +271,10 @@ export function CreatePaymentModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-payment-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150 motion-reduce:animate-none"
     >
       <div
+        ref={modalRef}
         className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90dvh] sm:max-h-[88dvh] my-2 sm:my-8"
         onClick={(e) => e.stopPropagation()}
       >

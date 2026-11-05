@@ -46,7 +46,7 @@ export function PaymentTable({
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {[1, 2, 3, 4, 5].map((idx) => (
-                <tr key={idx} className="animate-pulse">
+                <tr key={idx} className="animate-pulse motion-reduce:animate-none">
                   <td className="py-4 px-4">
                     <div className="h-5 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
                   </td>
@@ -154,11 +154,11 @@ export function PaymentTable({
             className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-2xs space-y-3"
           >
             <div className="flex items-start justify-between gap-2">
-              <div>
+              <div className="min-w-0 flex-1">
                 <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
                   {payment.paymentCode}
                 </span>
-                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-0.5">
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-0.5 truncate max-w-[200px]">
                   {payment.employeeName}
                 </div>
                 {payment.employeeCode && (
@@ -239,8 +239,8 @@ export function PaymentTable({
                   <td className="py-3.5 px-4 text-xs font-mono tabular-nums font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
                     {payment.paymentCode}
                   </td>
-                  <td className="py-3.5 px-4">
-                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  <td className="py-3.5 px-4 min-w-0">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[220px]">
                       {payment.employeeName}
                     </div>
                     {payment.employeeCode && (
